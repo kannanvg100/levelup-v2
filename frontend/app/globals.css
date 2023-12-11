@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --foreground-rgb: 0, 0, 0;
+    --background-start-rgb: 214, 219, 220;
+    --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --foreground-rgb: 255, 255, 255;
+        --background-start-rgb: 0, 0, 0;
+        --background-end-rgb: 0, 0, 0;
+    }
+}
+
+/* html {
+    scrollbar-gutter: stable;
+  } */
+
+body {
+    color: rgb(var(--foreground-rgb));
+    /* background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb)); */
+}
+
+.lk-grid-layout {
+    padding: 0px;
+}
+
+@layer components {
+
+    .text-ellipsis-custom {
+        @apply whitespace-nowrap overflow-hidden text-ellipsis;
+    }
+
+    .text-ellipsis-95 {
+        @apply max-w-[95%] whitespace-nowrap overflow-hidden text-ellipsis;
+    }
+
+    audio::-webkit-media-controls-play-button,
+    audio::-webkit-media-controls-panel {
+        @apply bg-default-100;
+    }
+
+}
+
+/* Removes the time stamp from audio player */
+audio::-webkit-media-controls-current-time-display {
+    display: none;
+}
+
+audio::-webkit-media-controls-time-remaining-display {
+    display: none;
+}
