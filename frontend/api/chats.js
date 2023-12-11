@@ -64,9 +64,10 @@ export function createChatMessage({ role, chatId, content, attachment = null, at
 		})
 }
 
-export function markChatRead({ chatId, participantId }) {
+export function markChatRead({ role, chatId, participantId }) {
+	const route = role === 'teacher' ? `/api/teacher/mark-chat-read/${chatId}` : `/api/mark-chat-read/${chatId}`
 	return axios
-		.post(`/api/mark-chat-read/${chatId}`, { participantId })
+		.post(route, { participantId })
 		.then((res) => res.data.chat)
 		.catch((err) => {
 			throw err

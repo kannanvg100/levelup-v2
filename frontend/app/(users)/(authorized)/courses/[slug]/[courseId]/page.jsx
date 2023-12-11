@@ -81,7 +81,7 @@ export default function App({ params: { slug, courseId } }) {
 		mutationFn: createChat,
 		onSuccess: (data) => {
 			toast('Chat created successfully!')
-			queryClient.invalidateQueries('chats')
+			queryClient.invalidateQueries(['chats', 'all'])
 			toggleExpand()
 		},
 		onError: (error) => {

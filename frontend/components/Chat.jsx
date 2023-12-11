@@ -26,6 +26,8 @@ export default function Chat({ role }) {
 	}, 0)
 
 	useEffect(() => {
+        
+        console.log("📄 > file: Chat.jsx:38 > Chat > user:", user)
 		if (!socket || !user) return setIsOnline(false)
 		socket?.on('connected', () => {
 			setIsOnline(true)
@@ -109,7 +111,7 @@ export default function Chat({ role }) {
 											className="flex gap-2 h-16 items-center hover:bg-default-200 p-2 px-3 cursor-pointer w-full"
 											onClick={() => {
 												setChat(chat)
-												if (chat?.unreadCount > 0) mutateMarkAsRead({ chatId: chat._id })
+												if (chat?.unreadCount > 0) mutateMarkAsRead({ role, chatId: chat._id })
 											}}>
 											<Avatar
 												size="md"

@@ -10,7 +10,7 @@ export default function CourseItem2({ course: data }) {
 		<Link as={NextLink} href={`/courses/${data?.course?.slug}/${data?.course?._id}`}>
 			<Card radius="none" shadow="none" className="bg-default-50 w-[450px]">
 				<CardBody className="p-0">
-					<div className="flex gap-2">
+					<div className="flex gap-2 overflow-hidden">
 						<Image
 							radius="none"
 							className="h-[180px] rounded-none object-cover object-center border border-default-100"

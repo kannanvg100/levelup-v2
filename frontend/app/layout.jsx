@@ -13,7 +13,7 @@ export default function RootLayout({ children }) {
 				<link rel="icon" href="/favicon.ico" sizes="any" />
 			</head>
 			<body className="min-h-screen bg-background text-default-700">
-				<Providers themeProps={{ attribute: 'class', defaultTheme: 'dark' }}>
+				<Providers themeProps={{ attribute: 'class', defaultTheme: 'light' }}>
 					<main>{children}</main>
 				</Providers>
 			</body>

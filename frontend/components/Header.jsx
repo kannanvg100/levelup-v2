@@ -52,7 +52,7 @@ export default function Header() {
 		try {
 			const res = await queryClient.fetchQuery({
 				queryFn: () => logoutUser('user'),
-                queryKey: ['logout', 'user'],
+				queryKey: ['logout', 'user'],
 			})
 			if (res?.success) {
 				dispatch(removeUser())
@@ -83,7 +83,7 @@ export default function Header() {
 				<NextLink href="/">
 					<Image src="/logo.svg" alt="logo" width={100} height={100} className="cursor-pointer" />
 				</NextLink>
-				<Dropdown radius='none'>
+				<Dropdown radius="none">
 					<NavbarItem>
 						<DropdownTrigger>
 							<Button
@@ -105,7 +105,12 @@ export default function Header() {
 						{categories &&
 							categories?.map((category) => (
 								<DropdownItem key="autoscaling" description={category?.description}>
-									<span className="text-default-700 font-normal">{category?.title}</span>
+									<Link
+										as={NextLink}
+										href={`/courses?filter=category%3D${category?._id}`}
+										key={category?._id}>
+										<span className="text-default-700 font-normal">{category?.title}</span>
+									</Link>
 								</DropdownItem>
 							))}
 					</DropdownMenu>
@@ -123,7 +128,7 @@ export default function Header() {
 						</Link>
 					</NavbarItem>
 					<NavbarItem>
-						<Dropdown placement="bottom-end" radius='none'>
+						<Dropdown placement="bottom-end" radius="none">
 							<DropdownTrigger>
 								<Avatar
 									as="button"

@@ -83,7 +83,7 @@ export default function Page() {
 
 			{myCourses?.data && <p className="text-[1.2rem] font-semibold text-default-700">Continue Learning</p>}
 			<Spacer y={2} />
-			<div className="flex items-start gap-2">
+			<div className="flex overflow-hidden items-start gap-2">
 				{myCourses?.data?.courses &&
 					myCourses?.data?.courses.map((course) => <CourseItem2 key={course._id} course={course} />)}
 				{myCourses?.isPending &&

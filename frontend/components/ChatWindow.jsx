@@ -99,7 +99,7 @@ export default function ChatWindow({ role, chat, setChat, mutateMarkAsRead }) {
 	})
 
 	const handleSendMessage = () => {
-		mutateMarkAsRead({ chatId: chat?._id })
+		mutateMarkAsRead({ role, chatId: chat?._id })
 		if (!message || !message.trim()) return
 		mutateSendMessage({ role, chatId: chat?._id, content: message })
 		// if (!socket) return toast.error('Socket not connected')
