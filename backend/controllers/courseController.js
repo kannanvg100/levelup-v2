@@ -445,8 +445,8 @@ module.exports = {
 					payment_method_types: ['card'],
 					line_items,
 					mode: 'payment',
-					success_url: `${process.env.CLIENT_URL}/courses/${course.slug}/${course._id}?success=1`,
-					cancel_url: `${process.env.CLIENT_URL}/courses/${course.slug}/${course._id}?canceled=1`,
+					success_url: `https://levelup-live.online/courses/${course.slug}/${course._id}?success=1`,
+					cancel_url: `https://levelup-live.online/courses/${course.slug}/${course._id}?canceled=1`,
 					metadata: {
 						courseId: courseId,
 						studentId: userId,

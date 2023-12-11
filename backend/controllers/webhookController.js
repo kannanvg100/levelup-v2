@@ -9,6 +9,7 @@ module.exports = {
 		try {
 			const signature = req.headers['stripe-signature']
 			const event = stripe.webhooks.constructEvent(req.body, signature, process.env.STRIPE_WEBHOOK_SECRET)
+			console.log("📄 > file: webhookController.js:12 > stripeWebhook: > process.env.STRIPE_WEBHOOK_SECRET:", process.env.STRIPE_WEBHOOK_SECRET)
 
 			const session = event.data.object
 			const { courseId, studentId } = session?.metadata
