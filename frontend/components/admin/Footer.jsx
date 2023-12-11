@@ -14,6 +14,83 @@ export default function Footer() {
 					<Link as={NextLink} href="/teacher" size="sm">
 						<p className="text-default-700 hover:underline">Teach on Levelup</p>
 					</Link>
+					<Link
+						as={NextLink}
+						href="/"
+						size="sm"
+						className="text-default-500 text-tiny hover:underline hover:text-default-700">
+						About us
+					</Link>
+					<Link
+						as={NextLink}
+						href="/"
+						size="sm"
+						className="text-default-500 text-tiny hover:underline hover:text-default-700">
+						Contact us
+					</Link>
+					<Link
+						as={NextLink}
+						href="/"
+						size="sm"
+						className="text-default-500 text-tiny hover:underline hover:text-default-700">
+						Careers
+					</Link>
+					<Link
+						as={NextLink}
+						href="/"
+						size="sm"
+						className="text-default-500 text-tiny hover:underline hover:text-default-700">
+						Blog
+					</Link>
+					<Link
+						as={NextLink}
+						href="/"
+						size="sm"
+						className="text-default-500 text-tiny hover:underline hover:text-default-700">
+						Help and Support
+					</Link>
+					<Link
+						as={NextLink}
+						href="/"
+						size="sm"
+						className="text-default-500 text-tiny hover:underline hover:text-default-700">
+						Affiliate
+					</Link>
+					<Link
+						as={NextLink}
+						href="/"
+						size="sm"
+						className="text-default-500 text-tiny hover:underline hover:text-default-700">
+						Investors
+					</Link>
+					<Link
+						as={NextLink}
+						href="/"
+						size="sm"
+						className="text-default-500 text-tiny hover:underline hover:text-default-700">
+						Terms
+					</Link>
+					<Link
+						as={NextLink}
+						href="/"
+						size="sm"
+						className="text-default-500 text-tiny hover:underline hover:text-default-700">
+						Privacy policy
+					</Link>
+					<Link
+						as={NextLink}
+						href="/"
+						size="sm"
+						className="text-default-500 text-tiny hover:underline hover:text-default-700">
+						Sitemap
+					</Link>
+					<Link
+						as={NextLink}
+						href="/"
+						size="sm"
+						className="text-default-500 text-tiny hover:underline hover:text-default-700">
+						Accessibility statement
+					</Link>
 				</div>
 			</div>
 		</div>

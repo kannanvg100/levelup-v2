@@ -9,7 +9,7 @@ export default function Footer() {
 			{/* <div className="container mx-auto py-6 max-w-screen-xl "> */}
 			<Image src="/logo.svg" alt="logo" width={100} height={100} />
 			<div className="flex mt-6 gap-6">
-				<div className="flex gap-2">
+				<div className="flex gap-4">
 					<Link
 						as={NextLink}
 						href="/"
@@ -24,10 +24,87 @@ export default function Footer() {
 						className="text-default-500 text-tiny hover:underline hover:text-default-700">
 						Administrator
 					</Link>
+					<Link
+						as={NextLink}
+						href="/"
+						size="sm"
+						className="text-default-500 text-tiny hover:underline hover:text-default-700">
+						About us
+					</Link>
+					<Link
+						as={NextLink}
+						href="/"
+						size="sm"
+						className="text-default-500 text-tiny hover:underline hover:text-default-700">
+						Contact us
+					</Link>
+					<Link
+						as={NextLink}
+						href="/"
+						size="sm"
+						className="text-default-500 text-tiny hover:underline hover:text-default-700">
+						Careers
+					</Link>
+					<Link
+						as={NextLink}
+						href="/"
+						size="sm"
+						className="text-default-500 text-tiny hover:underline hover:text-default-700">
+						Blog
+					</Link>
+					<Link
+						as={NextLink}
+						href="/"
+						size="sm"
+						className="text-default-500 text-tiny hover:underline hover:text-default-700">
+						Help and Support
+					</Link>
+					<Link
+						as={NextLink}
+						href="/"
+						size="sm"
+						className="text-default-500 text-tiny hover:underline hover:text-default-700">
+						Affiliate
+					</Link>
+					<Link
+						as={NextLink}
+						href="/"
+						size="sm"
+						className="text-default-500 text-tiny hover:underline hover:text-default-700">
+						Investors
+					</Link>
+					<Link
+						as={NextLink}
+						href="/"
+						size="sm"
+						className="text-default-500 text-tiny hover:underline hover:text-default-700">
+						Terms
+					</Link>
+					<Link
+						as={NextLink}
+						href="/"
+						size="sm"
+						className="text-default-500 text-tiny hover:underline hover:text-default-700">
+						Privacy policy
+					</Link>
+					<Link
+						as={NextLink}
+						href="/"
+						size="sm"
+						className="text-default-500 text-tiny hover:underline hover:text-default-700">
+						Sitemap
+					</Link>
+					<Link
+						as={NextLink}
+						href="/"
+						size="sm"
+						className="text-default-500 text-tiny hover:underline hover:text-default-700">
+						Accessibility statement
+					</Link>
 				</div>
 				{/* </div> */}
 			</div>
-			<p className='mt-6 text-small text-default-500'>© 2023 LevelUP Inc.</p>
+			<p className="mt-6 text-small text-default-500">© 2023 LevelUP Inc.</p>
 		</div>
 	)
 }

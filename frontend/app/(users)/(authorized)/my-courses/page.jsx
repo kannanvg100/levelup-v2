@@ -172,11 +172,11 @@ export default function Page() {
 													</Button>
 												</DropdownTrigger>
 												<DropdownMenu aria-label="Static Actions">
-													<DropdownItem
+													{progressPercentage(item?.course?._id) === 100 && <DropdownItem
 														onClick={() => handleGetCertificate(item?.course?._id)}
 														key="download">
 														Download Certificate
-													</DropdownItem>
+													</DropdownItem>}
 													<DropdownItem key="rate">Review Course</DropdownItem>
 												</DropdownMenu>
 											</Dropdown>
