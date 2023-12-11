@@ -7,9 +7,9 @@ module.exports = {
     // Stripe webhook
 	stripeWebhook: async (req, res, next) => {
 		try {
+			console.log("📄 > file: webhookController.js:12 > stripeWebhook: > process.env.STRIPE_WEBHOOK_SECRET:", process.env.STRIPE_WEBHOOK_SECRET)
 			const signature = req.headers['stripe-signature']
 			const event = stripe.webhooks.constructEvent(req.body, signature, process.env.STRIPE_WEBHOOK_SECRET)
-			console.log("📄 > file: webhookController.js:12 > stripeWebhook: > process.env.STRIPE_WEBHOOK_SECRET:", process.env.STRIPE_WEBHOOK_SECRET)
 
 			const session = event.data.object
 			const { courseId, studentId } = session?.metadata
@@ -27,6 +27,7 @@ module.exports = {
 
 			res.status(200).json({ success: true })
 		} catch (error) {
+            console.log("📄 > file: webhookController.js:30 > stripeWebhook: > error:", error)
 			next(error)
 		}
 	},
