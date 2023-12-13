@@ -14,7 +14,6 @@ export default function DeleteCategoryModal({ isOpen, onClose, category }) {
 			onClose()
 		},
 		onError: (error) => {
-            console.log(error)
 			const err = error?.response?.data?.message || 'Something went wrong'
 			toast.error(err)
 			onClose(false)

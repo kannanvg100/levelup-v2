@@ -16,7 +16,6 @@ export default function CreateChapterTitlePopover() {
 	const { isPending: isPending, mutate: mutateCreateChapter } = useMutation({
 		mutationFn: createChapter,
 		onSuccess: (data) => {
-            console.log(data)
 			if (data) dispatch(add({ ...course, chapters: [...course.chapters, data] }))
 			popoverTrigger.current.click()
 		},

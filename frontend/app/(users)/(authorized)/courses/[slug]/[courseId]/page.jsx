@@ -24,8 +24,10 @@ import Reviews from './Reviews'
 import { useRouter } from 'next/navigation'
 import { createChat } from '@/api/chats'
 import Link from 'next/link'
+import { useSelector } from 'react-redux'
 
 export default function App({ params: { slug, courseId } }) {
+	const { user } = useSelector((state) => state.user)
 	const [course, setCourse] = useState('')
 	const [enrollment, setEnrollment] = useState('')
 	const router = useRouter()
@@ -51,6 +53,7 @@ export default function App({ params: { slug, courseId } }) {
 		queryKey: ['enrollment', courseId],
 		queryFn: () => getEnrollment(courseId),
 		keepPreviousData: true,
+        enabled: !!user,
 	})
 
 	useEffect(() => {
@@ -229,7 +232,9 @@ export default function App({ params: { slug, courseId } }) {
 													<p className="text-sm font-medium">
 														{index + 1}. {chapter.title}
 													</p>
-													<p className="text-tiny font-normal text-default-500">{chapter?.segments?.length} Chapters</p>
+													<p className="text-tiny font-normal text-default-500">
+														{chapter?.segments?.length} Chapters
+													</p>
 												</div>
 											}>
 											<div className="flex flex-col gap-2 ms-2">

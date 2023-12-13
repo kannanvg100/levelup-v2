@@ -7,9 +7,9 @@ const upload = require('../config/multer')
 
 //==================PUBLIC ROUTES==================//
 router.get('/filters', courseController.getFilters)
-router.get('/courses', courseController.getCourses) // public
+router.get('/courses', checkUser, courseController.getCourses) // public
 router.get('/courses-category', courseController.getCoursesLatest) 
-router.get('/course/:id', courseController.getCourseByID) // public
+router.get('/course/:id', checkUser, courseController.getCourseByID) // public
 router.get('/instant-search', courseController.instantSearch) // public
 
 

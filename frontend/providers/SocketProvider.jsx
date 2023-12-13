@@ -10,19 +10,19 @@ export const useSocket = () => {
 }
 
 export const SocketProvider = ({ role, children }) => {
-
 	const [socket, setSocket] = useState()
-	const  user  = useSelector((state) => {
-        if (role === 'user') return state?.user?.user
-        if (role === 'teacher') return state?.teacher?.teacher
-    })
+	const user = useSelector((state) => {
+		if (role === 'user') return state?.user?.user
+		if (role === 'teacher') return state?.teacher?.teacher
+	})
 
 	useEffect(() => {
 		if (!user) return
 		const newSocket = io(process.env.NEXT_PUBLIC_API_URL, {
+			rejectUnauthorized: false,
 			withCredentials: true,
 			auth: {
-				token: user?.accessToken,
+				token: user?.accessToken || 'error',
 			},
 			reconnection: true,
 			reconnectionDelay: 500,

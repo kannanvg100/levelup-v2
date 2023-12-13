@@ -1,7 +1,7 @@
 const express = require('express')
 const path = require('path')
 const cookieParser = require('cookie-parser')
-const logger = require('morgan')
+const morgan = require('morgan')
 const { Server } = require('socket.io')
 const { createServer } = require('http')
 const { initializeSocketIO } = require('./utils/socket.io')
@@ -19,6 +19,7 @@ const commentRouter = require('./routes/commentRouter')
 const liveVideoRouter = require('./routes/liveVideoRouter')
 const chatRouter = require('./routes/chatRouter')
 const analyticsRouter = require('./routes/analyticsRouter')
+const favoriteRouter = require('./routes/favoriteRouter')
 
 const webhookRouter = require('./routes/webhookRouter')
 const errorHandler = require('./middlewares/errorHandler')
@@ -46,7 +47,19 @@ app.use(
 
 initializeSocketIO(io)
 
-app.use(logger('dev'))
+app.use(
+	morgan((tokens, req, res) => {
+		const status = tokens.status(req, res)
+		const statusColor = Number(status) >= 400 ? '\x1b[31m' : '\x1b[32m'
+		if (Number(status) >= 400) {
+			return `${statusColor}${tokens.method(req, res)} ${tokens.url(req, res)} - ${tokens.status(
+				req,
+				res
+			)} ${tokens.res(req, res, 'content-length')} - ${tokens['response-time'](req, res)} ms\x1b[0m`
+		}
+		return null
+	})
+)
 app.use(cookieParser())
 app.use(express.urlencoded({ extended: false }))
 app.use(express.static(path.join(__dirname, 'public')))
@@ -65,6 +78,7 @@ app.use('/api', commentRouter)
 app.use('/api', liveVideoRouter)
 app.use('/api', chatRouter)
 app.use('/api', analyticsRouter)
+app.use('/api', favoriteRouter)
 
 app.use('/api/admin', adminRouter)
 

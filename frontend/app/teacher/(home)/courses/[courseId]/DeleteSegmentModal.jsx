@@ -20,7 +20,6 @@ export default function DeleteSegmentModal({ isOpen, onClose, segment, chapter }
                     ...chapter,
 					segments: [...chapter.segments.filter((seg) => seg._id !== segment._id)],
 				}
-                console.log("📄 > file: DeleteSegmentModal.jsx:20 > DeleteSegmentModal > updatedChapter:", updatedChapter)
 				const updatedCourse = {
                     ...course,
 					chapters: [
@@ -28,7 +27,6 @@ export default function DeleteSegmentModal({ isOpen, onClose, segment, chapter }
 						updatedChapter,
 					],
 				}
-                console.log("📄 > file: DeleteSegmentModal.jsx:25 > DeleteSegmentModal > updatedCourse:", updatedCourse)
 				dispatch(add(updatedCourse))
 			} catch (error) {
 				console.log(error)

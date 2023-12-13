@@ -2,11 +2,11 @@ import { Button } from '@nextui-org/react'
 import React from 'react'
 import { Google } from './icons/Google'
 
-export default function GoogleLogin({isLoading, loginwithGoogle}) {
+export default function GoogleLogin({ isLoading, loginwithGoogle }) {
 	return (
 		<Button
 			className="py-5 hover:bg-default-200"
-            radius='none'
+			radius="none"
 			isLoading={isLoading}
 			spinnerPlacement={'end'}
 			variant="bordered"
@@ -14,7 +14,7 @@ export default function GoogleLogin({isLoading, loginwithGoogle}) {
 			size="md"
 			fullWidth={true}
 			onClick={() => loginwithGoogle()}>
-			Continue with Google
+			<p className="font-medium">Continue with Google</p>
 		</Button>
 	)
 }

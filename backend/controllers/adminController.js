@@ -101,7 +101,6 @@ module.exports = {
 				res.status(404).json({ message: 'User not found' })
 			}
 		} catch (error) {
-			console.log('📄 > file: adminController.js:83 > updateUser: > error:', error)
 			next(error)
 		}
 	},

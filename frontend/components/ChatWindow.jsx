@@ -176,7 +176,7 @@ export default function ChatWindow({ role, chat, setChat, mutateMarkAsRead }) {
 						)}
 						{isLoadingSendMessage && attachmentType !== 'text' && (
 							<div className="self-end text-tiny w-[220px] object-cover p-1">
-								<Skeleton className="w-[220px] h-32 bg-default-50" />
+								<Skeleton className="w-[220px] h-32 bg-default-50" />1
 							</div>
 						)}
 

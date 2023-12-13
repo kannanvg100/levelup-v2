@@ -1,126 +1,123 @@
 'use client'
 import { Link } from '@nextui-org/react'
+import { Facebook, Github, Instagram, Linkedin, Twitter, Youtube } from 'lucide-react'
 import Image from 'next/image'
 import NextLink from 'next/link'
 export default function Footer() {
 	return (
 		<div className="container mx-auto py-6 max-w-screen-xl px-[1.5rem]">
 			<div className="flex justify-center">
-				<Image src="/logo.svg" alt="logo" width={100} height={100} />
+				<Image
+					src="/logo.svg"
+					alt="logo"
+					width={0}
+					height={0}
+					className="cursor-pointer min-w-[100px] h-auto"
+					priority={true}
+				/>
 			</div>
-			<div className="flex flex-wrap justify-center items-center mt-6 gap-x-6 gap-y-4 mx-[200px]">
+			<div className="flex flex-wrap justify-center items-center mt-4 gap-x-4 gap-y-2 mx-[200px]">
 				<Link
 					as={NextLink}
 					href="/teacher"
 					size="sm"
-					className="text-default-500 text-tiny hover:underline hover:text-default-700">
+					className="text-default-500 text-tiny hover:underline hover:text-default-700 whitespace-nowrap">
 					Teach on Levelup
 				</Link>
 				<Link
 					as={NextLink}
 					href="/admin"
 					size="sm"
-					className="text-default-500 text-tiny hover:underline hover:text-default-700">
+					className="text-default-500 text-tiny hover:underline hover:text-default-700 whitespace-nowrap">
 					Administrator
 				</Link>
 				<Link
 					as={NextLink}
 					href="/"
 					size="sm"
-					className="text-default-500 text-tiny hover:underline hover:text-default-700">
+					className="text-default-500 text-tiny hover:underline hover:text-default-700 whitespace-nowrap">
 					About us
 				</Link>
 				<Link
 					as={NextLink}
 					href="/"
 					size="sm"
-					className="text-default-500 text-tiny hover:underline hover:text-default-700">
+					className="text-default-500 text-tiny hover:underline hover:text-default-700 whitespace-nowrap">
 					Contact us
 				</Link>
 				<Link
 					as={NextLink}
 					href="/"
 					size="sm"
-					className="text-default-500 text-tiny hover:underline hover:text-default-700">
+					className="text-default-500 text-tiny hover:underline hover:text-default-700 whitespace-nowrap">
 					Careers
 				</Link>
 				<Link
 					as={NextLink}
 					href="/"
 					size="sm"
-					className="text-default-500 text-tiny hover:underline hover:text-default-700">
+					className="text-default-500 text-tiny hover:underline hover:text-default-700 whitespace-nowrap">
 					Blog
 				</Link>
 				<Link
 					as={NextLink}
 					href="/"
 					size="sm"
-					className="text-default-500 text-tiny hover:underline hover:text-default-700">
+					className="text-default-500 text-tiny hover:underline hover:text-default-700 whitespace-nowrap">
 					Help and Support
 				</Link>
 				<Link
 					as={NextLink}
 					href="/"
 					size="sm"
-					className="text-default-500 text-tiny hover:underline hover:text-default-700">
+					className="text-default-500 text-tiny hover:underline hover:text-default-700 whitespace-nowrap">
 					Affiliate
 				</Link>
 				<Link
 					as={NextLink}
 					href="/"
 					size="sm"
-					className="text-default-500 text-tiny hover:underline hover:text-default-700">
+					className="text-default-500 text-tiny hover:underline hover:text-default-700 whitespace-nowrap">
 					Investors
 				</Link>
 				<Link
 					as={NextLink}
 					href="/"
 					size="sm"
-					className="text-default-500 text-tiny hover:underline hover:text-default-700">
+					className="text-default-500 text-tiny hover:underline hover:text-default-700 whitespace-nowrap">
 					Terms
 				</Link>
 				<Link
 					as={NextLink}
 					href="/"
 					size="sm"
-					className="text-default-500 text-tiny hover:underline hover:text-default-700">
+					className="text-default-500 text-tiny hover:underline hover:text-default-700 whitespace-nowrap">
 					Privacy policy
 				</Link>
 				<Link
 					as={NextLink}
 					href="/"
 					size="sm"
-					className="text-default-500 text-tiny hover:underline hover:text-default-700">
+					className="text-default-500 text-tiny hover:underline hover:text-default-700 whitespace-nowrap">
 					Sitemap
 				</Link>
 				<Link
 					as={NextLink}
 					href="/"
 					size="sm"
-					className="text-default-500 text-tiny hover:underline hover:text-default-700">
+					className="text-default-500 text-tiny hover:underline hover:text-default-700 whitespace-nowrap">
 					Accessibility statement
 				</Link>
 			</div>
-            <p className="mt-6 text-small text-default-500 text-center">© 2023 LevelUP Inc.</p>
+			<div className="flex gap-4 items-center justify-center mt-4 text-default-500">
+				<Instagram size={18} className="cursor-pointer hover:text-default-700" />
+				<Facebook size={18} className="cursor-pointer hover:text-default-700" />
+				<Youtube size={18} className="cursor-pointer hover:text-default-700" />
+				<Twitter size={18} className="cursor-pointer hover:text-default-700" />
+				<Linkedin size={18} className="cursor-pointer hover:text-default-700" />
+				<Github size={18} className="cursor-pointer hover:text-default-700" />
+			</div>
+			<p className="mt-4 text-small text-default-500 text-center">© 2023 LevelUP Inc.</p>
 		</div>
-		// <div className="container mx-auto py-6 max-w-screen-xl px-[1.5rem]">
-		// 	<Image src="/logo.svg" width={100} height={100} alt="logo" />
-		// 	<div className="flex mt-6 gap-6">
-		// 		<div className="flex flex-col gap-2">
-		// 			<Link as={NextLink} href="/teacher" size="sm">
-		// 				<p className="text-default-700 hover:underline">Teach on Levelup</p>
-		// 			</Link>
-		// 			<Link as={NextLink} href="/admin" size="sm">
-		// 				<p className="text-default-700 hover:underline">Administrator</p>
-		// 			</Link>
-		//             <Link as={NextLink} href="/" size="sm">
-		// 				<p className="text-default-700 hover:underline">About Us</p>
-		// 			</Link>
-		//             <Link as={NextLink} href="/" size="sm">
-		// 				<p className="text-default-700 hover:underline">Contact Us</p>
-		// 			</Link>
-		// 		</div>
-		// 	</div>
-		// </div>
 	)
 }

@@ -9,8 +9,10 @@ import NextLink from 'next/link'
 import { useTheme } from 'next-themes'
 import CourseItem from '@/components/CourseItem'
 import CourseItem2 from '@/components/CourseItem2'
+import { useSelector } from 'react-redux'
 
 export default function Page() {
+	const { user } = useSelector((state) => state.user)
 	const { theme } = useTheme()
 	const latestCourses = useQuery({
 		queryKey: ['courses', 'latest'],
@@ -22,16 +24,13 @@ export default function Page() {
 		queryFn: () => getEnrolledCourses({ page: 1, limit: 5 }),
 		keepPreviousData: true,
 		staleTime: 1000 * 60 * 60,
+		enabled: !!user,
 	})
-
-	useEffect(() => {
-		console.log('myCourses', myCourses.data)
-	}, [myCourses])
 
 	return (
 		<div className="ps-[1.5rem] pb-[1.5rem]">
 			<div
-				className="min-h-[350px] flex flex-col items-start gap-5 justify-center"
+				className="min-h-[350px] flex flex-col items-start gap-5 justify-center -me-[1.5rem]"
 				style={{
 					backgroundImage:
 						theme === 'dark'
@@ -41,7 +40,7 @@ export default function Page() {
 					backgroundSize: 'contain',
 					backgroundRepeat: 'no-repeat',
 				}}>
-				<p className="text-4xl max-w-[650px] font-semibold">
+				<p className="text-[3vw] max-w-[650px] font-semibold">
 					Learn Beyond Limits: Your Knowledge Journey Starts Here
 				</p>
 				<p className="text-md max-w-xl">
@@ -80,26 +79,31 @@ export default function Page() {
 			</div>
 
 			<Spacer y={6} />
-
-			{myCourses?.data && <p className="text-[1.2rem] font-semibold text-default-700">Continue Learning</p>}
-			<Spacer y={2} />
-			<div className="flex overflow-hidden items-start gap-2">
-				{myCourses?.data?.courses &&
-					myCourses?.data?.courses.map((course) => <CourseItem2 key={course._id} course={course} />)}
-				{myCourses?.isPending &&
-					[...Array(2)].map((_, i) => (
-						<div key={i} className="bg-default-50 w-[450px]">
-							<div className="flex p-2">
-								<Skeleton className="h-[180px] w-[220px]" />
-								<div className="m-2">
-									<Skeleton className="w-[200px] h-4" />
-									<Spacer y={2} />
-									<Skeleton className="h-8 w-8 rounded-full" />
+			{user && (
+				<>
+					{myCourses?.data && (
+						<p className="text-[1.2rem] font-semibold text-default-700">Continue Learning</p>
+					)}
+					<Spacer y={2} />
+					<div className="flex overflow-hidden items-start gap-2">
+						{myCourses?.data?.courses &&
+							myCourses?.data?.courses.map((course) => <CourseItem2 key={course._id} course={course} />)}
+						{myCourses?.isPending &&
+							[...Array(2)].map((_, i) => (
+								<div key={i} className="bg-default-50 w-[450px]">
+									<div className="flex p-2">
+										<Skeleton className="h-[180px] w-[220px]" />
+										<div className="m-2">
+											<Skeleton className="w-[200px] h-4" />
+											<Spacer y={2} />
+											<Skeleton className="h-8 w-8 rounded-full" />
+										</div>
+									</div>
 								</div>
-							</div>
-						</div>
-					))}
-			</div>
+							))}
+					</div>
+				</>
+			)}
 		</div>
 	)
 }

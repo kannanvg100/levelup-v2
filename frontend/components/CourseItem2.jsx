@@ -3,9 +3,6 @@ import React, { useEffect } from 'react'
 import NextLink from 'next/link'
 
 export default function CourseItem2({ course: data }) {
-	useEffect(() => {
-		console.log('data', data)
-	}, [data])
 	return (
 		<Link as={NextLink} href={`/courses/${data?.course?.slug}/${data?.course?._id}`}>
 			<Card radius="none" shadow="none" className="bg-default-50 w-[450px]">

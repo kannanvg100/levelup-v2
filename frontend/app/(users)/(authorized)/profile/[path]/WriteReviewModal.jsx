@@ -61,6 +61,7 @@ export default function WriteReviewModal({ isOpen, onClose, course }) {
 										<Star
 											key={index}
 											size={64}
+                                            strokeWidth={2}
 											fill={rating >= item ? '#EAB308' : '#CBD5E1'}
 											className={`cursor-pointer ${rating >= item ? 'animate-bounce' : ''}`}
 											onMouseEnter={() => setRating(item)}
@@ -113,16 +114,15 @@ export default function WriteReviewModal({ isOpen, onClose, course }) {
 					</ModalBody>
 					<ModalFooter>
 						<Button
-							className="px-4 font-bold"
+							className="px-4 font-medium"
 							isDisabled={isPending}
-							color="primary"
 							variant="light"
                             radius='none'
 							onClick={handleClose}>
 							Close
 						</Button>
 						<Button
-							className="px-4 font-bold"
+							className="px-4 font-medium"
 							isLoading={isPending}
 							color="primary"
 							variant="flat"

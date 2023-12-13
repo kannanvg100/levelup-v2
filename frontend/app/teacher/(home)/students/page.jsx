@@ -65,18 +65,12 @@ export default function App() {
 		queryKey: ['users', { page, count: rowsPerPage, query: filterValue }],
 		queryFn: () => getUsersOfTeacher({ page, count: rowsPerPage, query: filterValue }),
 		keepPreviousData: true,
-        onSuccess: (data) => {
-            console.log(data)
-        }
 	})
 
 	useEffect(() => {
 		if (data) setUsers(data.users)
 	}, [data])
 
-    useEffect(() => {
-        console.log('users', users)
-    }, [users])
     
 	const [selectedKeys, setSelectedKeys] = React.useState([])
 	const [visibleColumns, setVisibleColumns] = React.useState(INITIAL_VISIBLE_COLUMNS)
@@ -120,7 +114,6 @@ export default function App() {
 	}, [page, filteredItems, rowsPerPage])
 
 	const sortedItems = React.useMemo(() => {
-        console.log("📄 > file: page.jsx:132 > App > items:", items)
 		return [...items].sort((a, b) => {
 			const first = a[sortDescriptor.column]
 			const second = b[sortDescriptor.column]

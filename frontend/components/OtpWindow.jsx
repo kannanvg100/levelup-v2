@@ -12,7 +12,6 @@ export default function OtpWindow() {
 
     const handleOtpSubmit = () => {
         const otp = otp1Ref.current.value + otp2Ref.current.value + otp3Ref.current.value + otp4Ref.current.value + otp5Ref.current.value + otp6Ref.current.value
-        console.log(otp)
     }
 
 	return (

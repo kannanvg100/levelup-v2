@@ -80,7 +80,6 @@ export default function Page({ params: { courseId } }) {
 	}
 
 	const nextSegment = () => {
-		console.log('nextSegment')
 		const currentSegmentIndex = currentChapter?.segments.findIndex((seg) => seg?._id === currentSegment?._id)
 		if (currentSegmentIndex === currentChapter?.segments.length - 1) {
 			const currentChapterIndex = course?.chapters.findIndex((chap) => chap?._id === currentChapter?._id)

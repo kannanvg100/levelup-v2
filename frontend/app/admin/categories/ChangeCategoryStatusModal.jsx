@@ -14,7 +14,7 @@ export default function ChangeCategoryStatusModal({ isOpen, onClose, category })
 	const { isPending, mutate } = useMutation({
 		mutationFn: changeCategoryStatus,
 		onSuccess: (data) => {
-			queryClient.invalidateQueries({ queryKey: ['categories'] })
+			queryClient.invalidateQueries(['categories'])
 			onClose()
 		},
 		onError: (error) => {

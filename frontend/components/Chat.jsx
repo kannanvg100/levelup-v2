@@ -27,7 +27,6 @@ export default function Chat({ role }) {
 
 	useEffect(() => {
         
-        console.log("📄 > file: Chat.jsx:38 > Chat > user:", user)
 		if (!socket || !user) return setIsOnline(false)
 		socket?.on('connected', () => {
 			setIsOnline(true)

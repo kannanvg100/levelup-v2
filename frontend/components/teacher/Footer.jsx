@@ -1,5 +1,6 @@
 'use client'
 import { Link } from '@nextui-org/react'
+import { Facebook, Github, Instagram, Linkedin, Twitter, Youtube } from 'lucide-react'
 import Image from 'next/image'
 import NextLink from 'next/link'
 
@@ -103,6 +104,14 @@ export default function Footer() {
 					</Link>
 				</div>
 				{/* </div> */}
+			</div>
+            <div className="flex gap-4 items-center justify-center mt-4 text-default-500">
+				<Instagram size={18} className="cursor-pointer hover:text-default-700" />
+				<Facebook size={18} className="cursor-pointer hover:text-default-700" />
+				<Youtube size={18} className="cursor-pointer hover:text-default-700" />
+				<Twitter size={18} className="cursor-pointer hover:text-default-700" />
+				<Linkedin size={18} className="cursor-pointer hover:text-default-700" />
+				<Github size={18} className="cursor-pointer hover:text-default-700" />
 			</div>
 			<p className="mt-6 text-small text-default-500">© 2023 LevelUP Inc.</p>
 		</div>

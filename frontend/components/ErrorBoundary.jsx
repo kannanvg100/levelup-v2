@@ -6,10 +6,8 @@ class ErrorBoundary extends Component {
 		this.state = { hasError: false, error: null, errorInfo: null }
 	}
 
-	// This lifecycle method is called when an error occurs
 	componentDidCatch(error, errorInfo) {
 		this.setState({ hasError: true, error, errorInfo })
-		// You can log the error to a service like Sentry or your server
 		console.log(error)
 	}
 

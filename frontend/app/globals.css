@@ -59,3 +59,9 @@ audio::-webkit-media-controls-current-time-display {
 audio::-webkit-media-controls-time-remaining-display {
     display: none;
 }
+
+input,
+select {
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+}

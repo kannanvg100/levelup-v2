@@ -139,7 +139,6 @@ export default function General({ errors, setErrors }) {
 									base: 'rounded-none',
 								}}
 								onSelectionChange={(key) => {
-									console.log("📄 > file: General.jsx:135 > General > key:", key)
 									dispatch(add({ ...course, level: levels[key.currentKey] }))
 									setErrors({ ...errors, level: '' })
 								}}>

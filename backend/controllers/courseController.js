@@ -7,6 +7,7 @@ const Segment = require('../models/Segment')
 const Enrollment = require('../models/Enrollment')
 const Review = require('../models/Review')
 const User = require('../models/User')
+const Favorite = require('../models/Favorite')
 const { uploadToS3 } = require('../helpers/awsHelpers')
 const slugify = require('slugify')
 const { Video } = new Mux(process.env.MUX_TOKEN_ID, process.env.MUX_TOKEN_SECRET)
@@ -47,7 +48,7 @@ module.exports = {
 				{ title: 'Price: Low to High', key: 'price-asc' },
 			]
 
-			const priceranges = await Course.aggregate([
+			let priceRanges = await Course.aggregate([
 				// { $match: { status: 'published' } },
 				{ $group: { _id: null, max: { $max: '$price' }, min: { $min: '$price' } } },
 			])
@@ -55,8 +56,8 @@ module.exports = {
 			priceRanges = {
 				title: 'Price',
 				key: 'price',
-				min: priceranges[0].min,
-				max: priceranges[0].max,
+				min: priceRanges[0].min,
+				max: priceRanges[0].max,
 			}
 
 			res.status(200).json({ success: true, sortOptions, priceRanges, filters: [categories, levels] })
@@ -111,12 +112,12 @@ module.exports = {
 								{ title: { $regex: new RegExp(escapedSearchQuery, 'i') } },
 							],
 						},
-						// { status: 'published' },
+						{ status: 'published' },
 					],
 				}),
 					{ title: 1 }
 			} else {
-				// filterQuery.status = 'published'
+				filterQuery.status = 'published'
 			}
 
 			const totalCourses = await Course.countDocuments(filterQuery)
@@ -124,6 +125,16 @@ module.exports = {
 				.sort(sortQuery)
 				.limit(count)
 				.skip((page - 1) * count)
+                .lean()
+
+			if (req.user) {
+				const favorites = await Favorite.find({ user: req.user._id })
+				courses.forEach((course) => {
+					course.isFavorite = favorites.some(
+						(favorite) => favorite.course.toString() === course._id.toString()
+					)
+				})
+			}
 			res.status(200).json({ success: true, totalCourses, courses })
 		} catch (error) {
 			next(error)
@@ -132,7 +143,7 @@ module.exports = {
 
 	getCoursesLatest: async (req, res, next) => {
 		try {
-			const courses = await Course.find({status: 'published'}).sort({ createdAt: -1 }).limit(5)
+			const courses = await Course.find({ status: 'published' }).sort({ createdAt: -1 }).limit(5)
 			res.status(200).json({ success: true, courses })
 		} catch (error) {
 			next(error)
@@ -511,8 +522,8 @@ module.exports = {
 	getEnrolledCourses: async (req, res, next) => {
 		try {
 			let { page, count } = req.query
-            page = parseInt(page) || 1
-            count = parseInt(count) || 5
+			page = parseInt(page) || 1
+			count = parseInt(count) || 5
 			const totalCourses = await Enrollment.countDocuments({ student: req.user._id })
 			const courses = await Enrollment.find({ student: req.user._id })
 				.limit(count)

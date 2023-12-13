@@ -9,7 +9,7 @@ export function middleware(request) {
 
 	const pathname = request.nextUrl.pathname
 
-	// let verify = request.cookies.get('jwt_user')
+	let verify = request.cookies.get('jwt_user')
 	// if (pathname.startsWith('/login') || pathname.startsWith('/signup')) {
 	// 	if (verify) {
 	// 		return NextResponse.redirect(new URL('/', request.url))
@@ -21,15 +21,15 @@ export function middleware(request) {
 	// 	}
 	// }
 
-	// const verifyTeacher = request.cookies.get('jwt_teacher')
-	// if (pathname.startsWith('/teacher/login') || pathname.startsWith('/teacher/signup')) {
-	// 	if (verifyTeacher) {
-	// 		return NextResponse.redirect(new URL('/teacher', request.url))
-	// 	}
-	// }
-	// if (protectedTeacherRoutes.includes(pathname)) {
-	// 	if (!verifyTeacher) {
-	// 		return NextResponse.redirect(new URL('/teacher/login', request.url))
-	// 	}
-	// }
+	const verifyTeacher = request.cookies.get('jwt_teacher')
+	if (pathname.startsWith('/teacher/login') || pathname.startsWith('/teacher/signup')) {
+		if (verifyTeacher) {
+			return NextResponse.redirect(new URL('/teacher', request.url))
+		}
+	}
+	if (protectedTeacherRoutes.includes(pathname)) {
+		if (!verifyTeacher) {
+			return NextResponse.redirect(new URL('/teacher/login', request.url))
+		}
+	}
 }

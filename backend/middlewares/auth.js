@@ -29,7 +29,7 @@ module.exports = {
 				})
 			}
 		} else {
-			res.status(401).json({ success: false, message: 'Please login to continue' })
+			res.status(401).json({ success: false, role: 'user', message: 'Please login to continue' })
 		}
 	},
 
@@ -42,10 +42,10 @@ module.exports = {
 					return res.status(401).json({ success: false, message: 'Pls use a teacher acoount' })
 				req.user = await User.findById(decoded.userId).select('-password')
 				if (req.user.status === 'blocked') {
-                    res.cookie(`jwt_${decoded.role}`, '', {
-                        httpOnly: true,
-                        expires: new Date(0),
-                    })
+					res.cookie(`jwt_${decoded.role}`, '', {
+						httpOnly: true,
+						expires: new Date(0),
+					})
 					return res.status(401).json({ success: false, message: 'Your account has been blocked' })
 				}
 				if (req.user.status === 'pending')
@@ -59,7 +59,7 @@ module.exports = {
 				})
 			}
 		} else {
-			res.status(401).json({ success: false, message: 'Please login to continue' })
+			res.status(401).json({ success: false, role: 'teacher', message: 'Please login to continue' })
 		}
 	},
 
@@ -80,7 +80,7 @@ module.exports = {
 				})
 			}
 		} else {
-			res.status(401).json({ success: false, message: 'Please login to continue' })
+			res.status(401).json({ success: false, role: 'admin', message: 'Please login to continue' })
 		}
 	},
 

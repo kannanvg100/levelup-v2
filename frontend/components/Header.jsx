@@ -26,6 +26,8 @@ import toast from 'react-hot-toast'
 import { useTheme } from 'next-themes'
 import InstantSearch from './InstantSearch.jsx'
 import { getPublishedCategories } from '@/api/categories.js'
+import { Bookmark, ClipboardList, LogOut, MoonStar, Sun, User, UserRound } from 'lucide-react'
+import ErrorBoundary from './ErrorBoundary.jsx'
 
 export default function Header() {
 	const icons = {
@@ -43,7 +45,7 @@ export default function Header() {
 	const dispatch = useDispatch()
 	const router = useRouter()
 	const { theme, setTheme } = useTheme()
-	const onChange = () => (theme === 'light' ? setTheme('dark') : setTheme('light'))
+	const handleThemeChange = () => (theme === 'light' ? setTheme('dark') : setTheme('light'))
 	const queryClient = new QueryClient()
 	const [query, setQuery] = useState('')
 	const pathname = usePathname()
@@ -63,10 +65,6 @@ export default function Header() {
 		}
 	}
 
-	const handleHomeButton = () => {
-		router.push('/')
-	}
-
 	const {
 		data: categories,
 		isPending,
@@ -81,7 +79,14 @@ export default function Header() {
 		<Navbar maxWidth="xl">
 			<NavbarContent justify="center">
 				<NextLink href="/">
-					<Image src="/logo.svg" alt="logo" width={100} height={100} className="cursor-pointer" />
+					<Image
+						src="/logo.svg"
+						alt="logo"
+						width={0}
+						height={0}
+						className="cursor-pointer min-w-[100px] h-auto"
+                        priority={true}
+					/>
 				</NextLink>
 				<Dropdown radius="none">
 					<NavbarItem>
@@ -116,17 +121,45 @@ export default function Header() {
 					</DropdownMenu>
 				</Dropdown>
 			</NavbarContent>
-			<NavbarContent as="div" className="hidden md:flex items-center flex-grow max-w-[500px]" justify="start">
+			<NavbarContent as="div" className="" justify="center"></NavbarContent>
+			<NavbarContent as="div" className="hidden md:flex items-center flex-grow" justify="center">
 				<InstantSearch />
+			</NavbarContent>
+
+			<NavbarContent justify="end">
+				<a
+					onClick={handleThemeChange}
+					className="px-2 relative flex flex-row items-center h-10 cursor-pointer focus:outline-none">
+					<span className="inline-flex justify-center items-center">
+						{theme === 'light' ? <MoonStar size={20} /> : <Sun size={20} />}
+					</span>
+				</a>
 			</NavbarContent>
 
 			{user && user?.role === 'user' && (
 				<NavbarContent justify="center">
 					<NavbarItem className="hidden sm:flex gap-4" isActive>
-						<Link as={NextLink} href="/my-courses" aria-current="page" size="sm">
+						<Link
+							as={NextLink}
+							href="/profile/courses"
+							aria-current="my courses"
+							size="sm"
+							className="text-default-700 hover:text-primary">
 							My Courses
 						</Link>
 					</NavbarItem>
+
+					<NavbarItem className="flex items-center">
+						<Link
+							as={NextLink}
+							href="/profile/favorites"
+							aria-current="favorites"
+							size="sm"
+							className="text-default-700 hover:text-primary">
+							<Bookmark size={20} />
+						</Link>
+					</NavbarItem>
+
 					<NavbarItem>
 						<Dropdown placement="bottom-end" radius="none">
 							<DropdownTrigger>
@@ -138,28 +171,39 @@ export default function Header() {
 									src={user.profileImage}
 								/>
 							</DropdownTrigger>
-							<DropdownMenu aria-label="Profile Actions" variant="flat" className="text-default-500">
-								<DropdownItem key="profile" className="h-14 gap-2">
-									<p className="font-semibold text-sm">Signed in as</p>
-									<p className="font-semibold">{user.email}</p>
-								</DropdownItem>
-								<DropdownItem key="courses">
-									<Link as={NextLink} href="/my-courses" aria-current="page" size="sm">
-										<p className="text-default-500">My Courses</p>
-									</Link>
-								</DropdownItem>
-								<DropdownItem key="settings">
-									<NextLink href="/settings">
-										<p className="text-default-500">Settings</p>
-									</NextLink>
-								</DropdownItem>
-								<DropdownItem key="dark_mode" onClick={onChange}>
+							<ErrorBoundary>
+								<DropdownMenu aria-label="Profile Actions" variant="flat" className="text-default-500">
+									<DropdownItem key="profile" className="h-14 gap-2">
+										<p className="font-semibold text-sm">Signed in as</p>
+										<p className="font-semibold">{user.email}</p>
+									</DropdownItem>
+									<DropdownItem key="courses">
+										<NextLink href="/profile/courses" aria-current="page" size="sm">
+											<div className="flex items-center gap-2 py-1 font-medium">
+												<ClipboardList size={16} />
+												<p>My Courses</p>
+											</div>
+										</NextLink>
+									</DropdownItem>
+									<DropdownItem key="account">
+										<NextLink href="/profile/account">
+											<div className="flex items-center gap-2 py-1 font-medium">
+												<User size={16} />
+												<p>Account</p>
+											</div>
+										</NextLink>
+									</DropdownItem>
+									{/* <DropdownItem key="dark_mode" onClick={onChange}>
 									{theme === 'light' ? 'Dark mode' : 'Light Mode'}
-								</DropdownItem>
-								<DropdownItem key="logout" color="danger" onClick={handleLogout}>
-									Log Out
-								</DropdownItem>
-							</DropdownMenu>
+								</DropdownItem> */}
+									<DropdownItem key="logout" color="danger" onClick={handleLogout}>
+										<div className="flex items-center gap-2 py-1 font-medium">
+											<LogOut size={16} />
+											<p>Log Out</p>
+										</div>
+									</DropdownItem>
+								</DropdownMenu>
+							</ErrorBoundary>
 						</Dropdown>
 					</NavbarItem>
 				</NavbarContent>

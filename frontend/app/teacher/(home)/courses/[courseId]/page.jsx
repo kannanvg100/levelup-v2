@@ -97,7 +97,6 @@ export default function Page({ params: { courseId } }) {
 			if (selectedTab === 'content') setSelectedTab('pricing')
 		},
 		onError: (error) => {
-			console.log("📄 > file: page.jsx:100 > Page > error:", error)
 			let err = error?.response?.data?.errors
 			setTabError({ content: err.chapter || 0 })
 			if (err) setErrors(error?.response?.data?.errors)

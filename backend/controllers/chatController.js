@@ -77,7 +77,6 @@ module.exports = {
 	createChatMessage: async (req, res, next) => {
 		try {
 			let { content, attachmentType } = req.body
-			console.log("📄 > file: chatController.js:80 > createChatMessage: > req.body:", req.body)
 
 			if (!content || !content.trim()) {
 				if (!req.file)

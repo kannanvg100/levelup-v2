@@ -16,7 +16,6 @@ export default function Reviews({ courseId }) {
 
 	useEffect(() => {
 		if (data?.reviews) {
-			console.log(data?.reviews)
 			setReviews(data?.reviews)
 		}
 	}, [data])

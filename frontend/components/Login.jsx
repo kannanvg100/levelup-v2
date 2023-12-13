@@ -60,15 +60,8 @@ export default function Login({ role, ret }) {
 		else if (email.indexOf('@') === -1 || email.indexOf('.') === -1) newErrors.email = 'Please enter a valid email'
 		if (password === '') newErrors.password = 'Please enter your password'
 
-		if (Object.keys(newErrors).length === 0) {
-			try {
-				mutateLoginUser({ email, password, role })
-			} catch (error) {
-				console.log('error')
-			}
-		} else {
-			setErrors(newErrors)
-		}
+		if (Object.keys(newErrors).length === 0) mutateLoginUser({ email, password, role })
+		else setErrors(newErrors)
 	}
 
 	const loginwithGoogle = useGoogleLogin({
@@ -89,8 +82,10 @@ export default function Login({ role, ret }) {
 					<div className="flex justify-center pb-8">
 						<Image src="/logo.svg" alt="logo" width={100} height={100} />
 					</div>
+
 					<Spacer y={4} />
 					<GoogleLogin isLoading={isLoadingSocialLogin} loginwithGoogle={loginwithGoogle} />
+
 					<Spacer y={10} />
 					<div className="relative">
 						<Divider className="h-[1px] bg-default-200" />
@@ -98,6 +93,7 @@ export default function Login({ role, ret }) {
 							OR LOGIN WITH EMAIL
 						</span>
 					</div>
+                    
 					<Spacer y={10} />
 					<div className="flex flex-col gap-4">
 						<Input
@@ -107,6 +103,7 @@ export default function Login({ role, ret }) {
 							radius="none"
 							classNames={{
 								inputWrapper: 'text-default-500',
+								input: 'bg-red-100',
 							}}
 							onChange={(e) => {
 								setEmail(e.target.value.trim())
