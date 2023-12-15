@@ -299,7 +299,7 @@ module.exports = {
 						path: 'segments',
 					},
 				})
-			if (course.teacher.toString() !== req.user._id)
+			if (course.teacher._id.toString() !== req.user.id)
 				return res.status(401).json({ success: false, message: 'You are not authorized to view this course' })
 			res.status(200).json({ success: true, course })
 		} catch (error) {
