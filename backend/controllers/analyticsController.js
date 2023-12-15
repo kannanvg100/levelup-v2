@@ -174,6 +174,11 @@ module.exports = {
 					},
 				},
 				{
+					$sort: {
+						_id: 1,
+					},
+				},
+				{
 					$group: {
 						_id: '$course',
 						data: { $push: { x: '$_id', y: '$count' } },
@@ -202,7 +207,12 @@ module.exports = {
 			topCourses = topCourses.map((it, index) => {
 				return {
 					id: it?.id,
-					data: it?.data,
+					data: it?.data.map((it2, i) => {
+						return {
+							x: it2.x,
+							y: it2.y + (it?.data[i - 1]?.y || 0),
+						}
+					}),
 					color: index,
 				}
 			})

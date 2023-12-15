@@ -13,6 +13,10 @@ export default function Page() {
 		keepPreviousData: true,
 	})
 
+    useEffect(() => {
+        console.log(data)
+    }, [data])
+
 	return (
 		<div>
 			<div className="flex justify-start items-baseline gap-2">
@@ -47,14 +51,14 @@ export default function Page() {
 								type: 'time',
 								format: '%Y-%m-%d',
 								useUTC: false,
-								min: '2023-11-14',
-								max: '2023-12-06',
+								min: '2023-12-01',
+								max: '2023-12-30',
 							}}
 							xFormat="time:%Y-%m-%d"
 							yScale={{
 								type: 'linear',
 								min: '0',
-								max: '3',
+								max: '5',
 								stacked: false,
 								reverse: false,
 							}}
@@ -92,11 +96,11 @@ export default function Page() {
 							legends={[
 								{
 									anchor: 'bottom-center',
-									direction: 'row',
+									direction: 'column',
 									justify: false,
-									translateX: 100,
+									translateX: 5,
 									translateY: 0,
-									itemsSpacing: 120,
+									itemsSpacing: 0,
 									itemDirection: 'left-to-right',
 									itemWidth: 10,
 									itemHeight: 20,
