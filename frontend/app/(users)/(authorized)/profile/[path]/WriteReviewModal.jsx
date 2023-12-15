@@ -5,18 +5,25 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 import { Star } from 'lucide-react'
 
-export default function WriteReviewModal({ isOpen, onClose, course }) {
+export default function WriteReviewModal({ isOpen, onClose, course, refetch }) {
 	const [rating, setRating] = React.useState(1)
 	const [comment, setComment] = React.useState('')
 	const [subject, setSubject] = React.useState('')
 	const [errors, setErrors] = React.useState({})
 	const queryClient = useQueryClient()
 
+    useEffect(()=>{
+        setRating(course?.review?.rating)
+        setComment(course?.review?.comment)
+        setSubject(course?.review?.subject)
+    },[course])
+
 	const { isPending, mutate } = useMutation({
 		mutationFn: addReview,
 		onSuccess: (data) => {
 			queryClient.invalidateQueries({ queryKey: ['my-courses'] })
 			toast.success('Thank you for your review!')
+			refetch()
 			handleClose()
 		},
 		onError: (error) => {
@@ -31,7 +38,7 @@ export default function WriteReviewModal({ isOpen, onClose, course }) {
 		if (!comment) errors = { ...errors, comment: 'Comment is required' }
 		if (!subject) errors = { ...errors, subject: 'Subject is required' }
 		if (Object.keys(errors).length > 0) return setErrors(errors)
-		mutate({ courseId: course._id, rating, comment, subject })
+		mutate({ courseId: course.course._id, rating, comment, subject })
 	}
 
 	const handleClose = () => {
@@ -43,13 +50,23 @@ export default function WriteReviewModal({ isOpen, onClose, course }) {
 	}
 
 	return (
-		<Modal isDismissable={false} backdrop="opaque" isOpen={isOpen} onClose={onClose} closeButton={<></>} radius='none'>
+		<Modal
+			isDismissable={false}
+			backdrop="opaque"
+			isOpen={isOpen}
+			onClose={onClose}
+			closeButton={<></>}
+			radius="none">
 			<ModalContent>
 				<>
 					<ModalBody>
 						<div className="mt-4">
 							<div>
-								<h1 className="text-large text-foreground-600 font-bold">Write a review</h1>
+								{course?.review ? (
+									<h1 className="text-large text-foreground-600 font-bold">Update your review</h1>
+								) : (
+									<h1 className="text-large text-foreground-600 font-bold">Write a review</h1>
+								)}
 								<p className="text-sm text-default-700 mt-2">
 									Your review will help others decide if this course is right for them.
 								</p>
@@ -61,11 +78,10 @@ export default function WriteReviewModal({ isOpen, onClose, course }) {
 										<Star
 											key={index}
 											size={64}
-                                            strokeWidth={2}
+											strokeWidth={2}
 											fill={rating >= item ? '#EAB308' : '#CBD5E1'}
 											className={`cursor-pointer ${rating >= item ? 'animate-bounce' : ''}`}
 											onMouseEnter={() => setRating(item)}
-                                            
 										/>
 									))}
 								</div>
@@ -84,7 +100,7 @@ export default function WriteReviewModal({ isOpen, onClose, course }) {
 									errorMessage={errors?.subject}
 									isInvalid={errors?.subject ? true : false}
 									size="sm"
-                                    radius='none'
+									radius="none"
 								/>
 								<Spacer y={4} />
 								<Textarea
@@ -106,7 +122,7 @@ export default function WriteReviewModal({ isOpen, onClose, course }) {
 									errorMessage={errors?.comment}
 									isInvalid={errors?.comment ? true : false}
 									description={`${comment?.length || 0}/300`}
-                                    radius='none'
+									radius="none"
 								/>
 								<Spacer y={4} />
 							</div>
@@ -117,7 +133,7 @@ export default function WriteReviewModal({ isOpen, onClose, course }) {
 							className="px-4 font-medium"
 							isDisabled={isPending}
 							variant="light"
-                            radius='none'
+							radius="none"
 							onClick={handleClose}>
 							Close
 						</Button>
@@ -126,7 +142,7 @@ export default function WriteReviewModal({ isOpen, onClose, course }) {
 							isLoading={isPending}
 							color="primary"
 							variant="flat"
-                            radius='none'
+							radius="none"
 							onClick={handleSubmit}>
 							Submit
 						</Button>

@@ -1,8 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
 import {
-	Breadcrumbs,
-	BreadcrumbItem,
 	Spacer,
 	Accordion,
 	AccordionItem,
@@ -11,107 +9,44 @@ import {
 	Card,
 	CardBody,
 	CardFooter,
-	Tab,
-	Tabs,
-	Tooltip,
 	useDisclosure,
 } from '@nextui-org/react'
-import { useQuery, useMutation, QueryClient } from '@tanstack/react-query'
-import { getCourse, createStripeSession, getEnrollment } from '@/api/courses'
-import toast from 'react-hot-toast'
+import { useQuery, QueryClient } from '@tanstack/react-query'
+import { getCourseTeacher } from '@/api/courses'
 import IntroVideoModal from './IntroVideoModal'
 
-import { Calendar, Globe, Home, MessageSquare, PlayCircle, PlaySquare, Star } from 'lucide-react'
+import { Calendar, Globe, PlayCircle, PlaySquare, Star } from 'lucide-react'
 import Reviews from './Reviews'
 import { useRouter } from 'next/navigation'
-import { createChat } from '@/api/chats'
-import Link from 'next/link'
 import { useSelector } from 'react-redux'
-import { useChat } from '@/components/providers/ChatProvider'
 
-export default function App({ params: { slug, courseId } }) {
+export default function App({ params: { courseId } }) {
 	const { user } = useSelector((state) => state.user)
 	const [course, setCourse] = useState('')
 	const [enrollment, setEnrollment] = useState('')
 	const router = useRouter()
-	const queryClient = new QueryClient()
-	const { expandChat, setChat } = useChat()
-	const { isOpen: isOpenIntroVideo, onOpen: onOpenIntroVideo, onClose: onCloseIntroVideo } = useDisclosure()
-	const [introSegment, setIntroSegment] = useState('')
+	const { isOpenIntroVideo, onOpenIntroVideo, onCloseIntroVideo } = useDisclosure()
 
-	const { data, isPending, isError } = useQuery({
+	const { data } = useQuery({
 		queryKey: ['course', courseId],
-		queryFn: () => getCourse(courseId),
+		queryFn: () => getCourseTeacher(courseId),
 		keepPreviousData: true,
 	})
 
 	useEffect(() => {
-		if (data?.course) setCourse(data?.course)
+		if (data?.course) {
+			setCourse(data?.course)
+		}
 	}, [data])
 
-	const {
-		data: enrollmentData,
-		isPending: isLoadingEnrollment,
-		isError: isErrorEnrollment,
-	} = useQuery({
-		queryKey: ['enrollment', courseId],
-		queryFn: () => getEnrollment(courseId),
-		keepPreviousData: true,
-		enabled: !!user,
-	})
-
-	useEffect(() => {
-		if (enrollmentData?.enrollment) {
-			setEnrollment(enrollmentData?.enrollment)
-		}
-	}, [enrollmentData])
-
-	const { isPending: isLoadingStripeSession, mutate: mutateStripeSession } = useMutation({
-		mutationFn: createStripeSession,
-		onSuccess: (data) => {
-			toast.loading('Redirecting to payment gateway...')
-			window.location.href = data.sessionUrl
-		},
-		onError: (error) => {
-			toast.error(
-				error?.response?.data?.message || error?.response?.data?.errors?.toast || 'Something went wrong'
-			)
-		},
-	})
-
 	const handleEnroll = () => {
-		if (!enrollment) mutateStripeSession({ courseId })
-		else router.push(`/courses/${slug}/${courseId}/learn`)
+		router.push(`/teacher/courses/${courseId}/preview`)
 	}
-
-	const { isPending: isLoadingCreateChat, mutate: mutateCreateChat } = useMutation({
-		mutationFn: createChat,
-		onSuccess: (data) => {
-			setChat(data?.chat)
-			expandChat()
-			queryClient.invalidateQueries({ queryKey: ['chats'] })
-		},
-		onError: (error) => {
-			const err = error?.response?.data?.message
-			if (err) toast.error(error?.response?.data?.message || 'Something went wrong!')
-		},
-	})
 
 	return (
 		<>
 			{course && (
 				<>
-					<Spacer y={2} />
-					<Breadcrumbs>
-						<BreadcrumbItem>
-							<Home size={12} />
-						</BreadcrumbItem>
-						<BreadcrumbItem>
-							<Link href={`/courses?filter=category%3D${course?.category?._id}`}>
-								{course?.category?.title}
-							</Link>
-						</BreadcrumbItem>
-					</Breadcrumbs>
 					<Spacer y={2} />
 					<div className="flex justify-start items-start gap-4 flex-wrap">
 						<Card shadow="sm" className="min-w-[350px]" radius="none">
@@ -129,16 +64,7 @@ export default function App({ params: { slug, courseId } }) {
 											<PlayCircle
 												size={64}
 												className="cursor-pointer"
-												onClick={() => {
-													const introChapter = course?.chapters?.find(
-														(ch) => ch.title === 'Introduction'
-													)
-													const segment = introChapter?.segments[0]
-													if (segment) {
-														setIntroSegment(segment)
-														onOpenIntroVideo()
-													} else toast.error('No intro video found!')
-												}}
+												onClick={onOpenIntroVideo}
 											/>
 										</div>
 									</div>
@@ -166,7 +92,6 @@ export default function App({ params: { slug, courseId } }) {
 									)}
 									<Spacer y={3} />
 									<Button
-										isLoading={isLoadingStripeSession}
 										fullWidth={true}
 										color="primary"
 										variant="flat"
@@ -174,11 +99,7 @@ export default function App({ params: { slug, courseId } }) {
 										radius="none"
 										onClick={handleEnroll}
 										className="font-bold">
-										{enrollment
-											? enrollment?.progress > 0
-												? 'Continue Learning'
-												: 'Start Learning'
-											: 'Enroll Now'}
+										Preview
 									</Button>
 									<Spacer y={2} />
 									<p className="text-tiny text-default-500 text-center">Full Lifetime Access</p>
@@ -186,24 +107,13 @@ export default function App({ params: { slug, courseId } }) {
 								</div>
 							</CardFooter>
 						</Card>
-						<div className="flex-grow max-w-[600px]">
+						<div className="flex-grow max-w-[700px]">
 							<p className="text-4xl font-semibold -mt-2">{course?.title}</p>
 							<Spacer y={6} />
 							<p className="text-base">{course?.description}</p>
 							<Spacer y={2} />
 							<div className="flex gap-2 items-center">
 								<p className="text-sm font-medium">Created by {course?.teacher?.name}</p>
-
-								<Tooltip content="Message the Author" placement="right">
-									<MessageSquare
-										size={16}
-										strokeWidth={2.5}
-										className="text-primary cursor-pointer"
-										onClick={() => {
-											mutateCreateChat({ receiver: course?.teacher?._id })
-										}}
-									/>
-								</Tooltip>
 							</div>
 							<Spacer y={2} />
 							<div></div>
@@ -274,7 +184,7 @@ export default function App({ params: { slug, courseId } }) {
 					</div>
 				</>
 			)}
-			<IntroVideoModal isOpen={isOpenIntroVideo} onClose={onCloseIntroVideo} segment={introSegment} />
+			<IntroVideoModal isOpen={isOpenIntroVideo} onClose={onCloseIntroVideo} />
 		</>
 	)
 }

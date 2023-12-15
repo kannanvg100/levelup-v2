@@ -1,44 +1,28 @@
-'use client'
 import { getEnrolledCourses, getCertificate } from '@/api/courses'
-import {
-	Button,
-	Card,
-	CardBody,
-	CardFooter,
-	Dropdown,
-	DropdownItem,
-	DropdownMenu,
-	DropdownTrigger,
-	Image,
-	Link,
-	Progress,
-	Spacer,
-	Tab,
-	Tabs,
-	Tooltip,
-	useDisclosure,
-} from '@nextui-org/react'
+import { Button, Card, CardBody, CardFooter, Divider, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Image, Link, Progress, Spacer, Tooltip, useDisclosure } from '@nextui-org/react'
+import { useInfiniteQuery } from '@tanstack/react-query'
 import { MoreVertical, Star } from 'lucide-react'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import toast from 'react-hot-toast'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
-import NextLink from 'next/link'
-import NextImage from 'next/image'
+import useInfiniteScroll from '@/hooks/useInfiniteScroll'
 import WriteReviewModal from './WriteReviewModal'
+import NextLink from 'next/link'
+import CourseItemDummy from './CourseItemDummy'
 
-export default function MyCourses() {
-	const [courses, setCourses] = useState([])
-	const [reviews, setReviews] = useState([])
-	const [page, setPage] = useState(1)
-	const [count, setCount] = useState(10)
-	const [currentCourse, setCurrentCourse] = useState({})
-	const queryClient = useQueryClient()
+export default function Favorites() {
 
-	const { data, isPending, isError } = useQuery({
-		queryKey: ['my-courses'],
-		queryFn: () => getEnrolledCourses({ page, count }),
-		keepPreviousData: true,
-		staleTime: Infinity,
+	const limit = 4
+    const [currentCourse, setCurrentCourse] = useState({})
+
+	const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isPending, refetch } = useInfiniteQuery({
+		queryKey: ['courses'],
+		queryFn: ({ pageParam = 1 }) => getEnrolledCourses({ page: pageParam, count: limit }),
+		initialPageParam: 1,
+		getNextPageParam: (lastPage) => {
+			const totalPages = Math.ceil(lastPage?.total / limit)
+			const nextPage = lastPage?.page + 1
+			return nextPage <= totalPages ? nextPage : undefined
+		},
 	})
 
 	const handleGetCertificate = async (courseId) => {
@@ -58,18 +42,8 @@ export default function MyCourses() {
 		}
 	}
 
-	useEffect(() => {
-		if (data) {
-			let courses = data?.courses
-			courses.forEach((item) => {
-				item.rating = data?.reviews.find((review) => review.course === item.course._id)
-			})
-			setCourses(courses)
-		}
-	}, [data])
-
-	const CourseItem = ({ index, item }) => {
-		const course = courses.find((it) => it?.course?._id === item?.course?._id)
+    const CourseItem = ({ index, item }) => {
+		const course = item
 		let allSegments = course?.course?.chapters?.reduce((acc, chapter) => [...acc, ...chapter.segments], [])
 		allSegments = allSegments?.map((item) => item._id)
 
@@ -82,7 +56,7 @@ export default function MyCourses() {
 		percentage = Math.round(percentage > 100 ? 100 : percentage)
 
 		return (
-			<Card key={index} className="max-w-[350px] mt-4" shadow="sm">
+			<Card key={index} className="max-w-[280px]" shadow="sm">
 				<CardBody className="overflow-visible p-0">
 					<Link as={NextLink} href={`/courses/${item?.course?.slug}/${item?.course?._id}`}>
 						<Image
@@ -135,7 +109,7 @@ export default function MyCourses() {
 									)}
 								</p>
 								<div className="flex gap-2 items-center">
-									{item?.rating ? (
+									{item?.review?.rating ? (
 										<Tooltip
 											placement="left"
 											radius="none"
@@ -143,15 +117,15 @@ export default function MyCourses() {
 											content={
 												<div className="p-2 text-default-700">
 													<p className="text-tiny text-default-500 font-semibold">
-														{item?.rating?.subject}
+														{item?.review?.subject}
 													</p>
 													<p className="text-tiny text-default-500 mt-2 max-w-[200px] max-h-[300px] overflow-hidden">
-														{item?.rating?.comment}
+														{item?.review?.comment}
 													</p>
 													<p
 														className="underline cursor-pointer text-tiny mt-2"
 														onClick={() => {
-															setCurrentCourse(item?.course)
+															setCurrentCourse(item)
 															onOpenReviewModal()
 														}}>
 														Edit your review
@@ -160,7 +134,7 @@ export default function MyCourses() {
 											}>
 											<div className="flex items-center border-1 px-1 cursor-pointer">
 												<p className="text-left text-small text-ellipsis-95">
-													{item?.rating?.rating}
+													{item?.review?.rating}
 												</p>
 												<Spacer x={0.5} />
 												<Star size={14} fill="#EAB308" color="#EAB308" />
@@ -170,7 +144,7 @@ export default function MyCourses() {
 										<p
 											className="text-tiny underline cursor-pointer"
 											onClick={() => {
-												setCurrentCourse(item?.course)
+												setCurrentCourse(item)
 												onOpenReviewModal()
 											}}>
 											Write a review
@@ -202,14 +176,32 @@ export default function MyCourses() {
 		)
 	}
 
-	const { isOpen: isOpenReviewModal, onOpen: onOpenReviewModal, onClose: onCloseReviewModal } = useDisclosure()
+	const [loaderRef, scrollerRef] = useInfiniteScroll({ hasNextPage, fetchNextPage })
+    const { isOpen: isOpenReviewModal, onOpen: onOpenReviewModal, onClose: onCloseReviewModal } = useDisclosure()
 
 	return (
 		<>
-			<div className="flex flex-wrap gap-4">
-				{courses && courses.map((item, index) => <CourseItem index={index} item={item} />)}
+			<div className="mt-4 ms-2 flex flex-wrap md:justify-between gap-y-4 gap-x-2 justify-center">
+				{data?.pages?.map((page) =>
+					page?.courses?.map((item, index) => <CourseItem index={index} item={item} />)
+				)}
+				{(isFetchingNextPage || isPending) && [...Array(limit)].map((_, i) => <CourseItemDummy key={i} />)}
+				{[...Array(limit)].map((_, i) => (
+					<div key={i} className="w-[280px]"></div>
+				))}
 			</div>
-			<WriteReviewModal isOpen={isOpenReviewModal} onClose={onCloseReviewModal} course={currentCourse} />
+			<div className="w-1 h-1" ref={loaderRef}></div>
+			<Spacer y={4} />
+			{data?.pages[0]?.total > 0 && !hasNextPage && (
+				<div className="relative flex justify-center">
+					<Divider className="h-[1px] bg-default-200 max-w-[500px]" />
+					<span className="bg-background dark:bg-default-50 px-4 text-center italic text-sm whitespace-nowrap text-default-200 absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
+						You've reached the end!
+					</span>
+				</div>
+			)}
+			{data?.pages[0]?.total === 0 && !isPending && <p className="mt-10 text-center text-default-500">No Courses</p>}
+            <WriteReviewModal isOpen={isOpenReviewModal} onClose={onCloseReviewModal} course={currentCourse} refetch={refetch}/>
 		</>
 	)
 }

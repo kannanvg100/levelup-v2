@@ -15,14 +15,12 @@ import {
 	Skeleton,
 	Slider,
 	Spacer,
-	Spinner,
 } from '@nextui-org/react'
 import { ChevronDown, Frown } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import CourseItem from './CourseItem'
 import { useRouter, useSearchParams } from 'next/navigation'
-import toast from 'react-hot-toast'
 
 export default function Sidebar() {
 	const [page, setPage] = useState(1)
@@ -34,7 +32,7 @@ export default function Sidebar() {
 	const searchParams = useSearchParams()
 	const [totalPages, setTotalPages] = useState(1)
 	const [priceRange, setPriceRange] = useState([0, 9999])
-
+    
 	const { data, isPending, isError } = useQuery({
 		queryKey: ['courses', { page, count, search, filter, sort }],
 		queryFn: () => getCourses({ page, count, search, filter, sort }),

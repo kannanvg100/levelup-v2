@@ -25,9 +25,9 @@ export function getCourses({ page, count, search, sort, filter }) {
 		})
 }
 
-export function getCoursesLatest(){
+export function getCoursesByTag({tag}){
     return axios
-        .get(`/api/courses-category`)
+        .get(`/api/courses/${tag}`)
         .then((res) => res.data)
         .catch((err) => {
             throw err
@@ -58,6 +58,26 @@ export function getCourse(id) {
 	if (!id) return
 	return axios
 		.get(`/api/course/${id}`)
+		.then((res) => res.data)
+		.catch((err) => {
+			throw err
+		})
+}
+
+export function getFullCourse(id) {
+	if (!id) return
+	return axios
+		.get(`/api/full-course/${id}`)
+		.then((res) => res.data)
+		.catch((err) => {
+			throw err
+		})
+}
+
+export function getCourseTeacher(id) {
+	if (!id) return
+	return axios
+		.get(`/api/teacher/course/${id}`)
 		.then((res) => res.data)
 		.catch((err) => {
 			throw err

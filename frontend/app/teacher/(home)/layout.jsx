@@ -6,10 +6,12 @@ import VideoCallIncoming from '@/components/VideoCallIncoming'
 import Chat from '@/components/Chat'
 import { ScrollShadow } from '@nextui-org/react'
 import { SocketProvider } from '@/providers/SocketProvider'
+import { useSelector } from 'react-redux'
 
 export default function layout({ children }) {
+	const { user } = useSelector((state) => state.teacher)
 	return (
-		<SocketProvider role="teacher" >
+		<SocketProvider role="teacher">
 			<div className="flex">
 				<div className="hidden md:block fixed left-0 top-0 w-[220px] px-4">
 					<ScrollShadow hideScrollBar className="h-screen">
@@ -20,7 +22,7 @@ export default function layout({ children }) {
 					<div className="flex-grow px-6 py-10 min-h-screen">{children}</div>
 					<Footer />
 				</div>
-				<Chat role="teacher" />
+				{user && <Chat role="teacher" />}
 			</div>
 		</SocketProvider>
 	)

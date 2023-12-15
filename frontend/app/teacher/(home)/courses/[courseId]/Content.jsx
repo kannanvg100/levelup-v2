@@ -1,6 +1,16 @@
 import React, { useState } from 'react'
-import { BreadcrumbItem, Breadcrumbs, Button, Divider, Spacer } from '@nextui-org/react'
-import { Folder, FolderIcon, GripVertical, HomeIcon } from 'lucide-react'
+import {
+	BreadcrumbItem,
+	Breadcrumbs,
+	Button,
+	Divider,
+	Dropdown,
+	DropdownItem,
+	DropdownMenu,
+	DropdownTrigger,
+	Spacer,
+} from '@nextui-org/react'
+import { Folder, FolderIcon, GripVertical, HomeIcon, MoreVertical } from 'lucide-react'
 import SegmentTable from './SegmentTable'
 import CreateChapterTitlePopover from './CreateChapterTitlePopover'
 import { useMutation } from '@tanstack/react-query'
@@ -51,10 +61,7 @@ export default function Content() {
 								<div
 									className="flex items-center gap-2 cursor-pointer"
 									onClick={() => handleChapterEdit(index, item._id)}>
-									<Folder
-										size={18}
-										className={`${item._id === chapter._id ? 'text-primary' : ''}`}
-									/>
+									<Folder size={18} className={`${item._id === chapter._id ? 'text-primary' : ''}`} />
 									<p
 										className={`w-[180px] text-[14px] select-none whitespace-nowrap overflow-hidden text-ellipsis ${
 											item._id === chapter._id ? 'text-primary' : ''
@@ -62,8 +69,17 @@ export default function Content() {
 										{item.title}
 									</p>
 								</div>
-								<div className="flex items-center gap-2">
-									<GripVertical className="cursor-pointer" size={20} />
+								<div className="flex items-center gap-2 text-default-500">
+									{/* <GripVertical className="cursor-pointer" size={20} /> */}
+									<Dropdown>
+										<DropdownTrigger>
+											<MoreVertical size={16} className='hover:text-default-800 cursor-pointer'/>
+										</DropdownTrigger>
+										<DropdownMenu aria-label="Static Actions">
+											<DropdownItem key="edit">Edit Title</DropdownItem>
+											<DropdownItem key="delete">Remove</DropdownItem>
+										</DropdownMenu>
+									</Dropdown>
 								</div>
 							</div>
 							<Spacer y={6} />
@@ -80,9 +96,7 @@ export default function Content() {
 						Delete
 					</Button>
 				</div> */}
-				<ErrorBoundary>
-					{chapter && <SegmentTable chapterId={chapter._id} />}
-				</ErrorBoundary>
+				<ErrorBoundary>{chapter && <SegmentTable chapterId={chapter._id} />}</ErrorBoundary>
 			</div>
 		</div>
 	)

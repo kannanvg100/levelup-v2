@@ -130,14 +130,15 @@ export default function Login({ role, ret }) {
 							size="md"
 						/>
 						<div className="flex py-2 px-1 justify-between">
-							<Checkbox
+							{/* <Checkbox
 								size="md"
 								radius="none"
 								classNames={{
 									label: 'text-small',
 								}}>
 								Remember me
-							</Checkbox>
+							</Checkbox> */}
+                            <div></div>
 							<Link
 								as={NextLink}
 								href={{

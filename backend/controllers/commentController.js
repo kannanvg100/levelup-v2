@@ -35,12 +35,12 @@ module.exports = {
 				comment,
 			})
 			res.status(201).json({ success: true })
-			await Notification.create({
-				type: 'new_comment',
-				sender: req.user._id,
-				receiver: course.teacher,
-				resource: [segmentId, doc._id],
-			})
+			// await Notification.create({
+			// 	type: 'new_comment',
+			// 	sender: req.user._id,
+			// 	receiver: course.teacher,
+			// 	resource: [segmentId, doc._id],
+			// })
 		} catch (error) {
 			next(error)
 		}

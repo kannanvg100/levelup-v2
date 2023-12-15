@@ -19,7 +19,6 @@ export const SocketProvider = ({ role, children }) => {
 	useEffect(() => {
 		if (!user) return
 		const newSocket = io(process.env.NEXT_PUBLIC_API_URL, {
-			rejectUnauthorized: false,
 			withCredentials: true,
 			auth: {
 				token: user?.accessToken || 'error',

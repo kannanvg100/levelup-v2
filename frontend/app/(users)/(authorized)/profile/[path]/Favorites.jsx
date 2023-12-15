@@ -26,16 +26,12 @@ export default function Favorites() {
 		mutationFn: deleteFavorite,
 		onSuccess: (data) => {
 			queryClient.invalidateQueries({ queryKey: ['favorites'] })
-            refetch()
+			refetch()
 		},
 		onError: (error) => {
 			toast.error(error?.response?.data?.message || 'Something went wrong!')
 		},
 	})
-
-    useEffect(() => {
-       console.log(data)
-    }, [data])
 
 	const [loaderRef, scrollerRef] = useInfiniteScroll({ hasNextPage, fetchNextPage })
 
@@ -44,8 +40,11 @@ export default function Favorites() {
 			<div className="mt-4 ms-2 flex flex-wrap md:justify-between gap-y-4 gap-x-2 justify-center">
 				{data?.pages?.map((page) =>
 					page?.favorites?.map((favorite) => (
-						<Card key={favorite?._id} shadow="sm" className="border">
-							<CardBody className="p-0">
+						<Card
+							key={favorite?._id}
+							shadow="sm"
+							className={favorite?.course?.status !== 'published' ? 'shadow-lg' : ''}>
+							<CardBody className={favorite?.course?.status !== 'published' ? 'p-0 opacity-30' : 'p-0'}>
 								<div className="relative">
 									<Image
 										src={favorite?.course?.thumbnail}
@@ -101,7 +100,7 @@ export default function Favorites() {
 					</span>
 				</div>
 			)}
-			{data?.pages[0]?.total === 0 && !isPending && <p className='text-center text-default-500'>No favorites</p>}
+			{data?.pages[0]?.total === 0 && !isPending && <p className="mt-10 text-center text-default-500">No Favorites</p>}
 		</>
 	)
 }

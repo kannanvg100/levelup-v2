@@ -9,9 +9,11 @@ import {
 } from '@livekit/components-react'
 import { Track } from 'livekit-client'
 import { Modal, ModalContent } from '@nextui-org/react'
+import { useSocket } from '@/providers/SocketProvider'
 
-export default function VideoCallModal({ isOpen, onClose, token }) {
-	return (
+export default function VideoCallModal({ isOpen, onClose, token, roomId, senderId }) {
+	const socket = useSocket()
+    return (
 		<Modal
 			size="3xl"
 			isOpen={isOpen}
@@ -28,7 +30,10 @@ export default function VideoCallModal({ isOpen, onClose, token }) {
 					serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
 					data-lk-theme="default"
 					onConnected={() => {}}
-					onDisconnected={() => onClose(false)}
+					onDisconnected={() => {
+						socket?.emit('LEAVE_VIDEO', { roomId, senderId })
+						onClose(false)
+					}}
 					onLeave={() => {}}
 					style={{ height: '85vh' }}>
 					<MyVideoConference />

@@ -26,7 +26,17 @@ module.exports = {
 			const { subject, rating, comment } = req.body
 			const course = await Course.findById(courseId)
 			if (!course) return res.status(404).json({ message: 'Course not found' })
-			const review = await Review.create({ subject, comment, rating, course: courseId, user: req.user._id })
+
+			let review = await Review.findOne({ course: courseId, user: req.user._id })
+			if (review) {
+				review.subject = subject
+				review.rating = rating
+				review.comment = comment
+				await review.save()
+			} else {
+				review = await Review.create({ subject, comment, rating, course: courseId, user: req.user._id })
+			}
+
 			const newCount = course.rating?.count + 1
 			const newRating = (course.rating.avg + review.rating) / newCount
 			course.rating = { avg: newRating, count: newCount }

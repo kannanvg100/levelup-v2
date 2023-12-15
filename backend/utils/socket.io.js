@@ -47,7 +47,7 @@ const initializeSocketIO = (io) => {
 			}
 			socket.user = user._id // mount te user object to the socket
 
-            const roomId = user._id.toString()
+			const roomId = user._id.toString()
 			socket.join(roomId)
 			socket.emit(ChatEventEnum.CONNECTED_EVENT) // emit the connected event so that client is aware
 			console.log('User connected Id: ', user._id.toString())
@@ -77,6 +77,10 @@ const initializeSocketIO = (io) => {
 				console.log('message received: ', chatId, content)
 
 				socket.to(chatId).emit('GET_MESSAGE', content)
+			})
+
+			socket.on('LEAVE_VIDEO', ({ roomId, senderId }) => {
+				socket.to(senderId).emit('VIDEO_CALL_CANCELLED', roomId)
 			})
 		} catch (error) {
 			socket.emit(

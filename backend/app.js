@@ -50,12 +50,16 @@ initializeSocketIO(io)
 app.use(
 	morgan((tokens, req, res) => {
 		const status = tokens.status(req, res)
-		const statusColor = Number(status) >= 400 ? '\x1b[31m' : '\x1b[32m'
 		if (Number(status) >= 400) {
-			return `${statusColor}${tokens.method(req, res)} ${tokens.url(req, res)} - ${tokens.status(
+            let date = new Date(Date.now())
+            date =  `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`
+			return `\x1b[31m${tokens.method(req, res)} ${tokens.url(req, res)} - ${tokens.status(
 				req,
 				res
-			)} ${tokens.res(req, res, 'content-length')} - ${tokens['response-time'](req, res)} ms\x1b[0m`
+			)} ${tokens.res(req, res, 'content-length')} - ${tokens['response-time'](
+				req,
+				res
+			)} ms - ${date}\x1b[0m`
 		}
 		return null
 	})

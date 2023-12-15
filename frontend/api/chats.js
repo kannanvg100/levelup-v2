@@ -21,7 +21,7 @@ export function getChatsTeacher({ limit, page }) {
 export function createChat({ receiver }) {
 	return axios
 		.post(`/api/create-chat`, { receiver })
-		.then((res) => res.data.chats)
+		.then((res) => res.data)
 		.catch((err) => {
 			throw err
 		})

@@ -15,7 +15,9 @@ export default function App({ params: { path } }) {
 				variant="underlined"
 				color="primary"
 				defaultSelectedKey={path || 'courses'}
-				onSelectionChange={(key) => router.push(`/profile/${key}`, undefined, { shallow: true })}>
+				onSelectionChange={(key) => {
+					if (path !== key) router.push(`/profile/${key}`, undefined, { shallow: true })
+				}}>
 				<Tab key="account" title="Account">
 					<Account />
 				</Tab>

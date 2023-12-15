@@ -6,7 +6,7 @@ import NextLink from 'next/link'
 
 export default function Footer() {
 	return (
-		<div className="flex flex-col justify-center items-center px-[1.5rem] py-16">
+		<div className="flex flex-col justify-center items-center px-[1.5rem] py-24">
 			{/* <div className="container mx-auto py-6 max-w-screen-xl "> */}
 			<Image src="/logo.svg" alt="logo" width={100} height={100} />
 			<div className="flex mt-6 gap-6">

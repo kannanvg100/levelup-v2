@@ -29,7 +29,7 @@ module.exports = {
 			let chats = await Chat.find({ 'participants.user': req.user._id })
 				.populate('participants.user', 'name profileImage')
 				.populate('lastMessage')
-                .sort({ 'lastMessage.createdAt': -1 })
+				.sort({ 'lastMessage.createdAt': -1 })
 				.skip(0)
 				.limit(30)
 				.lean()
@@ -64,8 +64,26 @@ module.exports = {
 			let chat = await Chat.findOne({
 				participants: { $all: [{ $elemMatch: { user: userId } }, { $elemMatch: { user: receiverId } }] },
 			})
+				.populate('participants.user', 'name profileImage')
+				.lean()
 
-			if (!chat) chat = await Chat.create({ participants: [{ user: userId }, { user: receiverId }] })
+			if (!chat)
+				chat = await Chat.create({ participants: [{ user: userId }, { user: receiverId }] })
+
+                chat = await Chat.findById(chat._id)
+					.populate('participants.user', 'name profileImage')
+					.lean()
+
+			const sender = chat.participants.filter(
+				(participant) => participant.user._id.toString() !== req.user._id.toString()
+			)
+			const unreadCount = chat.participants.find(
+				(participant) => participant.user._id.toString() === req.user._id.toString()
+			).unreadCount
+
+			delete chat.participants
+			chat.sender = sender
+			chat.unreadCount = unreadCount
 
 			res.status(201).json({ success: true, chat })
 		} catch (error) {
@@ -81,7 +99,7 @@ module.exports = {
 			if (!content || !content.trim()) {
 				if (!req.file)
 					return res.status(400).json({ success: false, message: 'Content or attachment is missing' })
-                content = req.file.originalname
+				content = req.file.originalname
 			}
 
 			const chat = await Chat.findById(req.params.chatId)
@@ -105,20 +123,20 @@ module.exports = {
 			})
 
 			chat.lastMessage = chatMessage._id
-            let receiver = null
+			let receiver = null
 			chat.participants.forEach((participant) => {
 				if (participant.user.toString() !== req.user._id.toString()) {
-                    receiver = participant.user.toString()
+					receiver = participant.user.toString()
 					participant.unreadCount += 1
 				}
 			})
 
 			await chat.save()
 
-            const rooms = req.app.get('io').sockets.adapter.rooms
+			const rooms = req.app.get('io').sockets.adapter.rooms
 			// Emit socket event
 			req.app.get('io').in(chat._id.toString()).emit('GET_MESSAGE', chatMessage)
-            req.app.get('io').in(receiver).emit('NEW_MESSAGE', chatMessage)
+			req.app.get('io').in(receiver).emit('NEW_MESSAGE', chatMessage)
 
 			res.status(201).json({ success: true, chatMessage })
 		} catch (error) {

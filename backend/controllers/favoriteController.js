@@ -12,7 +12,7 @@ module.exports = {
 				.sort('-createdAt')
 				.skip((page - 1) * limit)
 				.limit(limit)
-			const total = await Favorite.countDocuments({})
+			const total = await Favorite.countDocuments({user: req.user._id })
 			res.status(200).json({ success: true, favorites, page, total })
 		} catch (error) {
 			next(error)

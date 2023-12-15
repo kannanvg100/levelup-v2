@@ -16,7 +16,7 @@ export default function Footer() {
 					priority={true}
 				/>
 			</div>
-			<div className="flex flex-wrap justify-center items-center mt-4 gap-x-4 gap-y-2 mx-[200px]">
+			<div className="flex flex-wrap justify-center items-center mt-4 gap-x-4 gap-y-2 mx-5 md:mx-[200px]">
 				<Link
 					as={NextLink}
 					href="/teacher"

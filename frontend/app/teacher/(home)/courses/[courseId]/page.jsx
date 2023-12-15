@@ -1,6 +1,6 @@
 'use client'
 
-import { createCourse, getCourse, saveDraft } from '@/api/courses'
+import { createCourse, getCourseTeacher, saveDraft } from '@/api/courses'
 import {
 	Button,
 	Chip,
@@ -57,7 +57,7 @@ export default function Page({ params: { courseId } }) {
 
 	const { data, isPending, isError } = useQuery({
 		queryKey: ['course', courseId],
-		queryFn: () => getCourse(courseId),
+		queryFn: () => getCourseTeacher(courseId),
 		keepPreviousData: true,
 	})
 

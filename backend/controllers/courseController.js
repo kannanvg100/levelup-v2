@@ -26,7 +26,7 @@ module.exports = {
 	// Get all filter for courses
 	getFilters: async (req, res, next) => {
 		try {
-			let categories = await Category.find().select('title')
+			let categories = await Category.find({ status: 'listed' }).select('title')
 			categories = {
 				title: 'Categories',
 				key: 'category',
@@ -125,7 +125,7 @@ module.exports = {
 				.sort(sortQuery)
 				.limit(count)
 				.skip((page - 1) * count)
-                .lean()
+				.lean()
 
 			if (req.user) {
 				const favorites = await Favorite.find({ user: req.user._id })
@@ -141,9 +141,37 @@ module.exports = {
 		}
 	},
 
-	getCoursesLatest: async (req, res, next) => {
+	getCoursesByTag: async (req, res, next) => {
 		try {
-			const courses = await Course.find({ status: 'published' }).sort({ createdAt: -1 }).limit(5)
+			const tag = req.params.tag || 'latest'
+			let courses
+			if (tag === 'latest') {
+				courses = await Course.find({ status: 'published' })
+					.sort({ createdAt: -1 })
+					.limit(5)
+					.select('title thumbnail slug price mrp category level teacher')
+			} else if (tag === 'popular') {
+				courses = await Enrollment.aggregate([
+					{ $group: { _id: '$course', count: { $sum: 1 } } },
+					{ $sort: { count: -1 } },
+					{ $limit: 5 },
+					{ $lookup: { from: 'courses', localField: '_id', foreignField: '_id', as: 'course' } },
+					{ $unwind: '$course' },
+					{
+						$project: {
+							_id: '$course._id',
+							title: '$course.title',
+							thumbnail: '$course.thumbnail',
+							slug: '$course.slug',
+							price: '$course.price',
+							mrp: '$course.mrp',
+							category: '$course.category',
+							level: '$course.level',
+							teacher: '$course.teacher',
+						},
+					},
+				])
+			}
 			res.status(200).json({ success: true, courses })
 		} catch (error) {
 			next(error)
@@ -212,10 +240,12 @@ module.exports = {
 		}
 	},
 
-	// Get all courses by ID
+	// Get course by ID
 	getCourseByID: async (req, res, next) => {
 		try {
-			const course = await Course.findById(req.params.id)
+			const { id: courseId } = req.params
+
+			const course = await Course.findById(courseId)
 				.select('-__v')
 				.populate('teacher', 'name')
 				.populate('category', 'title')
@@ -225,6 +255,52 @@ module.exports = {
 						path: 'segments',
 					},
 				})
+			res.status(200).json({ success: true, course })
+		} catch (error) {
+			next(error)
+		}
+	},
+
+	// Get full course by ID
+	getFullCourseByID: async (req, res, next) => {
+		try {
+			const { id: courseId } = req.params
+			const enrolled = await Enrollment.findOne({ course: courseId, student: req.user._id })
+			if (!enrolled)
+				return res.status(401).json({ success: false, message: 'You are not enrolled in this course' })
+
+			const course = await Course.findById(courseId)
+				.select('-__v')
+				.populate('teacher', 'name')
+				.populate('category', 'title')
+				.populate({
+					path: 'chapters',
+					populate: {
+						path: 'segments',
+					},
+				})
+			res.status(200).json({ success: true, course })
+		} catch (error) {
+			next(error)
+		}
+	},
+
+	// Get course by ID for teacher
+	getCourseByIDTeacher: async (req, res, next) => {
+		try {
+			const { id: courseId } = req.params
+			const course = await Course.findById(courseId)
+				.select('-__v')
+				.populate('teacher', 'name')
+				.populate('category', 'title')
+				.populate({
+					path: 'chapters',
+					populate: {
+						path: 'segments',
+					},
+				})
+			if (course.teacher.toString() !== req.user._id)
+				return res.status(401).json({ success: false, message: 'You are not authorized to view this course' })
 			res.status(200).json({ success: true, course })
 		} catch (error) {
 			next(error)
@@ -524,7 +600,7 @@ module.exports = {
 			let { page, count } = req.query
 			page = parseInt(page) || 1
 			count = parseInt(count) || 5
-			const totalCourses = await Enrollment.countDocuments({ student: req.user._id })
+			const total = await Enrollment.countDocuments({ student: req.user._id })
 			const courses = await Enrollment.find({ student: req.user._id })
 				.limit(count)
 				.skip((page - 1) * count)
@@ -538,6 +614,7 @@ module.exports = {
 						},
 					},
 				})
+				.lean()
 			//TODO: select required fields only
 
 			const enrolledCourses = courses.map((course) => course.course._id)
@@ -545,7 +622,8 @@ module.exports = {
 			courses.forEach((course) => {
 				course.review = reviews.find((review) => review.course.toString() === course.course._id.toString())
 			})
-			res.status(200).json({ success: true, totalCourses, courses, reviews })
+
+			res.status(200).json({ success: true, total, courses })
 		} catch (error) {
 			next(error)
 		}

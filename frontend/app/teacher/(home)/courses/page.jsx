@@ -218,7 +218,7 @@ export default function App() {
 								</Button>
 							</DropdownTrigger>
 							<DropdownMenu className="text-foreground-500">
-								<DropdownItem onClick={() => router.push(`/courses/${course?.slug}/${course?._id}`)}>
+								<DropdownItem onClick={() => router.push(`/teacher/courses/${course?._id}/view`)}>
 									View
 								</DropdownItem>
 								<DropdownItem onClick={() => router.push(`/teacher/courses/${course?._id}`)}>

@@ -12,17 +12,21 @@ import { addTeacher } from '@/redux/slices/teacherSlice'
 import Image from 'next/image'
 import { useMutation } from '@tanstack/react-query'
 import { socialLoginUser, sendOtp, signupUser } from '@/api/users'
+import RecaptchaVerify from '@/components/RecaptchaVerify'
+import { useTheme } from 'next-themes'
 
 export default function Signup({ role }) {
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
 	const [confirmPassword, setConfirmPassword] = useState('')
 	const [otp, setOtp] = useState('')
+	const [code, setCode] = useState('')
 	const [errors, setErrors] = useState({ email: '', password: '', confirmPassword: '', otp: '' })
 	const [otpSent, setOtpSent] = useState(false)
 	const otpRef = useRef(null)
-    const COUNTER_TIME = 10
+	const COUNTER_TIME = 10
 	const [countdown, setCountdown] = useState(COUNTER_TIME)
+	const { theme } = useTheme()
 
 	const router = useRouter()
 	const dispatch = useDispatch()
@@ -50,7 +54,7 @@ export default function Signup({ role }) {
 	const { isPending: isLoadingSendOtp, mutate: mutateSendOtp } = useMutation({
 		mutationFn: sendOtp,
 		onSuccess: (data) => {
-            setCountdown(COUNTER_TIME)
+			setCountdown(COUNTER_TIME)
 			setOtpSent(true)
 			toast.success('OTP sent successfully')
 		},
@@ -84,6 +88,7 @@ export default function Signup({ role }) {
 		if (confirmPassword === '') return setErrors({ ...errors, confirmPassword: 'Please enter your password' })
 		if (password !== confirmPassword.trim())
 			return setErrors({ ...errors, confirmPassword: 'Passwords do not match' })
+		if (code === '') return setErrors({ ...errors, code: 'Please verify you are not a robot' })
 		mutateSendOtp({ email, password, role })
 	}
 
@@ -126,11 +131,11 @@ export default function Signup({ role }) {
 		if (password !== confirmPassword.trim())
 			return setErrors({ ...errors, confirmPassword: 'Passwords do not match' })
 		if (countdown > 0) return toast.error('Please wait for the timer to run out')
-        // TODO 
-        // if(Object.values(errors).length > 0) return toast.error('Please fix the errors')
-        // setOtpSent(false)
+		// TODO
+		// if(Object.values(errors).length > 0) return toast.error('Please fix the errors')
+		// setOtpSent(false)
 		mutateSendOtp({ email, password, role })
-        setCountdown(COUNTER_TIME)
+		setCountdown(COUNTER_TIME)
 	}
 
 	return (
@@ -157,7 +162,7 @@ export default function Signup({ role }) {
 									label="Email"
 									variant="flat"
 									radius="none"
-                                    value={email}
+									value={email}
 									classNames={{
 										inputWrapper: 'text-default-500',
 									}}
@@ -201,7 +206,7 @@ export default function Signup({ role }) {
 									isInvalid={errors?.confirmPassword ? true : false}
 									size="md"
 								/>
-								<Spacer y={1} />
+								<RecaptchaVerify theme={theme} setCode={setCode} errors={errors} />
 								<div className="flex justify-center">
 									<Button
 										isLoading={isLoadingSendOtp}
@@ -260,13 +265,13 @@ export default function Signup({ role }) {
 									<p className="text-default-700 text-tiny">{`Resend OTP in ${countdown} seconds`}</p>
 								) : (
 									<Button
-										variant='light'
-                                        size='sm'
-                                        color='primary'
-                                        className='font-bold'
-                                        radius='none'
-                                        isLoading={isLoadingSendOtp}
-                                        isDisabled={isLoadingSendOtp || countdown > 0}
+										variant="light"
+										size="sm"
+										color="primary"
+										className="font-bold"
+										radius="none"
+										isLoading={isLoadingSendOtp}
+										isDisabled={isLoadingSendOtp || countdown > 0}
 										onClick={handleReSendOtp}>
 										Resend OTP
 									</Button>

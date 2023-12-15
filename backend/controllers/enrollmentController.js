@@ -14,12 +14,12 @@ module.exports = {
 			if (!enrollment)
 				return res.status(404).json({ success: true, message: 'You have not enrolled this course' })
 			res.status(200).json({ success: true, enrollment })
-			await Notification.create({
-				type: 'new_enrollment',
-				sender: req.user._id,
-				receiver: course.teacher,
-				resource: [courseId, enrollment._id],
-			})
+			// await Notification.create({
+			// 	type: 'new_enrollment',
+			// 	sender: req.user._id,
+			// 	receiver: course.teacher,
+			// 	resource: [courseId, enrollment._id],
+			// })
 		} catch (error) {
 			next(error)
 		}

@@ -253,7 +253,7 @@ module.exports = {
 					totalPublishedCourses,
 					totalEnrolledCourses,
 					topCourses,
-					totalAmountEarned: totalCoursesEnrolled[0].totalAmountEarned,
+					totalAmountEarned: totalCoursesEnrolled[0]?.totalAmountEarned || 0,
 					countByCategory,
 				},
 			})

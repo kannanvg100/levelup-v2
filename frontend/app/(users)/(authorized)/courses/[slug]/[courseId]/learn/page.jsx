@@ -1,5 +1,5 @@
 'use client'
-import { getCourse, getEnrollment } from '@/api/courses'
+import { getFullCourse, getEnrollment } from '@/api/courses'
 import { setProgress } from '@/api/segments'
 import VideoPlayer from '@/components/VideoPlayer'
 import { Accordion, AccordionItem, BreadcrumbItem, Breadcrumbs, Button, Spacer, Tab, Tabs } from '@nextui-org/react'
@@ -10,6 +10,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import Comments from './Comments'
 import { useSelector } from 'react-redux'
 import Confetti from 'react-confetti'
+import NextLink from 'next/link'
 
 export default function Page({ params: { courseId } }) {
 	const { user } = useSelector((state) => state.user)
@@ -24,7 +25,7 @@ export default function Page({ params: { courseId } }) {
 
 	const { data, isPending, isError } = useQuery({
 		queryKey: ['course', courseId],
-		queryFn: () => getCourse(courseId),
+		queryFn: () => getFullCourse(courseId),
 		keepPreviousData: true,
 	})
 
@@ -107,6 +108,23 @@ export default function Page({ params: { courseId } }) {
 
 	return (
 		<div>
+			{!data && !isPending && (
+				<div className="flex items-center justify-center h-screen">
+					<div className="flex flex-col items-center justify-center gap-5">
+						<Home size={24} />
+						<h1 className="text-lg font-semibold">You are not enrolled in this course</h1>
+						<Button
+							as={NextLink}
+							size="large"
+							color="primary"
+							variant="flat"
+							iconRight={<Link size={16} />}
+							href={`/courses//${courseId}`}>
+							Enroll now
+						</Button>
+					</div>
+				</div>
+			)}
 			{course && enrollment && (
 				<>
 					<Spacer y={4} />

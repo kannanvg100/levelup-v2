@@ -9,14 +9,14 @@ import ChatWindow from './ChatWindow'
 import { useSocket } from '@/providers/SocketProvider'
 import toast from 'react-hot-toast'
 import VideoCallIncoming from './VideoCallIncoming'
-import { ChatContext } from '@/app/(users)/(authorized)/layout'
+import { useChat } from './providers/ChatProvider'
 
 export default function Chat({ role }) {
 	const user = useSelector((state) => state[role][role])
+	const { isChatExpanded, toggleChat, chat, setChat } = useChat()
 
 	const chatRef = useRef(null)
 	const chevronRef = useRef(null)
-	const [chat, setChat] = useState(null)
 	const queryClient = useQueryClient()
 	const [isOnline, setIsOnline] = useState(false)
 	const socket = useSocket()
@@ -26,7 +26,6 @@ export default function Chat({ role }) {
 	}, 0)
 
 	useEffect(() => {
-        
 		if (!socket || !user) return setIsOnline(false)
 		socket?.on('connected', () => {
 			setIsOnline(true)
@@ -36,15 +35,15 @@ export default function Chat({ role }) {
 		})
 	}, [socket, user])
 
-	function expandChat() {
-		if (chatRef.current.style.bottom === '0px') {
-			chatRef.current.style.bottom = '-352px'
-			chevronRef.current.classList.remove('rotate-180')
-		} else {
+	useEffect(() => {
+		if (isChatExpanded) {
 			chatRef.current.style.bottom = '0px'
 			chevronRef.current.classList.add('rotate-180')
+		} else {
+			chatRef.current.style.bottom = '-352px'
+			chevronRef.current.classList.remove('rotate-180')
 		}
-	}
+	}, [isChatExpanded])
 
 	const {
 		data: chats,
@@ -87,7 +86,7 @@ export default function Chat({ role }) {
 						<Card className="w-80 h-[400px]" radius="none" shadow="md">
 							<CardHeader
 								className="h-12 flex justify-between items-center gap-3 cursor-pointer hover:bg-default-50"
-								onClick={expandChat}>
+								onClick={toggleChat}>
 								<div className="flex items-center gap-3">
 									<Avatar isBordered={isOnline} color="success" size="sm" src={user?.profileImage} />
 									<p className="text-md font-medium">Messages</p>
@@ -137,7 +136,7 @@ export default function Chat({ role }) {
 														? '🎵 audio'
 														: chat?.lastMessage?.attachmentType === 'file'
 														? '📁 file'
-														: '📄 document'}
+														: ''}
 												</p>
 											</div>
 										</div>

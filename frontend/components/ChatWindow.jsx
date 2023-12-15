@@ -338,7 +338,15 @@ export default function ChatWindow({ role, chat, setChat, mutateMarkAsRead }) {
 					<input type="file" className="hidden" ref={fileInputRef} onChange={handleFileChange} />
 				</CardFooter>
 			</Card>
-			{isOpen && <VideoCallModal isOpen={isOpen} onClose={setIsOpen} token={token} roomId={chat._id} />}
+			{isOpen && (
+				<VideoCallModal
+					isOpen={isOpen}
+					onClose={setIsOpen}
+					token={token}
+					roomId={chat._id}
+					senderId={chat.sender[0].user._id}
+				/>
+			)}
 		</>
 	)
 }

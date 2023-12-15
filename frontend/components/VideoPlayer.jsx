@@ -1,12 +1,12 @@
 'use client'
 import MuxPlayer from '@mux/mux-player-react'
-import { useEffect } from 'react'
 
-export default function VideoPlayer({ segment, onEnded, userId }) {
+export default function VideoPlayer({ segment, onEnded, userId, width, height }) {
+    const styles = width ? `w-[${width}] h-[${height}]` : 'w-[600px] h-[400px]'
 	return (
 		<MuxPlayer
-			className="w-[600px] h-[400px]"
-            accentColor='#00B8A9'
+			className={styles}
+			accentColor="#00B8A9"
 			streamType="on-demand"
 			playbackId={segment?.video[0].playbackId}
 			metadata={{

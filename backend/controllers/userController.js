@@ -233,20 +233,19 @@ module.exports = {
 			const status = 'pending'
 			await User.create({ email, password, role, otp, status })
 
-			// transporter.sendMail(mailOptions, function (err, data) {
-			// 	if (err) {
-			// 		res.status(400).json({
-			// 			success: false,
-			// 			errors: { toast: 'Something went wrong, please try again' },
-			// 		})
-			// 	} else {
-			// 		console.log('Email sent successfully')
-			// 		res.status(201).json({
-			// 			success: true,
-			// 		})
-			// 	}
-			// })
-			res.status(201).json({ success: true })
+			transporter.sendMail(mailOptions, function (err, data) {
+				if (err) {
+					res.status(400).json({
+						success: false,
+						errors: { toast: 'Something went wrong, please try again' },
+					})
+				} else {
+					console.log('Email sent successfully')
+					res.status(201).json({
+						success: true,
+					})
+				}
+			})
 		} catch (error) {
 			next(error)
 		}
@@ -543,19 +542,19 @@ module.exports = {
 			user.otp = otp
 			await user.save()
 
-			// transporter.sendMail(mailOptions, function (err, data) {
-			// 	if (err) {
-			// 		res.status(400).json({
-			// 			success: false,
-			// 			errors: { toast: 'Something went wrong, please try again' },
-			// 		})
-			// 	} else {
-			// 		console.log('Email sent successfully')
-			// 		res.status(201).json({
-			// 			success: true,
-			// 		})
-			// 	}
-			// })
+			transporter.sendMail(mailOptions, function (err, data) {
+				if (err) {
+					res.status(400).json({
+						success: false,
+						errors: { toast: 'Something went wrong, please try again' },
+					})
+				} else {
+					console.log('Email sent successfully')
+					res.status(201).json({
+						success: true,
+					})
+				}
+			})
 			res.status(201).json({ success: true })
 		} catch (error) {
 			next(error)
