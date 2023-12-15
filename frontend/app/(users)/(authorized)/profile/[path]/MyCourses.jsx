@@ -1,6 +1,6 @@
 import { getEnrolledCourses, getCertificate } from '@/api/courses'
 import { Button, Card, CardBody, CardFooter, Divider, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Image, Link, Progress, Spacer, Tooltip, useDisclosure } from '@nextui-org/react'
-import { useInfiniteQuery } from '@tanstack/react-query'
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { MoreVertical, Star } from 'lucide-react'
 import React, { useState } from 'react'
 import toast from 'react-hot-toast'
@@ -13,6 +13,7 @@ export default function Favorites() {
 
 	const limit = 4
     const [currentCourse, setCurrentCourse] = useState({})
+    const queryClient = useQueryClient()
 
 	const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isPending, refetch } = useInfiniteQuery({
 		queryKey: ['courses'],
@@ -38,6 +39,7 @@ export default function Favorites() {
 			link.download = 'certificate.png'
 			link.click()
 		} catch (error) {
+			console.log("📄 > file: MyCourses.jsx:41 > handleGetCertificate > error:", error)
 			toast.error(error?.response?.data?.message || 'Something went wrong!')
 		}
 	}
