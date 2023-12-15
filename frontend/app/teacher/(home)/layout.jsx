@@ -7,24 +7,27 @@ import Chat from '@/components/Chat'
 import { ScrollShadow } from '@nextui-org/react'
 import { SocketProvider } from '@/providers/SocketProvider'
 import { useSelector } from 'react-redux'
+import { ChatProvider } from '@/components/providers/ChatProvider'
 
 export default function layout({ children }) {
-	const { user } = useSelector((state) => state.teacher)
+	const { teacher } = useSelector((state) => state.teacher)
 	return (
-		<SocketProvider role="teacher">
-			<div className="flex">
-				<div className="hidden md:block fixed left-0 top-0 w-[220px] px-4">
-					<ScrollShadow hideScrollBar className="h-screen">
-						<Sidebar />
-					</ScrollShadow>
+		<ChatProvider>
+			<SocketProvider role="teacher">
+				<div className="flex">
+					<div className="hidden md:block fixed left-0 top-0 w-[220px] px-4">
+						<ScrollShadow hideScrollBar className="h-screen">
+							<Sidebar />
+						</ScrollShadow>
+					</div>
+					<div className="flex flex-col flex-grow md:ms-[220px]">
+						<div className="flex-grow px-6 py-10 min-h-screen">{children}</div>
+						<Footer />
+					</div>
+					{teacher && <Chat role="teacher" />}
 				</div>
-				<div className="flex flex-col flex-grow md:ms-[220px]">
-					<div className="flex-grow px-6 py-10 min-h-screen">{children}</div>
-					<Footer />
-				</div>
-				{user && <Chat role="teacher" />}
-			</div>
-		</SocketProvider>
+			</SocketProvider>
+		</ChatProvider>
 	)
 }
 

@@ -23,7 +23,7 @@ export default function Login({ role, ret }) {
 		onSuccess: (data) => {
 			dispatch(role === 'teacher' ? addTeacher(data.user) : addUser(data.user))
 			queryClient.setQueryData(['role', { email, password }], data)
-			router.push(role === 'teacher' ? '/teacher' : '/')
+			router.push(role === 'teacher' ? '/teacher/courses' : '/')
 		},
 		onError: (error) => {
 			const errors = error?.response?.data?.errors
@@ -35,7 +35,7 @@ export default function Login({ role, ret }) {
 		mutationFn: socialLoginUser,
 		onSuccess: (data) => {
 			dispatch(role === 'teacher' ? addTeacher(data.user) : addUser(data.user))
-			router.push(role === 'teacher' ? '/teacher' : '/')
+			router.push(role === 'teacher' ? '/teacher/courses' : '/')
 		},
 		onError: (error) => {
 			const errorMessage = error?.response?.data?.errors
