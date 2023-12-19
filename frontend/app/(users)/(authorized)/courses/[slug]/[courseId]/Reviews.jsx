@@ -31,7 +31,7 @@ export default function Reviews({ courseId }) {
 					{reviews.map((review, index) => (
 						<CourseReviewItem key={index} review={review} />
 					))}
-					{reviews.length === 0 && <p className="text-center">No reviews yet</p>}
+					{reviews.length === 0 && <p className="text-left italic text-tiny text-default-500">No reviews yet</p>}
 				</>
 			)}
 		</>

@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useRef } from 'react'
 
 import { getCoursesByTeacher, updateCourseStatus } from '@/api/courses'
 
@@ -33,7 +33,7 @@ const columns = [
 	{ name: 'CHAPTERS', uid: 'chapters', width: '100px' },
 	{ name: 'STUDENTS', uid: 'students', width: '100px' },
 	{ name: 'CREATED AT', uid: 'createdAt', width: '150px' },
-	{ name: 'ACTIONS', uid: 'actions', width: '100px' },
+	{ name: '', uid: 'actions', width: '30px' },
 ]
 
 const statusOptions = [
@@ -46,7 +46,6 @@ import CreateCourseTitle from './CreateCourseTitle'
 import { useRouter } from 'next/navigation'
 import DeleteCourseModal from './DeleteCourseModal'
 import { AlertTriangle, ChevronDownIcon, MoreVertical, Plus, PlusSquare, Search } from 'lucide-react'
-import NextImage from 'next/image'
 import toast from 'react-hot-toast'
 
 const INITIAL_VISIBLE_COLUMNS = [
@@ -111,9 +110,9 @@ export default function App() {
 		mutationFn: updateCourseStatus,
 		onSuccess: (data) => {
 			queryClient.invalidateQueries(['courses-by-teacher'])
-		}
+		},
 	})
-
+	const parentRef = useRef(null)
 	const { isOpen, onOpen, onClose } = useDisclosure()
 	const [currentCourse, setCurrentCourse] = React.useState('')
 	const { isOpen: isOpenDeleteModal, onOpen: onOpenDeleteModal, onClose: onCloseDeleteModal } = useDisclosure()
@@ -175,9 +174,12 @@ export default function App() {
 					</div>
 				)
 			case 'title':
-			case 'price':
 				return (
 					<p className="text-bold capitalize whitespace-nowrap overflow-hidden text-ellipsis">{cellValue}</p>
+				)
+			case 'price':
+				return (
+					<p className="text-bold capitalize whitespace-nowrap overflow-hidden text-ellipsis">₹{cellValue}</p>
 				)
 			case 'category':
 				return (
@@ -214,7 +216,7 @@ export default function App() {
 						<Dropdown>
 							<DropdownTrigger>
 								<Button isIconOnly size="sm" variant="light">
-									<MoreVertical size={20} className="text-default-300" />
+									<MoreVertical size={20} className="text-default-500" />
 								</Button>
 							</DropdownTrigger>
 							<DropdownMenu className="text-foreground-500">
@@ -355,7 +357,13 @@ export default function App() {
 					size="sm"
 					page={page}
 					total={Math.ceil(data?.totalCourses / rowsPerPage || 1)}
-					onChange={setPage}
+					onChange={(val) => {
+						setPage(val)
+						window.scrollTo({
+							top: 0,
+							behavior: 'smooth',
+						})
+					}}
 				/>
 				<div className="hidden sm:flex w-[30%] justify-end gap-2">
 					<Button isDisabled={page === 1} size="sm" variant="flat" onPress={onPreviousPage} radius="none">
@@ -370,7 +378,7 @@ export default function App() {
 	}, [selectedKeys, items.length, page, pages, hasSearchFilter])
 
 	return (
-		<div>
+		<div ref={parentRef}>
 			<div className="flex justify-start items-baseline gap-2">
 				<span className="text-xl font-semibold" classNames={{ wrapper: 'w-[10px] h-[10px]' }}>
 					Courses

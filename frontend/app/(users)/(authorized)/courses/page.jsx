@@ -68,7 +68,7 @@ export default function Sidebar() {
 				const [key, value] = curr.split('=')
 				acc[key] = value.split(',')
 				return acc
-			}, {})
+			}, {}) 
 		}
 		setFilter(filter)
 	}, [])

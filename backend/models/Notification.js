@@ -15,9 +15,9 @@ const notificationSchema = new mongoose.Schema({
 			refPath: 'type',
 		},
 	],
-	link: {
-		type: String,
-	},
+	// link: {
+	// 	type: String,
+	// },
 	sender: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'User',

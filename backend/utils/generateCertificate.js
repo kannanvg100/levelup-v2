@@ -93,6 +93,9 @@ const generateCertificate = async ({name, date, course}) => {
 
 </html>
       `,
+      puppeteerArgs:{
+        executablePath: '/usr/bin/chromium-browser',
+      }
 	})
 }
 module.exports = { generateCertificate }

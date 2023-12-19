@@ -21,13 +21,14 @@ import { getCourse, createStripeSession, getEnrollment } from '@/api/courses'
 import toast from 'react-hot-toast'
 import IntroVideoModal from './IntroVideoModal'
 
-import { Calendar, Globe, Home, MessageSquare, PlayCircle, PlaySquare, Star } from 'lucide-react'
+import { Calendar, Check, Globe, Home, MessageCircle, MessageSquare, PlayCircle, PlaySquare, Star } from 'lucide-react'
 import Reviews from './Reviews'
 import { useRouter } from 'next/navigation'
 import { createChat } from '@/api/chats'
 import Link from 'next/link'
 import { useSelector } from 'react-redux'
 import { useChat } from '@/components/providers/ChatProvider'
+import CheckoutModal from './_components/CheckoutModal'
 
 export default function App({ params: { slug, courseId } }) {
 	const { user } = useSelector((state) => state.user)
@@ -37,6 +38,7 @@ export default function App({ params: { slug, courseId } }) {
 	const queryClient = new QueryClient()
 	const { expandChat, setChat } = useChat()
 	const { isOpen: isOpenIntroVideo, onOpen: onOpenIntroVideo, onClose: onCloseIntroVideo } = useDisclosure()
+	const { isOpen: isOpenCheckout, onOpen: onOpenCheckout, onClose: onCloseCheckout } = useDisclosure()
 	const [introSegment, setIntroSegment] = useState('')
 
 	const { data, isPending, isError } = useQuery({
@@ -66,21 +68,8 @@ export default function App({ params: { slug, courseId } }) {
 		}
 	}, [enrollmentData])
 
-	const { isPending: isLoadingStripeSession, mutate: mutateStripeSession } = useMutation({
-		mutationFn: createStripeSession,
-		onSuccess: (data) => {
-			toast.loading('Redirecting to payment gateway...')
-			window.location.href = data.sessionUrl
-		},
-		onError: (error) => {
-			toast.error(
-				error?.response?.data?.message || error?.response?.data?.errors?.toast || 'Something went wrong'
-			)
-		},
-	})
-
 	const handleEnroll = () => {
-		if (!enrollment) mutateStripeSession({ courseId })
+		if (!enrollment) onOpenCheckout()
 		else router.push(`/courses/${slug}/${courseId}/learn`)
 	}
 
@@ -166,7 +155,6 @@ export default function App({ params: { slug, courseId } }) {
 									)}
 									<Spacer y={3} />
 									<Button
-										isLoading={isLoadingStripeSession}
 										fullWidth={true}
 										color="primary"
 										variant="flat"
@@ -188,14 +176,15 @@ export default function App({ params: { slug, courseId } }) {
 						</Card>
 						<div className="flex-grow max-w-[600px]">
 							<p className="text-4xl font-semibold -mt-2">{course?.title}</p>
-							<Spacer y={6} />
-							<p className="text-base">{course?.description}</p>
 							<Spacer y={2} />
+							<p className="text-sm text-default-700">{course?.description}</p>
+							<Spacer y={4} />
 							<div className="flex gap-2 items-center">
-								<p className="text-sm font-medium">Created by {course?.teacher?.name}</p>
+								<p className="text-sm text-default-500">Created by</p>
+								<p className="text-sm font-medium text-default-700">{course?.teacher?.name}</p>
 
 								<Tooltip content="Message the Author" placement="right">
-									<MessageSquare
+									<MessageCircle
 										size={16}
 										strokeWidth={2.5}
 										className="text-primary cursor-pointer"
@@ -275,6 +264,7 @@ export default function App({ params: { slug, courseId } }) {
 				</>
 			)}
 			<IntroVideoModal isOpen={isOpenIntroVideo} onClose={onCloseIntroVideo} segment={introSegment} />
+			{isOpenCheckout && <CheckoutModal isOpen={isOpenCheckout} onClose={onCloseCheckout} course={course} />}
 		</>
 	)
 }

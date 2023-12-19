@@ -132,9 +132,9 @@ export function getMuxUploadUrl() {
 		})
 }
 
-export function createStripeSession({ courseId }) {
+export function createStripeSession({ courseId, code }) {
 	return axios
-		.post('/api/create-checkout-session', { courseId })
+		.post('/api/create-checkout-session', { courseId, code })
 		.then((res) => res.data)
 		.catch((err) => {
 			throw err

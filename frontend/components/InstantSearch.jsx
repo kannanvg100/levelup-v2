@@ -90,7 +90,7 @@ export default function InstantSearch() {
 							</Link>
 						))}
 						<p
-							className="w-full text-center cursor-pointer underline text-small py-3 border-t border-default-200 text-default-500"
+							className="w-full text-center cursor-pointer underline text-small py-3 border-t border-default-200 text-default-500 whitespace-nowrap"
 							onClick={() => router.push(`/courses?search=${query}`)}>
 							Show all results
 						</p>

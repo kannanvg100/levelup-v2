@@ -6,8 +6,9 @@ const errorHandler = (err, req, res, next) => {
 
 	// Mongoose Duplicate Key Error
 	if (err.code === 11000) {
-		statusCode = 409
-		errors[err.keyValue] = `${Object.keys(err.keyValue)} already exists`
+		statusCode = 400
+        const key = Object.keys(err.keyValue)[0]
+		errors[key] = `The ${Object.keys(err.keyValue)} you entered already exists`
 	}
 
 	// Mongoose validation error

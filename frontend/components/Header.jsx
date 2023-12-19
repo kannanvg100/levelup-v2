@@ -145,8 +145,8 @@ export default function Header() {
 								href="/profile/courses"
 								aria-current="my courses"
 								size="sm"
-								className="hidden lg:block text-default-700 font-medium hover:text-primary">
-								My&nbsp;Courses
+								className="hidden lg:block text-default-700 font-medium hover:text-primary select-none whitespace-nowrap">
+								My Courses
 							</Link>
 
 							<Link
@@ -193,11 +193,8 @@ export default function Header() {
 												</div>
 											</NextLink>
 										</DropdownItem>
-										{/* <DropdownItem key="dark_mode" onClick={onChange}>
-									{theme === 'light' ? 'Dark mode' : 'Light Mode'}
-								</DropdownItem> */}
 										<DropdownItem key="logout" color="danger" onClick={handleLogout}>
-											<div className="flex items-center gap-2 py-1 font-medium">
+											<div className="flex items-center gap-2 py-1 font-medium whitespace-nowrap">
 												<LogOut size={16} />
 												<p>Log Out</p>
 											</div>
@@ -229,7 +226,7 @@ export default function Header() {
 								href="/signup"
 								color="primary"
 								variant="flat"
-								className="font-bold"
+								className="font-bold whitespace-nowrap"
 								radius="none"
 								size="sm">
 								Sign Up

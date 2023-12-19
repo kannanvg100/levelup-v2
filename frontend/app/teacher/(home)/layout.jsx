@@ -20,7 +20,7 @@ export default function layout({ children }) {
 							<Sidebar />
 						</ScrollShadow>
 					</div>
-					<div className="flex flex-col flex-grow md:ms-[220px]">
+					<div className="flex flex-col flex-grow md:ms-[220px] bg-default-50">
 						<div className="flex-grow px-6 py-10 min-h-screen">{children}</div>
 						<Footer />
 					</div>

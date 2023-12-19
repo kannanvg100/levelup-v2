@@ -49,6 +49,16 @@ body {
         @apply bg-default-100;
     }
 
+    /* Hide scrollbar  */
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
 }
 
 /* Removes the time stamp from audio player */
@@ -62,6 +72,30 @@ audio::-webkit-media-controls-time-remaining-display {
 
 input,
 select {
-  -webkit-background-clip: text !important;
-  background-clip: text !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+}
+
+.ellipsis-container {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    text-overflow: ellipsis;
+    letter-spacing: 0px;
+    line-height: 16px;
+}
+
+.hero-bg-dark {
+    background-image: linear-gradient(to right, black 50%, transparent 100%), url(/hero_2.jpg);
+    background-position: right;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.hero-bg-light {
+    background-image: linear-gradient(to right, white 50%, transparent 100%), url(/hero_2.jpg);
+    background-position: right;
+    background-size: contain;
+    background-repeat: no-repeat;
 }

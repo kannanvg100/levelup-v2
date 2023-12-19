@@ -5,6 +5,8 @@ import { ResponsiveLine } from '@nivo/line'
 import { ResponsivePie } from '@nivo/pie'
 import React, { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
+import { nivoDark } from '@nivo/core'
+import { useTheme } from 'next-themes'
 
 export default function Page() {
 	const { data, isPending, isError } = useQuery({
@@ -13,9 +15,22 @@ export default function Page() {
 		keepPreviousData: true,
 	})
 
-    useEffect(() => {
-        console.log(data)
-    }, [data])
+	const [dataRange, setDataRange] = useState([0, 0])
+	useEffect(() => {
+		let min = 0,
+			max = 0
+		if (data) {
+			data?.topCourses?.forEach((it) => {
+				it.data.forEach((it2) => {
+					min = Math.min(min, it2.y)
+					max = Math.max(max, it2.y)
+				})
+			})
+			setDataRange([min, max])
+		}
+	}, [data])
+
+	const { theme } = useTheme()
 
 	return (
 		<div>
@@ -41,11 +56,21 @@ export default function Page() {
 				</div>
 			)}
 			<Spacer y={8} />
-			<div className="flex w-full gap-4 h-[300px] items-center">
+			<div className="flex w-full gap-4 h-[350px] items-center">
 				<div className="w-[600px] h-full">
 					{data?.topCourses && (
 						<ResponsiveLine
 							data={data?.topCourses}
+							theme={{
+								text: {
+									fill: theme === 'dark' ? '#e4e4e7' : '#3f3f46',
+								},
+								grid: {
+									line: {
+										stroke: theme === 'dark' ? '#3f3f46' : '#e4e4e7',
+									},
+								},
+							}}
 							margin={{ top: 50, right: 20, bottom: 50, left: 60 }}
 							xScale={{
 								type: 'time',
@@ -57,8 +82,8 @@ export default function Page() {
 							xFormat="time:%Y-%m-%d"
 							yScale={{
 								type: 'linear',
-								min: '0',
-								max: '5',
+								min: dataRange[0] - 1,
+								max: dataRange[1] + 1,
 								stacked: false,
 								reverse: false,
 							}}
@@ -67,7 +92,7 @@ export default function Page() {
 							axisRight={null}
 							axisBottom={{
 								format: '%b %d',
-								tickValues: 'every 2 day',
+								tickValues: 'every 3 day',
 								legend: '',
 								legendOffset: 40,
 								legendPosition: 'middle',
@@ -84,11 +109,11 @@ export default function Page() {
 							}}
 							enableGridX
 							enableGridY
-							colors={{ scheme: 'nivo' }}
-							lineWidth={3}
+							colors={{ scheme: 'set2' }}
+							lineWidth={4}
 							enablePoints
 							pointSize={8}
-							pointColor={{ theme: 'background' }}
+							pointColor={{ from: 'color' }}
 							pointBorderWidth={2}
 							pointBorderColor={{ from: 'serieColor' }}
 							pointLabelYOffset={-12}
@@ -128,11 +153,21 @@ export default function Page() {
 					{data?.countByCategory && (
 						<ResponsivePie
 							data={data?.countByCategory}
+							theme={{
+								text: {
+									fill: theme === 'dark' ? '#e4e4e7' : '#3f3f46',
+								},
+								grid: {
+									line: {
+										stroke: theme === 'dark' ? '#3f3f46' : '#e4e4e7',
+									},
+								},
+							}}
+                            colors={{ scheme: 'set2' }}
 							margin={{ top: 40, right: 100, bottom: 40, left: 100 }}
 							innerRadius={0.5}
 							padAngle={3}
 							cornerRadius={0}
-							colors={{ scheme: 'greens' }}
 							borderWidth={1}
 							borderColor={{ from: 'color', modifiers: [['darker', 0.2]] }}
 							radialLabelsSkipAngle={10}

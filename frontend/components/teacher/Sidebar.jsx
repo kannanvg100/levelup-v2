@@ -3,7 +3,21 @@
 import { logoutUser } from '@/api/users'
 import { removeTeacher } from '@/redux/slices/teacherSlice'
 import { Accordion, AccordionItem } from '@nextui-org/react'
-import { Bell, ClipboardList, LogOut, MessageSquare, MoonStar, PieChart, Sun, User2, Users2 } from 'lucide-react'
+import {
+	BadgeIndianRupee,
+	Bell,
+	ClipboardList,
+	CreditCard,
+	LogOut,
+	MessageSquare,
+	MoonStar,
+	PieChart,
+	Sun,
+	Tag,
+	Ticket,
+	User2,
+	Users2,
+} from 'lucide-react'
 import { useTheme } from 'next-themes'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -67,12 +81,6 @@ export default function Sidebar() {
 						<span className="ml-2 text-sm tracking-wide truncate">Analytics</span>
 					</Link>
 					{/* <Link
-						href="#"
-						className="px-2 relative flex flex-row items-center h-10 focus:outline-none hover:bg-default-100">
-						<MessageSquare size={16} />
-						<span className="ml-2 text-sm tracking-wide truncate">Messages</span>
-					</Link>
-					<Link
 						href="/teacher/notifications"
 						className={`px-2 relative flex flex-row items-center h-10 focus:outline-none hover:bg-default-100 ${isActive(
 							'/teacher/notifications'
@@ -105,6 +113,25 @@ export default function Sidebar() {
 							3
 						</span> */}
 					</Link>
+					<Link
+						href="/teacher/promotions"
+						className={`px-2 relative flex flex-row items-center h-10 focus:outline-none hover:bg-default-100 ${isActive(
+							'/teacher/promotions'
+						)}`}>
+						<Ticket size={16} />
+						<span className="ml-2 text-sm tracking-wide truncate">Promotions</span>
+					</Link>
+					{/* <Link
+						href="/teacher/reports"
+						className={`px-2 relative flex flex-row items-center h-10 focus:outline-none hover:bg-default-100 ${isActive(
+							'/teacher/reports'
+						)}`}>
+						<CreditCard size={16} />
+						<span className="ml-2 text-sm tracking-wide truncate">Enrollments</span>
+						<span className="px-2 py-0.5 ml-auto text-xs font-medium tracking-wide text-red-500 bg-red-50 rounded-full">
+							3
+						</span>
+					</Link> */}
 				</AccordionItem>
 				<AccordionItem key="3" aria-label="Accordion 3" title="Settings" className="pb-2">
 					<Link

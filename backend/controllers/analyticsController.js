@@ -41,7 +41,7 @@ module.exports = {
 						course: { $first: '$course' },
 					},
 				},
-                {
+				{
 					$sort: {
 						_id: 1,
 					},
@@ -106,7 +106,7 @@ module.exports = {
 				},
 			])
 
-            topCourses = topCourses.map((it, index) => {
+			topCourses = topCourses.map((it, index) => {
 				return {
 					id: it?.id,
 					data: it?.data.map((it2, i) => {

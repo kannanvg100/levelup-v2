@@ -1,7 +1,5 @@
 'use client'
-import React, { useEffect } from 'react'
-
-import { getUsersOfTeacher } from '@/api/users'
+import React, { useEffect, useMemo } from 'react'
 
 import {
 	Table,
@@ -21,17 +19,18 @@ import {
 	useDisclosure,
 	Spinner,
 	Spacer,
-	Image,
 } from '@nextui-org/react'
 
 const columns = [
 	{ name: '', uid: 'profileImage', width: '30px' },
-	{ name: 'NAME', uid: 'name', width: '100px' },
-	{ name: 'EMAIL', uid: 'email', width: '100px' },
-	{ name: 'COURSE', uid: 'course', width: '100px' },
+	{ name: 'CODE', uid: 'code', width: '100px' },
 	{ name: 'STATUS', uid: 'status', width: '100px' },
-	{ name: 'PURCHASED DATE', uid: 'purchasedAt', width: '100px' },
-	{ name: 'ACTIONS', uid: 'actions', width: '100px' },
+	{ name: 'DISCOUNT (%)', uid: 'discount', width: '100px' },
+	{ name: 'MIN PURCHASE', uid: 'minPurchase', width: '100px' },
+	{ name: 'MAX DISCOUNT', uid: 'maxDiscount', width: '100px' },
+	{ name: 'START DATE', uid: 'startDate', width: '100px' },
+	{ name: 'END DATE', uid: 'endDate', width: '100px' },
+	{ name: '', uid: 'actions', width: '30px' },
 ]
 
 const statusOptions = [
@@ -40,38 +39,45 @@ const statusOptions = [
 	{ name: 'pending', uid: 'pending' },
 ]
 
-import { useQuery } from '@tanstack/react-query'
-import { useRouter } from 'next/navigation'
-import { AlertTriangle, ChevronDownIcon, MoreVertical, Search, User } from 'lucide-react'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
+import { AlertTriangle, MoreVertical, Plus, Search, Ticket, Trash } from 'lucide-react'
+import CreateCoupon from './_components/CreateCoupon'
+import { getCoupons } from '@/api/promotions'
+import DeleteCouponModal from './_components/DeleteCouponModal'
 
-const INITIAL_VISIBLE_COLUMNS = ['profileImage', 'name', 'email', 'course', 'purchasedAt', 'actions']
+const INITIAL_VISIBLE_COLUMNS = [
+	'profileImage',
+	'code',
+	'status',
+	'discount',
+	'minPurchase',
+	'maxDiscount',
+	'startDate',
+	'endDate',
+	'actions',
+]
 
 const statusColorMap = {
-	published: 'success',
-	draft: 'warning',
-	pending: 'danger',
+	active: 'success',
+	expired: 'danger',
+	pending: 'warning',
 }
 
 export default function App() {
 	const [page, setPage] = React.useState(1)
-	const [users, setUsers] = React.useState([])
 	const rowsPerPage = 8
-	const [pages, setPages] = React.useState(0)
-
-	const router = useRouter()
+	const [coupons, setCoupons] = React.useState([])
+	const [totalCoupons, setTotalCoupons] = React.useState(0)
 
 	const [filterValue, setFilterValue] = React.useState('')
-	const { data, isPending, isError, isRefetching } = useQuery({
-		queryKey: ['users', { page, count: rowsPerPage, query: filterValue }],
-		queryFn: () => getUsersOfTeacher({ page, count: rowsPerPage, query: filterValue }),
-		keepPreviousData: true,
+	const { data, isPending, isError, isRefetching, isFetched } = useQuery({
+		queryKey: ['coupons', { page, count: rowsPerPage, query: filterValue }],
+		queryFn: () => getCoupons({ page, count: rowsPerPage, query: filterValue }),
+		placeholderData: keepPreviousData,
 	})
 
-	useEffect(() => {
-		if (data) setUsers(data.users)
-	}, [data])
+	const pages = useMemo(() => Math.ceil(data?.totalCoupons / rowsPerPage), [data?.totalCoupons, rowsPerPage])
 
-    
 	const [selectedKeys, setSelectedKeys] = React.useState([])
 	const [visibleColumns, setVisibleColumns] = React.useState(INITIAL_VISIBLE_COLUMNS)
 	const [statusFilter, setStatusFilter] = React.useState('all')
@@ -80,9 +86,18 @@ export default function App() {
 		direction: 'ascending',
 	})
 
-	const { isOpen, onOpen, onClose } = useDisclosure()
-	const [currentCourse, setCurrentCourse] = React.useState('')
-	const { isOpen: isOpenDeleteModal, onOpen: onOpenDeleteModal, onClose: onCloseDeleteModal } = useDisclosure()
+	const [currentCoupon, setCurrentCoupon] = React.useState('')
+	const {
+		isOpen: isOpenCreateCouponModal,
+		onOpen: onOpenCreateCouponModal,
+		onClose: onCloseCreateCouponModal,
+	} = useDisclosure()
+
+	const {
+		isOpen: isOpenDeleteCouponModal,
+		onOpen: onOpenDeleteCouponModal,
+		onClose: onCloseDeleteCouponModal,
+	} = useDisclosure()
 
 	const hasSearchFilter = Boolean(filterValue)
 
@@ -93,18 +108,19 @@ export default function App() {
 	}, [visibleColumns])
 
 	const filteredItems = React.useMemo(() => {
-		let filteredUsers = [...users]
+		console.log('chaneged')
+		let filteredCoupons = [...(data?.coupons || [])]
 
 		if (filterValue.trim()) {
-			filteredUsers = filteredUsers.filter((course) => {
-				return course.title.toLowerCase().includes(filterValue.toLowerCase())
+			filteredCoupons = filteredCoupons.filter((it) => {
+				return it.code.toLowerCase().includes(filterValue.toLowerCase())
 			})
 		}
 		if (statusFilter !== 'all' && Array.from(statusFilter).length !== statusOptions.length) {
-			filteredUsers = filteredUsers.filter((course) => Array.from(statusFilter).includes(course.status))
+			filteredCoupons = filteredCoupons.filter((it) => Array.from(statusFilter).includes(it.status))
 		}
-		return filteredUsers
-	}, [users, filterValue, statusFilter])
+		return filteredCoupons
+	}, [data, data?.coupons, filterValue, statusFilter])
 
 	const items = React.useMemo(() => {
 		const start = (page - 1) * rowsPerPage
@@ -123,46 +139,43 @@ export default function App() {
 		})
 	}, [sortDescriptor, items])
 
-	const renderCell = React.useCallback((user, columnKey) => {
-		const cellValue = user[columnKey]
+	const renderCell = React.useCallback((item, columnKey) => {
+		const cellValue = item[columnKey]
 
 		switch (columnKey) {
 			case 'profileImage':
-				return (
-					<div className="w-[35px] h-[35px] relative flex items-center">
-						<Image
-							width={30}
-							height={30}
-							alt={user?.student?.name}
-							src={user?.student?.profileImage}
-							className="w-full h-full object-cover rounded-full"
-						/>
-					</div>
-				)
-			case 'name':
+				return <Ticket size={20} className="text-default-500" />
+			case 'code':
 				return (
 					<p className="text-tiny text-bold capitalize whitespace-nowrap overflow-hidden text-ellipsis">
-						{user?.student?.name}
+						{cellValue}
 					</p>
 				)
-			case 'email':
+			case 'status':
+				const startDate = new Date(item.startDate)
+				const endDate = new Date(item.endDate)
+				const status = startDate > new Date() ? 'pending' : endDate < new Date() ? 'expired' : 'active'
 				return (
-					<p className="text-tiny text-bold whitespace-nowrap overflow-hidden text-ellipsis">{user?.student?.email}</p>
+					<Chip variant="flat" radius="none" size="sm" color={statusColorMap[status]} className="capitalize">
+						{status}
+					</Chip>
 				)
-			case 'course':
+			case 'discount':
+			case 'minPurchase':
+			case 'maxDiscount':
+				return (
+					<p className="text-tiny text-bold whitespace-nowrap overflow-hidden text-ellipsis">₹{cellValue}</p>
+				)
+			case 'startDate':
+			case 'endDate':
+				const val = new Date(cellValue).toLocaleDateString('en-IN', {
+					day: 'numeric',
+					month: 'short',
+					year: 'numeric',
+				})
 				return (
 					<p className="text-tiny text-bold capitalize whitespace-nowrap overflow-hidden text-ellipsis">
-						{user?.course?.title}
-					</p>
-				)
-			case 'purchasedAt':
-				return (
-					<p className="text-tiny whitespace-nowrap">
-						{new Date(cellValue).toLocaleDateString('en-IN', {
-							day: 'numeric',
-							month: 'short',
-							year: 'numeric',
-						})}
+						{val}
 					</p>
 				)
 			case 'actions':
@@ -175,7 +188,18 @@ export default function App() {
 								</Button>
 							</DropdownTrigger>
 							<DropdownMenu className="text-default-700">
-								<DropdownItem>Chat</DropdownItem>
+								<DropdownItem
+									color="danger"
+									variant="flat"
+									onClick={() => {
+										setCurrentCoupon(item._id)
+										onOpenDeleteCouponModal()
+									}}>
+									<div className="flex items-center">
+										<Trash size={16} />
+										<span className="ml-2">Delete</span>
+									</div>
+								</DropdownItem>
 							</DropdownMenu>
 						</Dropdown>
 					</div>
@@ -218,7 +242,7 @@ export default function App() {
 					isClearable
 					className="w-full text-default-500 max-w-[400px]"
 					classNames={{ inputWrapper: 'h-full' }}
-					placeholder="Search for users..."
+					placeholder="Search for coupons..."
 					startContent={<Search size={16} />}
 					value={filterValue}
 					onClear={() => onClear()}
@@ -226,9 +250,21 @@ export default function App() {
 					size="sm"
 					radius="none"
 				/>
+				<Button
+					variant="flat"
+					size="md"
+					color="primary"
+					onPress={onOpenCreateCouponModal}
+					className="capitalize font-medium items-center"
+					radius="none">
+					<div className="flex justify-center items-center gap-2">
+						<Plus size={16} strokeWidth={2.5} />
+						<p>Create Coupon</p>
+					</div>
+				</Button>
 			</div>
 		)
-	}, [filterValue, statusFilter, visibleColumns, onSearchChange, data, hasSearchFilter])
+	}, [filterValue, statusFilter, visibleColumns, onSearchChange, hasSearchFilter])
 
 	const bottomContent = React.useMemo(() => {
 		return (
@@ -243,7 +279,7 @@ export default function App() {
 					radius="none"
 					size="sm"
 					page={page}
-					total={Math.ceil(data?.totalUsers / rowsPerPage || 1)}
+					total={Math.ceil(data?.totalCoupons / rowsPerPage || 1)}
 					onChange={setPage}
 				/>
 				<div className="hidden sm:flex w-[30%] justify-end gap-2">
@@ -262,12 +298,12 @@ export default function App() {
 		<div>
 			<div className="flex justify-start items-baseline gap-2">
 				<span className="text-xl font-semibold" classNames={{ wrapper: 'w-[10px] h-[10px]' }}>
-					Students
+					Promotions
 				</span>
 				{isPending || isRefetching ? (
 					<Spinner size="sm"></Spinner>
 				) : (
-					<span className="text-tiny text-default-600">{`(${data?.totalUsers} items)`}</span>
+					<span className="text-tiny text-default-600">{`(${data?.totalCoupons} items)`}</span>
 				)}
 				{isError && <AlertTriangle color="#f00" />}
 			</div>
@@ -276,7 +312,7 @@ export default function App() {
 
 			<Table
 				isCompact
-				aria-label="Table of users"
+				aria-label="Table of coupons"
 				isHeaderSticky
 				bottomContent={bottomContent}
 				bottomContentPlacement="outside"
@@ -288,10 +324,7 @@ export default function App() {
 				onSortChange={setSortDescriptor}
 				selectionMode="single"
 				radius="none"
-				shadow="sm"
-				onRowAction={(key) => {
-					router.push(`/teacher/users/${key}`)
-				}}
+				shadow="md"
 				classNames={{
 					thead: '[&>tr]:first:shadow-none',
 					th: 'first:rounded-l-none last:rounded-r-none first:shadow-none',
@@ -310,7 +343,7 @@ export default function App() {
 				</TableHeader>
 				<TableBody
 					className="border-1"
-					emptyContent={isPending ? <Spinner /> : <p>No items found</p>}
+					emptyContent={isPending || !isFetched ? <Spinner /> : <p>No items found</p>}
 					items={sortedItems}
 					isLoading={true}>
 					{(item) => (
@@ -320,6 +353,12 @@ export default function App() {
 					)}
 				</TableBody>
 			</Table>
+			<CreateCoupon isOpen={isOpenCreateCouponModal} onClose={onCloseCreateCouponModal} />
+			<DeleteCouponModal
+				isOpen={isOpenDeleteCouponModal}
+				onClose={onCloseDeleteCouponModal}
+				couponId={currentCoupon}
+			/>
 		</div>
 	)
 }

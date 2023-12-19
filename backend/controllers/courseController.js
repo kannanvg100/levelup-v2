@@ -8,6 +8,7 @@ const Enrollment = require('../models/Enrollment')
 const Review = require('../models/Review')
 const User = require('../models/User')
 const Favorite = require('../models/Favorite')
+const Coupon = require('../models/Promotion')
 const { uploadToS3 } = require('../helpers/awsHelpers')
 const slugify = require('slugify')
 const { Video } = new Mux(process.env.MUX_TOKEN_ID, process.env.MUX_TOKEN_SECRET)
@@ -26,7 +27,14 @@ module.exports = {
 	// Get all filter for courses
 	getFilters: async (req, res, next) => {
 		try {
-			let categories = await Category.find({ status: 'listed' }).select('title')
+			let categories = await Course.aggregate([
+				{ $match: { status: 'published' } },
+				{ $group: { _id: '$category', count: { $sum: 1 } } },
+				{ $sort: { count: -1 } },
+				{ $lookup: { from: 'categories', localField: '_id', foreignField: '_id', as: 'category' } },
+				{ $unwind: '$category' },
+				{ $project: { _id: '$category._id', title: '$category.title' } },
+			])
 			categories = {
 				title: 'Categories',
 				key: 'category',
@@ -84,44 +92,35 @@ module.exports = {
 				// if(sort === 'highest-rated') sortQuery['rating'] = -1
 			}
 
-			let filterQuery = {}
+			let filterArray = [{ status: 'published' }]
 
 			filter = decodeURIComponent(filter)
-			let filterObj = {}
 			if (filter) {
 				filter.split('&').forEach((item) => {
 					const [key, value] = item.split('=')
-					if (key === 'level') filterQuery['level'] = { $in: value.split(',') }
-					if (key === 'category') filterQuery['category'] = { $in: value.split(',') }
+					if (key === 'level') filterArray.push({ level: { $in: value.split(',') } })
+					if (key === 'category') filterArray.push({ category: { $in: value.split(',') } })
 					if (key === 'price') {
 						const [min, max] = value.split('-')
-						filterQuery['price'] = { $gte: min, $lte: max }
+						filterArray.push({ price: { $gte: min, $lte: max } })
 					}
 				})
 			}
 
 			search = decodeURIComponent(search)
 			const escapedSearchQuery = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-
 			if (escapedSearchQuery) {
-				;(filterQuery = {
-					$and: [
-						{
-							$or: [
-								{ $text: { $search: search } },
-								{ title: { $regex: new RegExp(escapedSearchQuery, 'i') } },
-							],
-						},
-						{ status: 'published' },
+				filterArray.push({
+					$or: [
+						{ $text: { $search: escapedSearchQuery } },
+						{ title: { $regex: new RegExp(escapedSearchQuery, 'i') } },
 					],
-				}),
-					{ title: 1 }
-			} else {
-				filterQuery.status = 'published'
+				})
 			}
 
-			const totalCourses = await Course.countDocuments(filterQuery)
-			const courses = await Course.find(filterQuery)
+			const totalCourses = await Course.countDocuments({ $and: filterArray })
+			const courses = await Course.find({ $and: filterArray })
+				.populate('teacher', 'name profileImage')
 				.sort(sortQuery)
 				.limit(count)
 				.skip((page - 1) * count)
@@ -496,10 +495,36 @@ module.exports = {
 	// Add a chapter to a course
 	createCheckoutSession: async (req, res, next) => {
 		try {
-			const courseId = req.body.courseId
+			const { courseId, code } = req.body
 			const userId = req.user.id
-			if (!courseId) return res.status(400).json({ success: false, message: 'Invalid request' })
+			if (!courseId) return res.status(400).json({ success: false, errors: { code: 'Invalid request' } })
 			const course = await Course.findById(courseId)
+			let offerPrice = course.price
+			if (code) {
+				const coupon = await Coupon.findOne({ code })
+				if (!coupon) return res.status(400).json({ success: false, errors: { code: 'Invalid coupon code' } })
+				if (coupon.user._id.toString() !== course.teacher.toString())
+					return res
+						.status(400)
+						.json({ success: false, errors: { code: 'This coupon is not applicable for this course' } })
+				if (coupon.startDate > Date.now()) {
+					return res
+						.status(400)
+						.json({ success: false, errors: { code: 'This coupon is not active yet.' } })
+				}
+				if (coupon.endDate < Date.now()) {
+					return res.status(400).json({ success: false, errors: { code: 'This coupon has expired.' } })
+				}
+				if (coupon.minPurchase > course.price) {
+					return res.status(400).json({
+						success: false,
+						errors: { code: `Minimum purchase should be ${coupon.minPurchase}` },
+					})
+				}
+
+				offerPrice = course.price * (1 - coupon.discount / 100).toFixed(2)
+			}
+
 			if (course?.status !== 'published')
 				return res.status(400).json({ success: false, message: 'Course is not published yet' })
 
@@ -522,7 +547,7 @@ module.exports = {
 							product_data: {
 								name: course.title,
 							},
-							unit_amount: course.price * 100,
+							unit_amount: offerPrice * 100,
 						},
 						quantity: 1,
 					},

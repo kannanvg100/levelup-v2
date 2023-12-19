@@ -20,6 +20,7 @@ const liveVideoRouter = require('./routes/liveVideoRouter')
 const chatRouter = require('./routes/chatRouter')
 const analyticsRouter = require('./routes/analyticsRouter')
 const favoriteRouter = require('./routes/favoriteRouter')
+const promotionRouter = require('./routes/promotionRouter')
 
 const webhookRouter = require('./routes/webhookRouter')
 const errorHandler = require('./middlewares/errorHandler')
@@ -50,10 +51,11 @@ initializeSocketIO(io)
 app.use(
 	morgan((tokens, req, res) => {
 		const status = tokens.status(req, res)
-		if (Number(status) >= 400) {
+		if (Number(status) !== 304) {
+            const statusColor = Number(status) >= 400 ? '\x1b[31m' : '\x1b[32m'
             let date = new Date(Date.now())
             date =  `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`
-			return `\x1b[31m${tokens.method(req, res)} ${tokens.url(req, res)} - ${tokens.status(
+			return `${statusColor}${tokens.method(req, res)} ${tokens.url(req, res)} - ${tokens.status(
 				req,
 				res
 			)} ${tokens.res(req, res, 'content-length')} - ${tokens['response-time'](
@@ -83,6 +85,7 @@ app.use('/api', liveVideoRouter)
 app.use('/api', chatRouter)
 app.use('/api', analyticsRouter)
 app.use('/api', favoriteRouter)
+app.use('/api', promotionRouter)
 
 app.use('/api/admin', adminRouter)
 
