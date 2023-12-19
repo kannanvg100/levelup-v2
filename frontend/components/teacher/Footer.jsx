@@ -10,7 +10,7 @@ export default function Footer() {
 			{/* <div className="container mx-auto py-6 max-w-screen-xl "> */}
 			<Image src="/logo.svg" alt="logo" width={100} height={100} />
 			<div className="flex mt-6 gap-6">
-				<div className="flex gap-4">
+				<div className="flex gap-4 whitespace-nowrap">
 					<Link
 						as={NextLink}
 						href="/"

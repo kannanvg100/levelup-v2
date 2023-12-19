@@ -10,7 +10,7 @@ export default function Footer() {
 			{/* <div className="container mx-auto py-6 max-w-screen-xl "> */}
 			<Image src="/logo.svg" alt="logo" width={100} height={100} />
 			<div className="flex mt-6 gap-6">
-				<div className="flex gap-4">
+				<div className="flex gap-4 whitespace-nowrap mx-[100px]">
 					<Link
 						as={NextLink}
 						href="/"
@@ -113,7 +113,7 @@ export default function Footer() {
 				<Linkedin size={18} className="cursor-pointer hover:text-default-700" />
 				<Github size={18} className="cursor-pointer hover:text-default-700" />
 			</div>
-			<p className="mt-6 text-small text-default-500">© 2023 LevelUP Inc.</p>
+			<p className="mt-4 text-small text-default-500">© 2023 LevelUP Inc.</p>
 		</div>
 	)
 }
