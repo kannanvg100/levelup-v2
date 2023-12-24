@@ -55,7 +55,7 @@ export default function ResetPassword({ email: _email, role }) {
 		mutationFn: resetPassword,
 		onSuccess: () => {
 			toast.success('Password reset successfully')
-			router.push(role === 'teacher' ? '/teacher/login' : '/login')
+			router.replace(role === 'teacher' ? '/teacher/login' : '/login')
 		},
 		onError: (error) => {
 			const err = error?.response?.data?.errors

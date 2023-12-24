@@ -91,7 +91,7 @@ module.exports = {
 			})
 	},
 
-    getAllTeachers: async ({ page, count, query, status, sort }) => {
+	getAllTeachers: async ({ page, count, query, status, sort }) => {
 		if (status) status = encodeURIComponent(status.join(','))
 		return axios
 			.get(`/api/admin/teachers?query=${query}&status=${status}&sort=${sort}&page=${page}&count=${count}`)
@@ -144,6 +144,15 @@ module.exports = {
 	getUsersOfTeacher: async ({ page, count, query }) => {
 		return axios
 			.get(`${BASE_URL}/teacher/all-users?page=${page}&count=${count}&query=${query}`, { withCredentials: true })
+			.then((res) => res.data)
+			.catch((err) => {
+				throw err
+			})
+	},
+
+	getUserInfo: async () => {
+		return axios
+			.get(`${BASE_URL}/get-user`, { withCredentials: true })
 			.then((res) => res.data)
 			.catch((err) => {
 				throw err

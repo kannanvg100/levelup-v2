@@ -127,14 +127,14 @@ export default function Page({ params: { courseId } }) {
 			)}
 			{course && enrollment && (
 				<>
-					<Spacer y={4} />
-					<div className="flex justify-between items-baseline">
+					<div className="flex justify-between items-baseline mb-2 md:mt-2">
 						<Breadcrumbs>
 							<BreadcrumbItem>{course?.title}</BreadcrumbItem>
 							<BreadcrumbItem>{currentChapter?.title}</BreadcrumbItem>
 							<BreadcrumbItem>{currentSegment?.title}</BreadcrumbItem>
 						</Breadcrumbs>
 						<Button
+							className="hidden md:block"
 							isLoading={isLoadingMarkProgress}
 							radius="none"
 							size="md"
@@ -144,75 +144,109 @@ export default function Page({ params: { courseId } }) {
 							Mark as completed
 						</Button>
 					</div>
-					<Spacer y={2} />
-					<div className="flex items-start gap-5">
-						<div className="min-w-[300px] min-h-[400px] bg-default-100">
-							<Accordion
-								showDivider={true}
-								selectedKeys={[currentAccordian]}
-								onSelectionChange={(key) => setCurrentAccordian(key?.currentKey)}>
-								{course?.chapters?.map((chapter, index) => (
-									<AccordionItem
-										key={index}
-										title={
-											<p className="text-sm font-medium">
-												Chapter {index + 1}: {chapter.title}
-											</p>
-										}>
-										<div className="flex flex-col gap-2 ms-2">
-											{chapter?.segments?.map((seg, index) => (
-												<div
-													key={index}
-													className="flex items-center gap-2 cursor-pointer hover:underline"
-													onClick={() => {
-														setCurrentChapter(chapter)
-														setCurrentSegment(seg)
-													}}>
-													{seg?._id === currentSegment?._id ? (
-														<>
-															<p className="text-sm">{index + 1}.</p>
-															<p className="text-sm">{seg?.title}</p>
-															<PlaySquare size={14} />
-															{checkProgressStatus(chapter?._id, seg?._id) && (
-																<CheckCircle size={14} color="#0f0" />
-															)}
-														</>
-													) : (
-														<>
-															<p className="text-sm">{index + 1}.</p>
-															<p className="text-sm">{seg?.title}</p>
-															<PlaySquare size={14} />
-															{checkProgressStatus(chapter?._id, seg?._id) && (
-																<CheckCircle size={14} color="#0f0" />
-															)}
-														</>
-													)}
-												</div>
-											))}
-										</div>
-									</AccordionItem>
-								))}
-							</Accordion>
+					<div className="flex flex-col-reverse md:flex-row items-center md:items-start gap-5">
+						<div className="w-full md:max-w-[300px]">
+							<p className="text-base font-medium mb-2 text-default-500 md:hidden">Course content</p>
+							<div className="w-full md:max-w-[300px] md:min-h-[400px] bg-default-100">
+								<Accordion
+									showDivider={true}
+									selectedKeys={[currentAccordian]}
+									onSelectionChange={(key) => setCurrentAccordian(key?.currentKey)}>
+									{course?.chapters?.map((chapter, index) => (
+										<AccordionItem
+											key={index}
+											title={
+												<p className="text-sm font-medium">
+													Chapter {index + 1}: {chapter.title}
+												</p>
+											}>
+											<div className="flex flex-col gap-2 ms-2">
+												{chapter?.segments?.map((seg, index) => (
+													<div
+														key={index}
+														className="flex items-center gap-2 cursor-pointer hover:underline"
+														onClick={() => {
+															setCurrentChapter(chapter)
+															setCurrentSegment(seg)
+														}}>
+														{seg?._id === currentSegment?._id ? (
+															<>
+																<p className="text-sm">{index + 1}.</p>
+																<p className="text-sm">{seg?.title}</p>
+																<PlaySquare size={14} />
+																{checkProgressStatus(chapter?._id, seg?._id) && (
+																	<CheckCircle size={14} color="#0f0" />
+																)}
+															</>
+														) : (
+															<>
+																<p className="text-sm">{index + 1}.</p>
+																<p className="text-sm">{seg?.title}</p>
+																<PlaySquare size={14} />
+																{checkProgressStatus(chapter?._id, seg?._id) && (
+																	<CheckCircle size={14} color="#0f0" />
+																)}
+															</>
+														)}
+													</div>
+												))}
+											</div>
+										</AccordionItem>
+									))}
+								</Accordion>
+							</div>
 						</div>
 						<div className="flex-grow">
-							<div className="flex justify-center bg-black dark:bg-default-50">
-								<VideoPlayer segment={currentSegment} onEnded={handleMarkProgress} userId={user?._id} />
+							<div className="flex flex-col justify-start">
+								<div className="flex justify-center bg-black dark:bg-default-50 z-0">
+									<div className='w-[450px] md:w-[600px] md:h-[400px]'>
+									    <VideoPlayer
+    										segment={currentSegment}
+    										onEnded={handleMarkProgress}
+    										userId={user?._id}
+    										width="450px"
+    										height="full"
+    									/>
+									</div>
+								</div>
+								<Button
+									className="self-end md:hidden mt-2"
+									isLoading={isLoadingMarkProgress}
+									radius="none"
+									size="md"
+									color="primary"
+									variant="flat"
+									onClick={() => handleMarkProgress(currentSegment?._id)}>
+									Mark as completed
+								</Button>
 							</div>
-							<Spacer y={4} />
-							<div>
+							<div className="hidden md:block">
 								<Tabs aria-label="Options" variant="underlined">
 									<Tab key="description" title="Description">
-										{currentSegment?.description}
+										<p className="ms-2">{currentSegment?.description}</p>
 									</Tab>
 									<Tab key="comments" title="Comments">
 										<Comments segmentId={currentSegment?._id} />
 									</Tab>
-									<Tab key="attachments" title="Attachments">
+									{/* <Tab key="attachments" title="Attachments">
 										No attachments
-									</Tab>
+									</Tab> */}
 								</Tabs>
 							</div>
 						</div>
+					</div>
+					<div className="md:hidden">
+						<Tabs aria-label="Options" variant="underlined">
+							<Tab key="description" title="Description">
+								<p className="ms-2">{currentSegment?.description}</p>
+							</Tab>
+							<Tab key="comments" title="Comments">
+								<Comments segmentId={currentSegment?._id} />
+							</Tab>
+							{/* <Tab key="attachments" title="Attachments">
+										No attachments
+									</Tab> */}
+						</Tabs>
 					</div>
 				</>
 			)}

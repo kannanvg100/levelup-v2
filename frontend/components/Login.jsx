@@ -12,8 +12,9 @@ import { addUser } from '@/redux/slices/userSlice'
 import GoogleLogin from '@/components/GoogleLogin'
 import { toast } from 'react-hot-toast'
 import Image from 'next/image'
+import { useSearchParams } from 'next/navigation'
 
-export default function Login({ role, ret }) {
+export default function Login({ role }) {
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
 	const [errors, setErrors] = useState({ email: '', password: '' })
@@ -23,7 +24,7 @@ export default function Login({ role, ret }) {
 		onSuccess: (data) => {
 			dispatch(role === 'teacher' ? addTeacher(data.user) : addUser(data.user))
 			queryClient.setQueryData(['role', { email, password }], data)
-			router.push(role === 'teacher' ? '/teacher/courses' : '/')
+			router.replace(role === 'teacher' ? '/teacher/courses' : '/')
 		},
 		onError: (error) => {
 			const errors = error?.response?.data?.errors
@@ -35,7 +36,7 @@ export default function Login({ role, ret }) {
 		mutationFn: socialLoginUser,
 		onSuccess: (data) => {
 			dispatch(role === 'teacher' ? addTeacher(data.user) : addUser(data.user))
-			router.push(role === 'teacher' ? '/teacher/courses' : '/')
+			router.replace(role === 'teacher' ? '/teacher/courses' : '/')
 		},
 		onError: (error) => {
 			const errorMessage = error?.response?.data?.errors
@@ -45,6 +46,8 @@ export default function Login({ role, ret }) {
 
 	const router = useRouter()
 	const dispatch = useDispatch()
+    const searchParams = useSearchParams()
+	const ret = searchParams.get('ret')
 
 	useEffect(() => {
 		if (errors?.toast) {

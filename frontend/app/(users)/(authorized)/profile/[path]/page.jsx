@@ -1,9 +1,9 @@
 'use client'
 import { Tabs, Tab } from '@nextui-org/react'
 import { useRouter } from 'next/navigation'
-import MyCourses from './MyCourses'
-import Favorites from './Favorites'
-import Account from './Account'
+import MyCourses from './_components/MyCourses'
+import Favorites from './_components/Favorites'
+import Account from './_components/Account'
 
 export default function App({ params: { path } }) {
 	const router = useRouter()

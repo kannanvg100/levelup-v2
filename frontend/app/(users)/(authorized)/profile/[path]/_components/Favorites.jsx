@@ -4,7 +4,7 @@ import { QueryClient, useInfiniteQuery, useMutation } from '@tanstack/react-quer
 import { X } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import FavItemDummy from './FavItemDummy'
+import FavItemDummy from './FavItemSkeleton'
 import useInfiniteScroll from '@/hooks/useInfiniteScroll'
 
 export default function Favorites() {
@@ -90,17 +90,24 @@ export default function Favorites() {
 					<div key={i} className="w-[280px]"></div>
 				))}
 			</div>
-			<div className="w-1 h-1" ref={loaderRef}></div>
+			<div className="w-1 h-1 border" ref={loaderRef}></div>
 			<Spacer y={4} />
-			{data?.pages[0]?.total > 0 && !hasNextPage && (
+			{data?.pages[0]?.total > 0 && !hasNextPage ? (
 				<div className="relative flex justify-center">
 					<Divider className="h-[1px] bg-default-200 max-w-[500px]" />
-					<span className="bg-background dark:bg-default-50 px-4 text-center italic text-sm whitespace-nowrap text-default-200 absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
+					<span className="bg-background px-4 text-center italic text-sm whitespace-nowrap text-default-200 absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
 						You've reached the end!
 					</span>
 				</div>
+			) : (
+				<p className="underline cursor-pointer" onClick={() => fetchNextPage()}>
+					Load more
+				</p>
 			)}
-			{data?.pages[0]?.total === 0 && !isPending && <p className="mt-10 text-center text-default-500">No Favorites</p>}
+
+			{data?.pages[0]?.total === 0 && !isPending && (
+				<p className="mt-10 text-center text-default-500">No Favorites</p>
+			)}
 		</>
 	)
 }

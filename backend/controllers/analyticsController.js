@@ -46,6 +46,9 @@ module.exports = {
 						_id: 1,
 					},
 				},
+                {
+                    $limit: 5,
+                },
 				{
 					$group: {
 						_id: '$course',
@@ -187,6 +190,9 @@ module.exports = {
 						_id: 1,
 					},
 				},
+                {
+                    $limit: 5,
+                },
 				{
 					$group: {
 						_id: '$course',
@@ -276,6 +282,8 @@ module.exports = {
 					countByCategory,
 				},
 			})
+
+
 		} catch (error) {
 			next(error)
 		}

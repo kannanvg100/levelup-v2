@@ -2,15 +2,16 @@
 import React from 'react'
 import Footer from '@/components/teacher/Footer'
 import Sidebar from '@/components/teacher/Sidebar'
-import VideoCallIncoming from '@/components/VideoCallIncoming'
 import Chat from '@/components/Chat'
-import { ScrollShadow } from '@nextui-org/react'
+import { ScrollShadow, Spacer } from '@nextui-org/react'
 import { SocketProvider } from '@/providers/SocketProvider'
 import { useSelector } from 'react-redux'
 import { ChatProvider } from '@/components/providers/ChatProvider'
+import TeacherAccStatus from '@/components/TeacherAccStatus'
 
 export default function layout({ children }) {
 	const { teacher } = useSelector((state) => state.teacher)
+
 	return (
 		<ChatProvider>
 			<SocketProvider role="teacher">
@@ -21,7 +22,8 @@ export default function layout({ children }) {
 						</ScrollShadow>
 					</div>
 					<div className="flex flex-col flex-grow md:ms-[220px] bg-default-50">
-						<div className="flex-grow px-6 py-10 min-h-screen">{children}</div>
+						{teacher && teacher?.status !== 'active' ? <TeacherAccStatus /> : <Spacer y={10} />}
+						<div className="flex-grow px-6 min-h-screen">{children}</div>
 						<Footer />
 					</div>
 					{teacher && <Chat role="teacher" />}
@@ -29,10 +31,4 @@ export default function layout({ children }) {
 			</SocketProvider>
 		</ChatProvider>
 	)
-}
-
-{
-	/* <div className="bg-yellow-100 text-default-600 p-3 mb-3 flex items-center">
-    <p className='font-medium text-sm'>Verification pending</p>
-</div> */
 }

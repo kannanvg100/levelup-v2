@@ -17,7 +17,7 @@ export default async function PopularCourses() {
 	if (data === undefined) return null
 	return (
 		<>
-			<p className="text-[1.2rem] font-semibold text-default-700">Popular courses</p>
+			<p className="text-[1.5rem] font-semibold text-default-700">Popular courses</p>
 			<Spacer y={2} />
 			<ScrollShadow hideScrollBar orientation="horizontal" className="flex items-start gap-4">
 				{data?.courses.map((course) => (

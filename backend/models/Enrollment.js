@@ -21,14 +21,14 @@ const enrollmentsSchema = new mongoose.Schema({
 				chapter: {
 					type: mongoose.Schema.Types.ObjectId,
 					ref: 'Chapter',
-                    required: true,
+					required: true,
 				},
 				segments: [
 					{
 						segment: {
 							type: mongoose.Schema.Types.ObjectId,
 							ref: 'Segment',
-                            required: true,
+							required: true,
 						},
 						progress: {
 							type: Number,
@@ -44,6 +44,36 @@ const enrollmentsSchema = new mongoose.Schema({
 				],
 			},
 		],
+	},
+	payment: {
+		price: {
+			type: Number,
+			required: true,
+			min: 0,
+		},
+		discount: {
+			type: Number,
+			default: 0,
+			min: 0,
+		},
+		finalPrice: {
+			type: Number,
+			required: true,
+			min: 0,
+		},
+        coupon: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Coupon',
+        },
+		method: {
+			type: String,
+			enum: ['paypal', 'stripe'],
+			required: true,
+		},
+		paymentData: {
+			type: Object,
+			required: true,
+		},
 	},
 	purchasedAt: {
 		type: Date,

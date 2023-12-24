@@ -7,7 +7,7 @@ import toast from 'react-hot-toast'
 import useInfiniteScroll from '@/hooks/useInfiniteScroll'
 import WriteReviewModal from './WriteReviewModal'
 import NextLink from 'next/link'
-import CourseItemDummy from './CourseItemDummy'
+import CourseItemDummy from './CourseItemSkeleton'
 
 export default function Favorites() {
 
@@ -39,7 +39,6 @@ export default function Favorites() {
 			link.download = 'certificate.png'
 			link.click()
 		} catch (error) {
-			console.log("📄 > file: MyCourses.jsx:41 > handleGetCertificate > error:", error)
 			toast.error(error?.response?.data?.message || 'Something went wrong!')
 		}
 	}
@@ -197,7 +196,7 @@ export default function Favorites() {
 			{data?.pages[0]?.total > 0 && !hasNextPage && (
 				<div className="relative flex justify-center">
 					<Divider className="h-[1px] bg-default-200 max-w-[500px]" />
-					<span className="bg-background dark:bg-default-50 px-4 text-center italic text-sm whitespace-nowrap text-default-200 absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
+					<span className="bg-background px-4 text-center italic text-sm whitespace-nowrap text-default-200 absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
 						You've reached the end!
 					</span>
 				</div>

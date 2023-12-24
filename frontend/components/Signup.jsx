@@ -42,7 +42,7 @@ export default function Signup({ role }) {
 		mutationFn: socialLoginUser,
 		onSuccess: (data) => {
 			dispatch(login(data.user))
-			router.push(role === 'teacher' ? '/teacher/profile' : '/')
+			router.replace(role === 'teacher' ? '/teacher/profile' : '/')
 		},
 		onError: (error) => {
 			let errors = error?.response?.data?.errors
@@ -70,7 +70,7 @@ export default function Signup({ role }) {
 		onSuccess: (data) => {
 			const user = data?.user
 			if (user) dispatch(role === 'teacher' ? addTeacher(user) : addUser(user))
-			router.push(role === 'teacher' ? '/teacher/profile' : '/')
+			router.replace(role === 'teacher' ? '/teacher/profile' : '/')
 		},
 		onError: (error) => {
 			let errors = error?.response?.data?.errors

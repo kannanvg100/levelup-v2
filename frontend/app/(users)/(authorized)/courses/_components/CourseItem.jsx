@@ -4,10 +4,11 @@ import NextLink from 'next/link'
 import FavoriteButton from '@/components/FavoriteButton'
 
 export default function CourseItem({ course }) {
+	const title = encodeURIComponent(course?.title)
 	return (
 		<Card radius="none" shadow="none" className="bg-default-50 w-[240px]">
 			<CardBody className="p-2">
-				<Link as={NextLink} href={`/courses/${course?.slug}/${course?._id}`}>
+				<Link as={NextLink} href={`/courses/${course?.slug}/${course?._id}?title=${title}`}>
 					<Image
 						isZoomed
 						isBlurred
@@ -22,7 +23,7 @@ export default function CourseItem({ course }) {
 				<Spacer y={1} />
 				<div className="flex items-center justify-between">
 					<Link as={NextLink} href={`/courses/${course?.slug}/${course?._id}`}>
-						<div className='text-default-700'>
+						<div className="text-default-700">
 							<h4 className="w-[180px] text-ellipsis-custom text-sm">{course?.title}</h4>
 							<span className="font-bold">
 								₹{course?.price}

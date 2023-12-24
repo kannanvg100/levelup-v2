@@ -17,7 +17,7 @@ import { logout } from '@/redux/slices/adminSlice'
 import { logoutUser } from '@/api/users.js'
 import toast from 'react-hot-toast'
 import { QueryClient } from '@tanstack/react-query'
-import LoginModal from './LoginModal.jsx'
+import LoginModal from './LoginModal'
 
 export default function Header() {
 	const { admin } = useSelector((state) => state.admin)

@@ -19,10 +19,11 @@ import {
 import { ChevronDown, Frown } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import CourseItem from './CourseItem'
+import CourseItem from './_components/CourseItem'
 import { useRouter, useSearchParams } from 'next/navigation'
+import toast from 'react-hot-toast'
 
-export default function Sidebar() {
+export default function Page() {
 	const [page, setPage] = useState(1)
 	const [count, setCount] = useState(8)
 	const [search, setSearch] = useState('')
@@ -32,7 +33,7 @@ export default function Sidebar() {
 	const searchParams = useSearchParams()
 	const [totalPages, setTotalPages] = useState(1)
 	const [priceRange, setPriceRange] = useState([0, 9999])
-    
+
 	const { data, isPending, isError } = useQuery({
 		queryKey: ['courses', { page, count, search, filter, sort }],
 		queryFn: () => getCourses({ page, count, search, filter, sort }),
@@ -68,10 +69,10 @@ export default function Sidebar() {
 				const [key, value] = curr.split('=')
 				acc[key] = value.split(',')
 				return acc
-			}, {}) 
+			}, {})
 		}
 		setFilter(filter)
-	}, [])
+	}, [searchParams])
 
 	const {
 		data: filterData,
@@ -81,6 +82,13 @@ export default function Sidebar() {
 		queryKey: ['filterOptions'],
 		queryFn: () => getFilters(),
 	})
+
+	const handleClearFilters = () => {
+		setFilter({})
+		setSort('popular')
+		setSearch('')
+		setPriceRange([0, 9999])
+	}
 
 	const onNextPage = useCallback(() => {
 		if (page < totalPages) setPage(page + 1)
@@ -125,6 +133,7 @@ export default function Sidebar() {
 
 	return (
 		<div>
+			<Spacer y={2} />
 			<div className="flex gap-2 justify-between items-center">
 				<div className="flex gap-2 items-center">
 					<p className="text-lg font-medium text-default-600">Browse Courses</p>
@@ -162,7 +171,7 @@ export default function Sidebar() {
 					</Dropdown>
 				</div>
 			</div>
-			<Spacer y={4} />
+			<Spacer y={2} />
 			<div className="flex gap-3 items-start justify-start border-t-1 border-default-100">
 				<div className="min-w-[200px] border-e-1 border-default-100">
 					{isLoadingfilterOptions ? (
@@ -193,79 +202,90 @@ export default function Sidebar() {
 								})}
 						</div>
 					) : (
-						<Accordion
-							isCompact={true}
-							showDivider={false}
-							defaultSelectedKeys={'all'}
-							selectionMode="multiple"
-							className="whitespace-nowrap"
-							itemClasses={{
-								base: '',
-								title: 'text-default-900 text-small font-semibold',
-								trigger: 'w-fit',
-								content: 'text-default-700',
-							}}>
-							{filterData?.filters &&
-								filterData?.filters.map((filterItem) => {
-									return (
-										<AccordionItem
-											key={filterItem?.key}
-											aria-label={filterItem?.key}
-											title={filterItem?.title}
-											className="pb-2">
-											<CheckboxGroup
-												label=""
-												value={filter[filterItem?.key] || []}
+						<>
+							<Accordion
+								isCompact={true}
+								showDivider={false}
+								defaultSelectedKeys={'all'}
+								selectionMode="multiple"
+								className="whitespace-nowrap"
+								itemClasses={{
+									base: '',
+									title: 'text-default-900 text-small font-semibold',
+									trigger: 'w-fit',
+									content: 'text-default-700',
+								}}>
+								{filterData?.filters &&
+									filterData?.filters.map((filterItem) => {
+										return (
+											<AccordionItem
+												key={filterItem?.key}
+												aria-label={filterItem?.key}
+												title={filterItem?.title}
+												className="pb-2">
+												<CheckboxGroup
+													label=""
+													value={filter[filterItem?.key] || []}
+													size="sm"
+													radius="none"
+													onChange={(sel) => {
+														if (sel.length === 0) {
+															const newFilter = { ...filter }
+															delete newFilter[filterItem?.key]
+															setFilter(newFilter)
+														} else setFilter({ ...filter, [filterItem?.key]: sel })
+													}}>
+													{filterItem?.values?.map((it) => {
+														return (
+															<Checkbox key={it?.id} value={it?.id}>
+																<p className="w-[150px] whitespace-nowrap text-ellipsis overflow-hidden">
+																	{it?.title}
+																</p>
+															</Checkbox>
+														)
+													})}
+												</CheckboxGroup>
+											</AccordionItem>
+										)
+									})}
+								{filterData?.priceRanges && (
+									<AccordionItem key="price" aria-label="price" title="Price" className="pb-2">
+										<div className="flex flex-col items-center justify-start max-w-[160px]">
+											<div className="flex gap-2 items-center justify-between w-full ps-2">
+												<p className="text-tiny font-medium text-default-500">
+													₹{priceRange[0]}
+												</p>
+												<p className="text-tiny font-medium text-default-500">
+													₹{priceRange[1]}
+												</p>
+											</div>
+											<Slider
+												className="max-w-[160px] ps-1 mt-1"
 												size="sm"
-												radius="none"
-												onChange={(sel) => {
-													if (sel.length === 0) {
-														const newFilter = { ...filter }
-														delete newFilter[filterItem?.key]
-														setFilter(newFilter)
-													} else setFilter({ ...filter, [filterItem?.key]: sel })
-												}}>
-												{filterItem?.values?.map((it) => {
-													return (
-														<Checkbox key={it?.id} value={it?.id}>
-															<p className="w-[150px] whitespace-nowrap text-ellipsis overflow-hidden">
-																{it?.title}
-															</p>
-														</Checkbox>
-													)
-												})}
-											</CheckboxGroup>
-										</AccordionItem>
-									)
-								})}
-							{filterData?.priceRanges && (
-								<AccordionItem key="price" aria-label="price" title="Price" className="pb-2">
-									<div className="flex flex-col items-center justify-start max-w-[160px]">
-										<div className="flex gap-2 items-center justify-between w-full ps-2">
-											<p className="text-tiny font-medium text-default-500">₹{priceRange[0]}</p>
-											<p className="text-tiny font-medium text-default-500">₹{priceRange[1]}</p>
+												formatOptions={{ style: 'currency', currency: 'USD' }}
+												step={1}
+												minValue={filterData?.priceRanges.min || 0}
+												maxValue={filterData?.priceRanges.max || 1000}
+												value={priceRange}
+												onChange={(val) => {
+													setPriceRange(val)
+												}}
+												onChangeEnd={(val) => {
+													const newFilter = { ...filter }
+													newFilter['price'] = [`${val[0]}-${val[1]}`]
+													setFilter(newFilter)
+												}}
+											/>
 										</div>
-										<Slider
-											className="max-w-[160px] ps-1 mt-1"
-											size="sm"
-											formatOptions={{ style: 'currency', currency: 'USD' }}
-											step={1}
-											minValue={filterData?.priceRanges.min || 0}
-											maxValue={filterData?.priceRanges.max || 1000}
-											value={priceRange}
-											onChange={(val) => {
-												setPriceRange(val)
-											}}
-											onChangeEnd={(val) => {
-												const newFilter = { ...filter }
-												newFilter['price'] = [`${val[0]}-${val[1]}`]
-												setFilter(newFilter)
-											}}
-										/>
-									</div>
-								</AccordionItem>
-							)}
-						</Accordion>
+									</AccordionItem>
+								)}
+							</Accordion>
+							<p
+								className="text-sm text-primary underline cursor-pointer ms-2 font-normal"
+								onClick={handleClearFilters}>
+								Clear
+							</p>
+						</>
 					)}
 				</div>
 				<div className="flex-grow mt-3">
@@ -294,10 +314,8 @@ export default function Sidebar() {
 											variant="light"
 											color="primary"
 											className="font-semibold"
-											onClick={() => {
-												setFilter({})
-											}}>
-											Clear filters
+											onClick={handleClearFilters}>
+											Clear all filters
 										</Button>
 									</div>
 							  )}

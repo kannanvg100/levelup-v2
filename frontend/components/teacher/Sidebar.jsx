@@ -57,7 +57,7 @@ export default function Sidebar() {
 	return (
 		<div className="w-full flex flex-col">
 			<Link href="/teacher">
-				<Image className="ms-2 mt-6 mb-2 cursor-pointer" src="/logo.svg" alt="logo" width={100} height={100} />
+				<Image className="ms-2 mt-6 mb-2 cursor-pointer" src="/logo.svg" alt="logo" width={100} height={25} />
 			</Link>
 			<Accordion
 				isCompact={true}
@@ -121,17 +121,17 @@ export default function Sidebar() {
 						<Ticket size={16} />
 						<span className="ml-2 text-sm tracking-wide truncate">Promotions</span>
 					</Link>
-					{/* <Link
-						href="/teacher/reports"
+					<Link
+						href="/teacher/enrollments"
 						className={`px-2 relative flex flex-row items-center h-10 focus:outline-none hover:bg-default-100 ${isActive(
-							'/teacher/reports'
+							'/teacher/enrollments'
 						)}`}>
 						<CreditCard size={16} />
 						<span className="ml-2 text-sm tracking-wide truncate">Enrollments</span>
-						<span className="px-2 py-0.5 ml-auto text-xs font-medium tracking-wide text-red-500 bg-red-50 rounded-full">
+						{/* <span className="px-2 py-0.5 ml-auto text-xs font-medium tracking-wide text-red-500 bg-red-50 rounded-full">
 							3
-						</span>
-					</Link> */}
+						</span> */}
+					</Link>
 				</AccordionItem>
 				<AccordionItem key="3" aria-label="Accordion 3" title="Settings" className="pb-2">
 					<Link

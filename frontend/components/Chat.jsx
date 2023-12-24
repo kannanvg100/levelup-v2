@@ -36,14 +36,16 @@ export default function Chat({ role }) {
 	}, [socket, user])
 
 	useEffect(() => {
-		if (isChatExpanded) {
-			chatRef.current.style.bottom = '0px'
-			chevronRef.current.classList.add('rotate-180')
-		} else {
-			chatRef.current.style.bottom = '-352px'
-			chevronRef.current.classList.remove('rotate-180')
+		if (user) {
+			if (isChatExpanded) {
+				chatRef.current.style.bottom = '0px'
+				chevronRef.current.classList.add('rotate-180')
+			} else {
+				chatRef.current.style.bottom = '-352px'
+				chevronRef.current.classList.remove('rotate-180')
+			}
 		}
-	}, [isChatExpanded])
+	}, [isChatExpanded, user])
 
 	const {
 		data: chats,
@@ -83,7 +85,7 @@ export default function Chat({ role }) {
 						{chat && (
 							<ChatWindow role={role} chat={chat} setChat={setChat} mutateMarkAsRead={mutateMarkAsRead} />
 						)}
-						<Card className="w-80 h-[400px]" radius="none" shadow="md">
+						<Card className="w-72 h-[400px]" radius="none" shadow="md">
 							<CardHeader
 								className="h-12 flex justify-between items-center gap-3 cursor-pointer hover:bg-default-50"
 								onClick={toggleChat}>

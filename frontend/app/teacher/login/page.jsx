@@ -1,10 +1,14 @@
-'use client'
 import Login from '@/components/Login'
-import { useSearchParams } from 'next/navigation'
+import Footer from '@/components/teacher/Footer'
 import React from 'react'
 
 export default function Page() {
-	const searchParams = useSearchParams()
-	const ret = searchParams.get('ret')
-	return <Login role="teacher" ret/>
+	return (
+		<div className="min-h-screen flex flex-col">
+			<div className="flex-grow flex items-center justify-center">
+				<Login role="teacher" />
+			</div>
+			<Footer />
+		</div>
+	)
 }

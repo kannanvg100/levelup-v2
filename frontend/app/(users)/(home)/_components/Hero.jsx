@@ -16,7 +16,7 @@ export default function Hero() {
                     <div className='hidden dark:block absolute inset-0 bg-gradient-to-r from-black to-transparent'></div>
 				</div>
 				<div className="absolute inset-0 ps-3 flex flex-col justify-center items-start gap-4">
-					<p className="text-[3vw] max-w-[600px] font-semibold">
+					<p className="text-4xl max-w-[600px] font-semibold">
 						Learn Beyond Limits: Your Knowledge Journey Starts Here
 					</p>
 					<p className="text-md max-w-xl">

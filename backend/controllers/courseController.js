@@ -384,6 +384,8 @@ module.exports = {
 				}
 
 				if (Object.keys(errors).length > 0) return res.status(400).json({ success: false, errors })
+				if (req.user.status !== 'active')
+					return res.status(400).json({ success: false, message: 'Your account is not active yet' })
 				course.status = 'published'
 				await course.save()
 			}
@@ -500,17 +502,16 @@ module.exports = {
 			if (!courseId) return res.status(400).json({ success: false, errors: { code: 'Invalid request' } })
 			const course = await Course.findById(courseId)
 			let offerPrice = course.price
+			let coupon = null
 			if (code) {
-				const coupon = await Coupon.findOne({ code })
+				coupon = await Coupon.findOne({ code })
 				if (!coupon) return res.status(400).json({ success: false, errors: { code: 'Invalid coupon code' } })
 				if (coupon.user._id.toString() !== course.teacher.toString())
 					return res
 						.status(400)
 						.json({ success: false, errors: { code: 'This coupon is not applicable for this course' } })
 				if (coupon.startDate > Date.now()) {
-					return res
-						.status(400)
-						.json({ success: false, errors: { code: 'This coupon is not active yet.' } })
+					return res.status(400).json({ success: false, errors: { code: 'This coupon is not active yet.' } })
 				}
 				if (coupon.endDate < Date.now()) {
 					return res.status(400).json({ success: false, errors: { code: 'This coupon has expired.' } })
@@ -547,7 +548,7 @@ module.exports = {
 							product_data: {
 								name: course.title,
 							},
-							unit_amount: offerPrice * 100,
+							unit_amount: parseInt(offerPrice * 100),
 						},
 						quantity: 1,
 					},
@@ -557,11 +558,15 @@ module.exports = {
 					payment_method_types: ['card'],
 					line_items,
 					mode: 'payment',
-					success_url: `https://levelup-live.online/courses/${course.slug}/${course._id}?success=1`,
-					cancel_url: `https://levelup-live.online/courses/${course.slug}/${course._id}?canceled=1`,
+					success_url: `${process.env.CLIENT_URL}/courses/${course.slug}/${course._id}?success=1`,
+					cancel_url: `${process.env.CLIENT_URL}/courses/${course.slug}/${course._id}?canceled=1`,
 					metadata: {
 						courseId: courseId,
 						studentId: userId,
+						price: course.price,
+						coupon: code,
+						discount: coupon?.discount || 0,
+						offerPrice,
 					},
 				})
 				res.status(200).json({ success: true, sessionUrl: session.url })
@@ -657,16 +662,17 @@ module.exports = {
 	// Instant search results
 	instantSearch: async (req, res, next) => {
 		try {
-			const { count, query } = req.query
+			const { query } = req.query
 			const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 			const courses = await Course.find({
 				status: 'published',
 				$or: [{ $text: { $search: query } }, { title: { $regex: new RegExp(escapedQuery, 'i') } }],
 			})
-				.limit(count)
+				.limit(5)
 				.populate('category', 'title')
 				.populate('teacher', 'name')
+                console.log("📄 > file: courseController.js:677 > instantSearch: > courses:", courses.length)
 			res.status(200).json({ success: true, courses })
 		} catch (error) {
 			next(error)
@@ -712,7 +718,8 @@ module.exports = {
 			}
 
 			if (Object.keys(errors).length > 0) return res.status(400).json({ success: false, errors })
-
+			if (req.user.status !== 'active')
+				return res.status(400).json({ success: false, message: 'Your account is not active yet' })
 			course.status = 'published'
 			await course.save()
 			res.status(200).json({ success: true, course })

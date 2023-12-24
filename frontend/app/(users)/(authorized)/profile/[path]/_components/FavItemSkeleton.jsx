@@ -3,7 +3,7 @@ import React from 'react'
 
 export default function () {
 	return (
-		<div className="w-[280px] border">
+		<div className="w-[280px] bg-default-50">
 			<Skeleton>
 				<div className="w-[280px] h-[150px] border-b border-default-100"></div>
 			</Skeleton>

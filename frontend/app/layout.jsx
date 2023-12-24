@@ -2,8 +2,15 @@ import './globals.css'
 import { Providers } from './providers'
 
 export const metadata = {
-	title: 'LevelUp',
-	description: 'Online Learning Platform',
+	title: {
+        absolute: 'LevelUp - Home',
+		template: '%s - LevelUp',
+		default: 'LevelUp',
+	},
+	description: 'Learn Beyond Limits',
+    openGraph: {
+        images: ['/levelup_image.png'],
+      },
 }
 
 export default function RootLayout({ children }) {

@@ -92,16 +92,20 @@ export default function CheckoutModal({ isOpen, onClose, course }) {
 						<ModalHeader className="flex flex-col gap-1">Proceed to Checkout</ModalHeader>
 						<ModalBody>
 							<div className="flex justify-start items-start gap-2">
-								<Image src={course?.thumbnail} width={150} height={75} />
+								<Image
+									src={course?.thumbnail}
+									width={150}
+									height={90}
+									className="w-[150px] h-[90px] border border-default-100 object-cover"
+								/>
 								<div className="flex flex-col gap-1">
 									<p className="text-base font-medium">{course?.title}</p>
-									<p className="mt-1 text-sm font-normal text-default-500 ellipsis-container">
+									<p className="mt-1 text-tiny font-normal text-default-500 ellipsis-container">
 										{course?.description}
 									</p>
 									<p className="text-base font-medium text-default-500">₹{course?.price}</p>
 								</div>
 							</div>
-							<Spacer y={1} />
 							<div className="flex gap-2 items-end">
 								<Input
 									label="Apply Coupon Code"

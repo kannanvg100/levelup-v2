@@ -235,7 +235,7 @@ export default function App() {
 										toast.promise(updatePromise, {
 											loading: 'Updating course status...',
 											success: 'Course status updated!',
-											error: 'Failed to update course status, Plase check the course details and try again.',
+											error: (data) => data.response.data.message || 'Something went wrong!',
 										})
 									}}>
 									{course?.status === 'published' ? 'Move to Draft' : 'Publish'}

@@ -92,4 +92,13 @@ module.exports = {
 		}
 		next()
 	},
+
+    checkTeacher: async (req, res, next) => {
+		const token = req.cookies.jwt_teacher
+		if (token) {
+			const decoded = jwt.verify(token, process.env.JWT_SECRET)
+			req.user = await User.findById(decoded.userId).select('-password')
+		}
+		next()
+	},
 }

@@ -25,7 +25,7 @@ import { useEffect, useMemo, useState } from 'react'
 import toast from 'react-hot-toast'
 import { QueryClient } from '@tanstack/react-query'
 import { useDispatch, useSelector } from 'react-redux'
-import LoginModal from './LoginModal.jsx'
+import LoginModal from './LoginModal'
 
 export default function Sidebar() {
 	const { theme, setTheme } = useTheme()
@@ -66,7 +66,7 @@ export default function Sidebar() {
 	return (
 		<div className="flex flex-col">
 			<Link href="/admin">
-				<Image className="ms-2 mt-6 mb-2" src="/logo.svg" alt="logo" width={100} height={100} />
+				<Image className="ms-2 mt-6 mb-2" src="/logo.svg" alt="logo" width={100} height={25} />
 			</Link>
 			<Accordion
 				isCompact={true}

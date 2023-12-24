@@ -1,11 +1,10 @@
 'use client'
 import MuxPlayer from '@mux/mux-player-react'
 
-export default function VideoPlayer({ segment, onEnded, userId, width, height }) {
-    const styles = width ? `w-[${width}] h-[${height}]` : 'w-[600px] h-[400px]'
+export default function VideoPlayer({ segment, onEnded, userId }) {
 	return (
 		<MuxPlayer
-			className={styles}
+			className='w-full h-full'
 			accentColor="#00B8A9"
 			streamType="on-demand"
 			playbackId={segment?.video[0].playbackId}

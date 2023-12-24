@@ -46,7 +46,7 @@ export default function Comments({ segmentId }) {
 	}
 
 	return (
-		<div className="w-[500px]">
+		<div className="ms-2 max-w-[500px]">
 			<div className="flex justify-start items-end gap-2">
 				<Textarea
 					label="Your comment"

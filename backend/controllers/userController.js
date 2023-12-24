@@ -73,6 +73,7 @@ module.exports = {
 					email: user.email,
 					profileImage: user.profileImage,
 					role: user.role,
+					status: user.status,
 					accessToken: token,
 				},
 			})
@@ -125,6 +126,7 @@ module.exports = {
 						email: newUser.email,
 						profileImage: newUser.profileImage,
 						role: newUser.role,
+						status: user.status,
 					},
 				})
 			} else {
@@ -300,6 +302,7 @@ module.exports = {
 					email: user.email,
 					profileImage: user.profileImage,
 					role: user.role,
+					status: user.status,
 					accessToken: token,
 				},
 			})
@@ -346,6 +349,7 @@ module.exports = {
 						email: updatedUser.email,
 						profileImage: user.profileImage,
 						role: updatedUser.role,
+						status: user.status,
 					},
 				})
 			} else {
@@ -401,7 +405,7 @@ module.exports = {
 			const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 			let filterQuery = {
-               role: 'user',
+				role: 'user',
 				$or: [{ $text: { $search: query } }, { name: { $regex: new RegExp(escapedQuery, 'i') } }],
 			}
 
@@ -432,7 +436,7 @@ module.exports = {
 			const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 			let filterQuery = {
-               role: 'teacher',
+				role: 'teacher',
 				$or: [{ $text: { $search: query } }, { name: { $regex: new RegExp(escapedQuery, 'i') } }],
 			}
 
@@ -608,6 +612,31 @@ module.exports = {
 			await user.save()
 
 			res.status(200).json({ success: true })
+		} catch (error) {
+			next(error)
+		}
+	},
+
+	// get user Info
+	getUser: async (req, res, next) => {
+		try {
+			const user = req.user
+			if (user) {
+				res.status(200).json({
+					success: true,
+					user: {
+						name: user?.name || 'Admin',
+						_id: user._id,
+						email: user.email,
+						profileImage: user?.profileImage,
+						role: user.role,
+						status: user.status,
+						accessToken: req.cookies[`jwt_${user.role}`],
+					},
+				})
+			} else {
+				res.status(200).json({ success: false, user: null })
+			}
 		} catch (error) {
 			next(error)
 		}
