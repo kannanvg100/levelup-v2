@@ -1,7 +1,7 @@
 import React from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import Providers from './_components/providers'
+import Providers from './_components/Providers'
 
 export default function layout({ children }) {
 	return (
