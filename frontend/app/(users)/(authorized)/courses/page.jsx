@@ -12,6 +12,7 @@ import {
 	DropdownMenu,
 	DropdownTrigger,
 	Pagination,
+	ScrollShadow,
 	Skeleton,
 	Slider,
 	Spacer,
@@ -100,7 +101,7 @@ export default function Page() {
 
 	const pagination = useMemo(() => {
 		return (
-			<div className="py-2 px-2 flex justify-between items-center">
+			<div className="py-2 px-2 flex justify-between items-center mt-8">
 				<div></div>
 				<Pagination
 					isCompact={false}
@@ -171,138 +172,141 @@ export default function Page() {
 					</Dropdown>
 				</div>
 			</div>
+
 			<Spacer y={2} />
-			<div className="flex gap-3 items-start justify-start border-t-1 border-default-100">
-				<div className="min-w-[200px] border-e-1 border-default-100">
-					{isLoadingfilterOptions ? (
-						<div className="ps-2">
-							{Array(3)
-								.fill(0)
-								.map((_, i) => {
-									return (
-										<>
-											<Spacer y={3} />
-											<Skeleton className="w-[100px] h-4" />
-											<Spacer y={3} />
-											<div className="flex gap-2 mb-3">
-												<Skeleton className="w-[16px] h-4" />
-												<Skeleton className="w-[40px] h-4" />
-											</div>
-											<div className="flex gap-2 mb-3">
-												<Skeleton className="w-[16px] h-4" />
-												<Skeleton className="w-[60px] h-4" />
-											</div>
-											<div className="flex gap-2 mb-3">
-												<Skeleton className="w-[16px] h-4" />
-												<Skeleton className="w-[100px] h-4" />
-											</div>
-											<Spacer y={3} />
-										</>
-									)
-								})}
-						</div>
-					) : (
-						<>
-							<Accordion
-								isCompact={true}
-								showDivider={false}
-								defaultSelectedKeys={'all'}
-								selectionMode="multiple"
-								className="whitespace-nowrap"
-								itemClasses={{
-									base: '',
-									title: 'text-default-900 text-small font-semibold',
-									trigger: 'w-fit',
-									content: 'text-default-700',
-								}}>
-								{filterData?.filters &&
-									filterData?.filters.map((filterItem) => {
-										return (
-											<AccordionItem
-												key={filterItem?.key}
-												aria-label={filterItem?.key}
-												title={filterItem?.title}
-												className="pb-2">
-												<CheckboxGroup
-													label=""
-													value={filter[filterItem?.key] || []}
-													size="sm"
-													radius="none"
-													onChange={(sel) => {
-														if (sel.length === 0) {
-															const newFilter = { ...filter }
-															delete newFilter[filterItem?.key]
-															setFilter(newFilter)
-														} else setFilter({ ...filter, [filterItem?.key]: sel })
-													}}>
-													{filterItem?.values?.map((it) => {
-														return (
-															<Checkbox key={it?.id} value={it?.id}>
-																<p className="w-[150px] whitespace-nowrap text-ellipsis overflow-hidden">
-																	{it?.title}
-																</p>
-															</Checkbox>
-														)
-													})}
-												</CheckboxGroup>
-											</AccordionItem>
-										)
-									})}
-								{filterData?.priceRanges && (
-									<AccordionItem key="price" aria-label="price" title="Price" className="pb-2">
-										<div className="flex flex-col items-center justify-start max-w-[160px]">
-											<div className="flex gap-2 items-center justify-between w-full ps-2">
-												<p className="text-tiny font-medium text-default-500">
-													₹{priceRange[0]}
-												</p>
-												<p className="text-tiny font-medium text-default-500">
-													₹{priceRange[1]}
-												</p>
-											</div>
-											<Slider
-												className="max-w-[160px] ps-1 mt-1"
-												size="sm"
-												formatOptions={{ style: 'currency', currency: 'USD' }}
-												step={1}
-												minValue={filterData?.priceRanges.min || 0}
-												maxValue={filterData?.priceRanges.max || 1000}
-												value={priceRange}
-												onChange={(val) => {
-													setPriceRange(val)
-												}}
-												onChangeEnd={(val) => {
-													const newFilter = { ...filter }
-													newFilter['price'] = [`${val[0]}-${val[1]}`]
-													setFilter(newFilter)
-												}}
-											/>
-										</div>
-									</AccordionItem>
-								)}
-							</Accordion>
-							<p
-								className="text-sm text-primary underline cursor-pointer ms-2 font-normal"
-								onClick={handleClearFilters}>
-								Clear
-							</p>
-						</>
-					)}
-				</div>
-				<div className="flex-grow mt-3">
-					<div className="flex gap-x-1 gap-y-6 justify-between items-start flex-wrap">
+
+			<div className="flex flex-col sm:flex-row gap-3 items-start justify-start border-t-1 border-default-100">
+				<ScrollShadow hideScrollBar orientation='horizontal' className='min-w-[200px]'>
+				    <div className="w-[410px] sm:w-[200px]">
+    					{isLoadingfilterOptions ? (
+    						<div className="ps-2">
+    							{Array(3)
+    								.fill(0)
+    								.map((_, i) => {
+    									return (
+    										<>
+    											<Spacer y={3} />
+    											<Skeleton className="w-[100px] h-4" />
+    											<Spacer y={3} />
+    											<div className="flex gap-2 mb-3">
+    												<Skeleton className="w-[16px] h-4" />
+    												<Skeleton className="w-[40px] h-4" />
+    											</div>
+    											<div className="flex gap-2 mb-3">
+    												<Skeleton className="w-[16px] h-4" />
+    												<Skeleton className="w-[60px] h-4" />
+    											</div>
+    											<div className="flex gap-2 mb-3">
+    												<Skeleton className="w-[16px] h-4" />
+    												<Skeleton className="w-[100px] h-4" />
+    											</div>
+    											<Spacer y={3} />
+    										</>
+    									)
+    								})}
+    						</div>
+    					) : (
+    						<>
+    							<Accordion
+    								isCompact={true}
+    								showDivider={false}
+    								defaultSelectedKeys={'all'}
+    								selectionMode="multiple"
+    								className="whitespace-nowrap flex sm:flex-col gap-2"
+    								itemClasses={{
+    									base: '[&>section]:overflow-hidden',
+    									title: 'text-default-900 text-small font-semibold',
+    									trigger: 'w-fit',
+    									content: 'text-default-700',
+    								}}>
+    								{filterData?.filters &&
+    									filterData?.filters.map((filterItem) => {
+    										return (
+    											<AccordionItem
+    												key={filterItem?.key}
+    												aria-label={filterItem?.key}
+    												title={filterItem?.title}
+    												className="pb-2">
+    												<CheckboxGroup
+    													label=""
+    													value={filter[filterItem?.key] || []}
+    													size="sm"
+    													radius="none"
+    													onChange={(sel) => {
+    														if (sel.length === 0) {
+    															const newFilter = { ...filter }
+    															delete newFilter[filterItem?.key]
+    															setFilter(newFilter)
+    														} else setFilter({ ...filter, [filterItem?.key]: sel })
+    													}}>
+    													{filterItem?.values?.map((it) => {
+    														return (
+    															<Checkbox key={it?.id} value={it?.id}>
+    																<p className="min-w-[150px] whitespace-nowrap text-ellipsis overflow-hidden">
+    																	{it?.title}
+    																</p>
+    															</Checkbox>
+    														)
+    													})}
+    												</CheckboxGroup>
+    											</AccordionItem>
+    										)
+    									})}
+    								{filterData?.priceRanges && (
+    									<AccordionItem key="price" aria-label="price" title="Price" className="pb-2">
+    										<div className="flex flex-col items-center justify-start w-[160px]">
+    											<div className="flex gap-2 items-center justify-between w-full ps-2">
+    												<p className="text-tiny font-medium text-default-500">
+    													₹{priceRange[0]}
+    												</p>
+    												<p className="text-tiny font-medium text-default-500">
+    													₹{priceRange[1]}
+    												</p>
+    											</div>
+    											<Slider
+    												className="w-[160px] ps-1 mt-1"
+    												size="sm"
+    												formatOptions={{ style: 'currency', currency: 'USD' }}
+    												step={1}
+    												minValue={filterData?.priceRanges.min || 0}
+    												maxValue={filterData?.priceRanges.max || 1000}
+    												value={priceRange}
+    												onChange={(val) => {
+    													setPriceRange(val)
+    												}}
+    												onChangeEnd={(val) => {
+    													const newFilter = { ...filter }
+    													newFilter['price'] = [`${val[0]}-${val[1]}`]
+    													setFilter(newFilter)
+    												}}
+    											/>
+    										</div>
+    									</AccordionItem>
+    								)}
+    							</Accordion>
+    							<p
+    								className="text-sm text-primary underline cursor-pointer ms-2 font-normal"
+    								onClick={handleClearFilters}>
+    								Clear all filters
+    							</p>
+    						</>
+    					)}
+    				</div>
+				</ScrollShadow>
+				<div className="flex-grow mt-3 w-full">
+					<div className="grid gap-x-2 gap-y-4 grid-cols-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 						{data?.courses?.map((course) => (
 							<CourseItem key={course._id} course={course} />
 						))}
-
 						{isPending
 							? [...Array(count)].map((_, i) => (
-									<div key={i} className="bg-default-50 w-[240px]">
+									<div key={i} className="bg-default-50 w-full">
 										<div className="p-2">
-											<Skeleton className="h-[125px] w-full" />
+											<Skeleton className="w-full aspect-video" />
 											<Spacer y={1} />
-											<Skeleton className="w-[200px] h-4" />
+											<Skeleton className="w-[70%] h-4" />
 											<Spacer y={1} />
-											<Skeleton className="w-[100px] h-6" />
+											<Skeleton className="w-[40%] h-6" />
 										</div>
 									</div>
 							  ))
@@ -319,11 +323,6 @@ export default function Page() {
 										</Button>
 									</div>
 							  )}
-
-						{/* dummy divs to fill the flex container */}
-						{[...Array(count)].map((_, i) => (
-							<div key={i} className="w-[240px]"></div>
-						))}
 					</div>
 					{(data?.courses.length > 0 || isPending) && pagination}
 				</div>
