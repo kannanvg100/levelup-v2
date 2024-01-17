@@ -3,7 +3,6 @@ import { NextResponse } from 'next/server'
 export function middleware(request) {
 
 	const pathname = request.nextUrl.pathname
-	console.log(pathname)
 
 	// Admin routes protection middleware
 	const verifyAdmin = request.cookies.get('jwt_admin')

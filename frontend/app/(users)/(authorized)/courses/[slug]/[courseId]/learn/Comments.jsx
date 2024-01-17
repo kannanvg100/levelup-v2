@@ -3,6 +3,7 @@ import { Button, Image, Spacer, Textarea } from '@nextui-org/react'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { formatDistance, subDays } from 'date-fns'
 
 export default function Comments({ segmentId }) {
 	const [comments, setComments] = useState([])
@@ -46,7 +47,7 @@ export default function Comments({ segmentId }) {
 	}
 
 	return (
-		<div className="ms-2 max-w-[500px]">
+		<div className="max-w-[500px]">
 			<div className="flex justify-start items-end gap-2">
 				<Textarea
 					label="Your comment"
@@ -79,11 +80,7 @@ export default function Comments({ segmentId }) {
 
 								<p className="text-small">{comment.comment}</p>
 								<p className="text-tiny text-default-500 text-right">
-									{new Date(comment.createdAt).toLocaleDateString('en-IN', {
-										day: 'numeric',
-										month: 'short',
-										year: 'numeric',
-									})}
+                                    {formatDistance(new Date(comment.createdAt), new Date(), { addSuffix: true })}
 								</p>
 							</div>
 						</div>

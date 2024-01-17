@@ -45,7 +45,6 @@ export default function CheckoutModal({ isOpen, onClose, course }) {
 			window.location.href = data.sessionUrl
 		},
 		onError: (error) => {
-			console.log('📄 > file: CheckoutModal.jsx:52 > CheckoutModal > error:', error)
 			const err = error?.response?.data?.errors
 			if (err) setErrors(err)
 			else toast.error(error?.response?.data?.message || 'Something went wrong')

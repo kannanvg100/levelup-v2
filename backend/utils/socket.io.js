@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-const { Server, Socket } = require('socket.io')
+require('socket.io')
 const User = require('../models/User.js')
 
 const ChatEventEnum = Object.freeze({
@@ -74,7 +74,6 @@ const initializeSocketIO = (io) => {
 			})
 
 			socket.on('SEND_MESSAGE', ({ chatId, content }) => {
-				console.log('message received: ', chatId, content)
 
 				socket.to(chatId).emit('GET_MESSAGE', content)
 			})

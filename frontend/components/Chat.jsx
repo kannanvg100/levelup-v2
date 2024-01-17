@@ -2,7 +2,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { Card, CardHeader, CardBody, Avatar, Spinner, Chip, Spacer } from '@nextui-org/react'
 import { useSelector } from 'react-redux'
-import { ChevronUp } from 'lucide-react'
+import { ChevronUp, MessageSquareOff } from 'lucide-react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { getChatsUser, getChatsTeacher, markChatRead } from '@/api/chats'
 import ChatWindow from './ChatWindow'
@@ -102,41 +102,53 @@ export default function Chat({ role }) {
 							</CardHeader>
 							<div className="h-[1px] w-full bg-default-100"></div>
 							<CardBody className="relative p-0">
-								{isPending && <Spinner className="absolute inset-0" />}
-								{isError && <p className="text-center">Error</p>}
-								<div className="flex flex-col gap-3">
-									{chats?.map((chat, index) => (
+								{isPending && <Spinner className="absolute inset-0" size="lg" />}
+								{isError && (
+									<div className="absolute inset-0 text-center">
+										<div className="h-full flex flex-col justify-center items-center">
+											<MessageSquareOff size={36} className="text-default-700" />
+											<Spacer y={3} />
+											<p className="text-default-500 text-sm px-2">
+												Something went wrong. Please try reloading the page.
+											</p>
+										</div>
+									</div>
+								)}
+								<div className="flex flex-col">
+									{chats?.map((item, index) => (
 										<div
 											key={index}
-											className="flex gap-2 h-16 items-center hover:bg-default-200 p-2 px-3 cursor-pointer w-full"
+											className={`flex gap-2 h-16 items-center hover:bg-default-50 p-2 px-3 cursor-pointer w-full ${
+												item?._id === chat?._id ? 'bg-default-100' : ''
+											}`}
 											onClick={() => {
-												setChat(chat)
-												if (chat?.unreadCount > 0) mutateMarkAsRead({ role, chatId: chat._id })
+												setChat(item)
+												if (item?.unreadCount > 0) mutateMarkAsRead({ role, chatId: item._id })
 											}}>
 											<Avatar
 												size="md"
-												src={chat?.sender[0]?.user?.profileImage}
+												src={item?.sender[0]?.user?.profileImage}
 												className="w-10 overflow-hidden"
 											/>
 											<div className="flex flex-col ">
 												<div className="flex items-center gap-2">
-													<p className="text-sm font-normal">{chat?.sender[0]?.user?.name}</p>
-													{chat?.unreadCount > 0 && (
+													<p className="text-sm font-normal">{item?.sender[0]?.user?.name}</p>
+													{item?.unreadCount > 0 && (
 														<Chip size="sm" className="h-4" color="primary" variant="flat">
-															<p className="text-[10px]">{chat?.unreadCount}</p>
+															<p className="text-[10px]">{item?.unreadCount}</p>
 														</Chip>
 													)}
 												</div>
 												<p className="w-48 text-tiny text-default-500 whitespace-nowrap overflow-hidden text-ellipsis">
-													{chat?.lastMessage?.attachmentType === 'text'
-														? chat?.lastMessage?.content
-														: chat?.lastMessage?.attachmentType === 'image'
+													{item?.lastMessage?.attachmentType === 'text'
+														? item?.lastMessage?.content
+														: item?.lastMessage?.attachmentType === 'image'
 														? '📷 image'
-														: chat?.lastMessage?.attachmentType === 'video'
+														: item?.lastMessage?.attachmentType === 'video'
 														? '🎥 video'
-														: chat?.lastMessage?.attachmentType === 'audio'
+														: item?.lastMessage?.attachmentType === 'audio'
 														? '🎵 audio'
-														: chat?.lastMessage?.attachmentType === 'file'
+														: item?.lastMessage?.attachmentType === 'file'
 														? '📁 file'
 														: ''}
 												</p>

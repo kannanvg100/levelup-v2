@@ -1,14 +1,14 @@
 'use client'
 import { getAllAnalytics } from '@/api/analytics'
-import { Card, Spacer, Spinner } from '@nextui-org/react'
+import { Spacer, Spinner } from '@nextui-org/react'
 import { ResponsiveLine } from '@nivo/line'
 import { ResponsivePie } from '@nivo/pie'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useQuery } from '@tanstack/react-query'
 
 export default function Page() {
 	const { data, isPending, isError } = useQuery({
-		queryKey: ['analytics'],
+		queryKey: ['analytics','admin'],
 		queryFn: () => getAllAnalytics(),
 		keepPreviousData: true,
 	})

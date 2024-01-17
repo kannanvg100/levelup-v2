@@ -242,7 +242,6 @@ module.exports = {
 						errors: { toast: 'Something went wrong, please try again' },
 					})
 				} else {
-					console.log('Email sent successfully')
 					res.status(201).json({
 						success: true,
 					})
@@ -553,7 +552,6 @@ module.exports = {
 						errors: { toast: 'Something went wrong, please try again' },
 					})
 				} else {
-					console.log('Email sent successfully')
 					res.status(201).json({
 						success: true,
 					})

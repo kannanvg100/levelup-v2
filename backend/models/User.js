@@ -77,7 +77,7 @@ const userSchema = new mongoose.Schema({
 	},
 	stripCustomerId: {
 		type: String,
-		select: false,
+		// select: false,
 	},
 	createdAt: {
 		type: Date,

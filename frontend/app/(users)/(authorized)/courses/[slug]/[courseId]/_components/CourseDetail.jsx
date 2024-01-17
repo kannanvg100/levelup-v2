@@ -113,8 +113,8 @@ export default function CourseDetail({ slug, courseId }) {
 										className="w-[350px] h-[200px] object-cover rounded-none"
 										src={course?.thumbnail}
 									/>
-									<div className="absolute inset-0 flex justify-center items-center z-10">
-										<div className="bg-default-50 rounded-full shadow-lg hover:text-primary">
+									<div className="absolute inset-0 flex justify-center items-center z-10 border">
+										<div className="bg-default-50 rounded-full shadow-lg hover:text-primary opacity-95">
 											<PlayCircle
 												size={64}
 												className="cursor-pointer"

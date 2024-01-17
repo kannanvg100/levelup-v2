@@ -1,4 +1,5 @@
 'use client'
+
 import { getSearchResults } from '@/api/courses'
 import { Button, Input, Spinner } from '@nextui-org/react'
 import { SearchIcon } from 'lucide-react'
@@ -7,11 +8,15 @@ import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import Image from 'next/image'
+import axios from 'axios'
 
 export default function InstantSearch() {
 	const [query, setQuery] = useState('')
 	const [showResults, setShowResults] = useState(false)
 	const router = useRouter()
+	const source = axios.CancelToken.source()
+	const placeholder = 'Search for courses...'
+	const [placeholderText, setPlaceholderText] = useState('')
 
 	const {
 		data,
@@ -19,9 +24,26 @@ export default function InstantSearch() {
 		isError,
 	} = useQuery({
 		queryKey: ['search', query],
-		queryFn: () => getSearchResults({ query }),
+		queryFn: () => getSearchResults({ source, query }),
 		enabled: !!query,
 	})
+
+	// Debounce search with delay and cancel request
+	let timerId
+	function handleSearchDebounce(query) {
+		source.cancel()
+		clearTimeout(timerId)
+		timerId = setTimeout(() => {
+			setQuery(query)
+		}, 300)
+	}
+
+	const animatePlaceholder = () => {
+		setPlaceholderText((prev) => placeholder.slice(0, prev.length + 1))
+		if (placeholderText.length < placeholder.length) setTimeout(animatePlaceholder, 1000)
+	}
+
+	useEffect(animatePlaceholder)
 
 	return (
 		<div
@@ -32,13 +54,13 @@ export default function InstantSearch() {
 				classNames={{
 					base: 'max-w-full h-10',
 					mainWrapper: 'h-full',
-					input: 'text-small',
+					input: 'text-small placeholder:animate-indeterminate-bar',
 					inputWrapper: 'h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20',
 				}}
-				placeholder="Search for courses..."
+				placeholder={placeholderText}
 				onChange={(e) => {
 					setShowResults(true)
-					setQuery(e.target.value)
+					handleSearchDebounce(e.target.value)
 				}}
 				onKeyDown={(e) => {
 					if (e.key === 'Enter' && query) router.push(`/courses?search=${query}`)

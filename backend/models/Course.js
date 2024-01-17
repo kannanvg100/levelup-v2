@@ -138,7 +138,6 @@ courseSchema.post('save', async function (doc, next) {
 })
 
 courseSchema.pre('save', async function (next) {
-	console.log('pre save')
 	try {
 		if (this.mrp < this.price) throw new Error('MRP cannot be less than price')
 		next()

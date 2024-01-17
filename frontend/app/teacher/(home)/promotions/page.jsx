@@ -108,7 +108,6 @@ export default function App() {
 	}, [visibleColumns])
 
 	const filteredItems = React.useMemo(() => {
-		console.log('chaneged')
 		let filteredCoupons = [...(data?.coupons || [])]
 
 		if (filterValue.trim()) {

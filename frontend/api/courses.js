@@ -25,13 +25,13 @@ export function getCourses({ page, count, search, sort, filter }) {
 		})
 }
 
-export function getCoursesByTag({tag}){
-    return axios
-        .get(`/api/courses/${tag}`)
-        .then((res) => res.data)
-        .catch((err) => {
-            throw err
-        })
+export function getCoursesByTag({ tag }) {
+	return axios
+		.get(`/api/courses/${tag}`)
+		.then((res) => res.data)
+		.catch((err) => {
+			throw err
+		})
 }
 
 export function getCoursesByTeacher({ page, count, query, status, sort }) {
@@ -197,9 +197,9 @@ export function getEnrollment(courseId) {
 		})
 }
 
-export function getSearchResults({ query }) {
+export function getSearchResults({ source, query }) {
 	return axios
-		.get(`/api/instant-search?query=${query}`)
+		.get(`/api/instant-search?query=${query}`, { cancelToken: source.token })
 		.then((res) => res.data.courses)
 		.catch((err) => {
 			throw err
@@ -216,10 +216,10 @@ export function updateCourseStatus({ courseId, status }) {
 }
 
 export function getCertificate({ courseId }) {
-    return axios
-        .get(`/api/certificate/${courseId}`)
-        .then((res) => res.data)
-        .catch((err) => {
-            throw err
-        })
+	return axios
+		.get(`/api/certificate/${courseId}`)
+		.then((res) => res.data)
+		.catch((err) => {
+			throw err
+		})
 }

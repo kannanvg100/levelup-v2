@@ -10,7 +10,7 @@ import { useTheme } from 'next-themes'
 
 export default function Page() {
 	const { data, isPending, isError } = useQuery({
-		queryKey: ['analytics'],
+		queryKey: ['analytics', 'teacher'],
 		queryFn: () => getAllAnalyticsTeacher(),
 		keepPreviousData: true,
 	})

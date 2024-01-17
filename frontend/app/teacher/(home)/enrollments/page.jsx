@@ -277,10 +277,6 @@ export default function App() {
 		}
 	}, [])
 
-	useEffect(() => {
-		console.log(data)
-	}, [data])
-
 	const topContent = React.useMemo(() => {
 		return (
 			<>

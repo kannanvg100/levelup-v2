@@ -270,7 +270,7 @@ module.exports = {
 
 			const course = await Course.findById(courseId)
 				.select('-__v')
-				.populate('teacher', 'name')
+				.populate('teacher', 'name profileImage')
 				.populate('category', 'title')
 				.populate({
 					path: 'chapters',
@@ -494,7 +494,7 @@ module.exports = {
 		}
 	},
 
-	// Add a chapter to a course
+	
 	createCheckoutSession: async (req, res, next) => {
 		try {
 			const { courseId, code } = req.body
@@ -553,6 +553,7 @@ module.exports = {
 						quantity: 1,
 					},
 				]
+                
 				const session = await stripe.checkout.sessions.create({
 					customer: stripCustomerId,
 					payment_method_types: ['card'],
@@ -672,7 +673,7 @@ module.exports = {
 				.limit(5)
 				.populate('category', 'title')
 				.populate('teacher', 'name')
-                console.log("📄 > file: courseController.js:677 > instantSearch: > courses:", courses.length)
+                .select('title thumbnail slug category teacher')
 			res.status(200).json({ success: true, courses })
 		} catch (error) {
 			next(error)

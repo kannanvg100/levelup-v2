@@ -1,20 +1,11 @@
 'use client'
-import React, { useState } from 'react'
-import {
-	Navbar,
-	Link,
-	Button,
-	DropdownItem,
-	DropdownTrigger,
-	Dropdown,
-	DropdownMenu,
-	Avatar,
-} from '@nextui-org/react'
+import React from 'react'
+import { Navbar, Link, Button, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar } from '@nextui-org/react'
 
 import NextLink from 'next/link'
 import Image from 'next/image.js'
 import { useDispatch, useSelector } from 'react-redux'
-import { useRouter, usePathname } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { logoutUser } from '@/api/users.js'
 import { removeUser } from '@/redux/slices/userSlice.js'
 import { QueryClient, useQuery } from '@tanstack/react-query'
@@ -26,18 +17,15 @@ import { Bookmark, ChevronRight, ChevronDown, ClipboardList, LogOut, MoonStar, S
 import ErrorBoundary from './ErrorBoundary.jsx'
 
 export default function Header() {
-
 	const { user } = useSelector((state) => state.user)
 
 	const dispatch = useDispatch()
-	const router = useRouter()
 	const { theme, setTheme } = useTheme()
 	const handleThemeChange = () => (theme === 'light' ? setTheme('dark') : setTheme('light'))
 	const queryClient = new QueryClient()
-	const [query, setQuery] = useState('')
 	const pathname = usePathname()
 
-	const handleLogout = async (e) => {
+	const handleLogout = async () => {
 		try {
 			const res = await queryClient.fetchQuery({
 				queryFn: () => logoutUser('user'),
@@ -52,11 +40,7 @@ export default function Header() {
 		}
 	}
 
-	const {
-		data: categories,
-		isPending,
-		isError,
-	} = useQuery({
+	const { data: categories } = useQuery({
 		queryKey: ['categories'],
 		queryFn: () => getPublishedCategories(),
 		keepPreviousData: true,
@@ -103,8 +87,13 @@ export default function Header() {
 												href={`/courses?filter=category%3D${category?._id}`}
 												key={category?._id}>
 												<div className="group min-w-[200px] flex justify-between items-center ps-2">
-													<span className="text-default-500 text-small group-hover:text-default-700">{category?.title}</span>
-                                                    <ChevronRight size={16} className='text-default-300 group-hover:text-default-500'/>
+													<span className="text-default-500 text-small group-hover:text-default-700">
+														{category?.title}
+													</span>
+													<ChevronRight
+														size={16}
+														className="text-default-300 group-hover:text-default-500"
+													/>
 												</div>
 											</Link>
 										</DropdownItem>

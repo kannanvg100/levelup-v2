@@ -117,7 +117,7 @@ export default function Footer() {
 				<Linkedin size={18} className="cursor-pointer hover:text-default-700" />
 				<Github size={18} className="cursor-pointer hover:text-default-700" />
 			</div>
-			<p className="mt-4 text-small text-default-500 text-center">© 2023 LevelUP Inc.</p>
+			<p className="mt-4 text-small text-default-500 text-center">© {new Date().getFullYear()} LevelUP Inc.</p>
 		</div>
 	)
 }

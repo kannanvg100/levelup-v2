@@ -133,7 +133,6 @@ module.exports = {
 
 			await chat.save()
 
-			const rooms = req.app.get('io').sockets.adapter.rooms
 			// Emit socket event
 			req.app.get('io').in(chat._id.toString()).emit('GET_MESSAGE', chatMessage)
 			req.app.get('io').in(receiver).emit('NEW_MESSAGE', chatMessage)
