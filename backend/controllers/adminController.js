@@ -1,4 +1,5 @@
 const Admin = require('../models/Admin')
+const User = require('../models/User')
 const generateToken = require('../utils/generateToken')
 
 module.exports = {
@@ -6,6 +7,16 @@ module.exports = {
 	login: async (req, res, next) => {
 		try {
 			const { email, password } = req.body
+
+			if (!email || !password) {
+				return res.status(400).json({
+					success: false,
+					errors: {
+						email: 'Email is required',
+						password: 'Password is required',
+					},
+				})
+			}
 
 			const user = await Admin.findOne({ email })
 			if (!user)

@@ -400,7 +400,12 @@ module.exports = {
 	// get all users by role
 	getAllUsers: async (req, res, next) => {
 		try {
-			const { page, count, query, status, sort } = req.query
+			const page = req.query.page || 1
+			const count = req.query.count || 10
+			const query = req.query.query || ''
+			const status = req.query.status || ''
+			const sort = req.query.sort || ''
+
 			const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 			let filterQuery = {
@@ -416,13 +421,34 @@ module.exports = {
 				sortQuery[key] = value === 'descending' ? -1 : 1
 			}
 
-			const totalUsers = await User.countDocuments(filterQuery)
+			const pipeline = [
+				{
+					$match: filterQuery,
+				},
+				{
+					$facet: {
+						totalUsers: [
+							{
+								$count: 'count',
+							},
+						],
+						users: [
+							{
+								$sort: sortQuery,
+							},
+							{
+								$limit: count,
+							},
+							{
+								$skip: (page - 1) * count,
+							},
+						],
+					},
+				},
+			]
 
-			const users = await User.find(filterQuery)
-				.sort(sortQuery)
-				.limit(count)
-				.skip((page - 1) * count)
-			res.status(200).json({ success: true, totalUsers, users })
+			const result = await User.aggregate(pipeline)
+			// res.status(200).json({ success: true, totalUsers, users })
 		} catch (error) {
 			next(error)
 		}
