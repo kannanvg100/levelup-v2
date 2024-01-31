@@ -6,6 +6,8 @@ const { Server } = require('socket.io')
 const { createServer } = require('http')
 const { initializeSocketIO } = require('./utils/socket.io')
 const cors = require('cors')
+const swaggerUi = require('swagger-ui-express')
+const swaggerSpec = require('./config/swagger')
 
 const adminRouter = require('./routes/adminRouter')
 const usersRouter = require('./routes/userRouter')
@@ -41,7 +43,7 @@ app.set('io', io)
 
 app.use(
 	cors({
-		origin: process.env.CLIENT_URL,
+		origin: [process.env.CLIENT_URL, 'http://localhost:5000'],
 		credentials: true,
 	})
 )
@@ -92,6 +94,8 @@ app.use('/api', favoriteRouter)
 app.use('/api', promotionRouter)
 
 app.use('/api/admin', adminRouter)
+
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

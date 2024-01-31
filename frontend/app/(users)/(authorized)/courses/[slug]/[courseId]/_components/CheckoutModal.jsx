@@ -19,7 +19,6 @@ import { Space } from 'lucide-react'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import error from '../error'
 
 export default function CheckoutModal({ isOpen, onClose, course }) {
 	const [code, setCode] = useState('')
