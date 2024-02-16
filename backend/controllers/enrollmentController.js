@@ -29,7 +29,14 @@ module.exports = {
 			const enrollment = await Enrollment.findOne({ student: req.user._id, course: courseId })
 			if (!enrollment)
 				return res.status(404).json({ success: true, message: 'You have not enrolled this course' })
-			const image = await generateCertificate({ name: req.user.name, course: course.title, date: '2021-10-20' })
+
+			const today = new Date()
+			const dd = String(today.getDate()).padStart(2, '0')
+			const mm = String(today.getMonth() + 1).padStart(2, '0')
+			const yyyy = today.getFullYear()
+			const date = dd + '-' + mm + '-' + yyyy
+            
+			const image = await generateCertificate({ name: req.user.name, course: course.title, date })
 			res.status(200).json({ success: true, image })
 		} catch (error) {
 			next(error)
@@ -66,18 +73,18 @@ module.exports = {
 		}
 	},
 
-    // Dowload enrollment report
+	// Dowload enrollment report
 	getEnrollmentReport: async (req, res, next) => {
 		try {
 			let { from, to } = req.query
-            if (!from || !to) return res.status(400).json({ message: 'Please provide from and to date' })
-            from += 'T00:00:00.000Z'
+			if (!from || !to) return res.status(400).json({ message: 'Please provide from and to date' })
+			from += 'T00:00:00.000Z'
 			to += 'T23:59:59.999Z'
 			const enrollments = await Enrollment.find({ purchasedAt: { $gte: from, $lte: to } })
 				.populate('student', 'email name')
 				.populate('course', 'title')
 
-            if (!enrollments.length) return res.status(404).json({ message: 'No enrollments found' })
+			if (!enrollments.length) return res.status(404).json({ message: 'No enrollments found' })
 
 			const netTotalAmount = enrollments.reduce((acc, it) => acc + it.payment.price, 0)
 			const netFinalAmount = enrollments.reduce((acc, it) => acc + it.payment.finalPrice, 0)
@@ -124,7 +131,7 @@ module.exports = {
 				order.price = order.payment.price
 				order.discount = order.payment.finalPrice - order.payment.price
 				order.finalPrice = order.payment.finalPrice
-                order.method = order.payment.method
+				order.method = order.payment.method
 
 				worksheet.addRow(order)
 				count += 1
@@ -153,5 +160,4 @@ module.exports = {
 			next(error)
 		}
 	},
-
 }
