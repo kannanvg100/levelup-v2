@@ -1,5 +1,4 @@
 'use client'
-
 import { getSearchResults } from '@/api/courses'
 import { Button, Input, Spinner } from '@nextui-org/react'
 import { SearchIcon } from 'lucide-react'
@@ -90,8 +89,8 @@ export default function InstantSearch() {
 				)}
 				{showResults && data?.length > 0 && (
 					<div className="w-full h-full flex flex-col items-start justify-start transition-all ease-in-out shadow-lg">
-						{data.map((course, index) => (
-							<Link key={index} href={`/courses/${course?.slug}/${course?._id}`} className="w-full">
+						{data.map((course) => (
+							<Link key={course._id} href={`/courses/${course?.slug}/${course?._id}`} className="w-full">
 								<div className="w-full flex items-start justify-start p-3 border-t border-default-200 cursor-pointer hover:bg-default-200">
 									<div className="w-16 h-12 overflow-hidden">
 										<Image

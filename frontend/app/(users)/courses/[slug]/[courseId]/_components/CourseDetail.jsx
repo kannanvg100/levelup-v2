@@ -133,7 +133,7 @@ export default function CourseDetail({ slug, courseId }) {
 		<>
 			<div className="max-w-5xl mx-auto mt-2">
 				<div className="flex justify-center sm:justify-start items-start gap-8 flex-wrap">
-					<div className="sticky top-16 self-start">
+					<div className="sm:sticky sm:top-16 self-start">
 						<Breadcrumbs>
 							<BreadcrumbItem className="cursor-default">
 								<Home size={12} />
@@ -144,7 +144,6 @@ export default function CourseDetail({ slug, courseId }) {
 								</Link>
 							</BreadcrumbItem>
 						</Breadcrumbs>
-
 						<Spacer y={2} />
 						<Card shadow="none" className="min-w-[350px]" radius="none">
 							<CardBody className="overflow-visible p-0 opacity-90 hover:opacity-100">
@@ -153,7 +152,7 @@ export default function CourseDetail({ slug, courseId }) {
 										width={350}
 										height={200}
 										alt={course?.title}
-										className="w-[350px] h-[200px] object-cover rounded-none"
+										className="w-full sm:w-[350px] h-[200px] object-cover rounded-none border"
 										src={course?.thumbnail}
 									/>
 
@@ -222,7 +221,7 @@ export default function CourseDetail({ slug, courseId }) {
 							</CardFooter>
 						</Card>
 					</div>
-					<div className="flex-grow max-w-[600px] mt-8">
+					<div className="flex-grow max-w-[600px] sm:mt-8">
 						<p className="text-3xl font-semibold -mt-2">{course?.title}</p>
 
 						<Spacer y={2} />
@@ -281,7 +280,7 @@ export default function CourseDetail({ slug, courseId }) {
 							<Accordion variant="light" className="bg-default-50" showDivider={false}>
 								{course?.chapters?.map((chapter, index) => (
 									<AccordionItem
-										key={index}
+										key={chapter._id}
 										title={
 											<div className="flex justify-between items-center gap-1 px-2">
 												<p className="text-sm font-medium">
@@ -295,7 +294,7 @@ export default function CourseDetail({ slug, courseId }) {
 										<div className="flex flex-col gap-2 ms-2">
 											{chapter?.segments?.map((seg, index) => (
 												<div
-													key={index}
+													key={seg._id}
 													className="flex items-center gap-2 cursor-pointer hover:underline">
 													<p className="text-sm">{index + 1}.</p>
 													<p className="text-sm">{seg.title}</p>

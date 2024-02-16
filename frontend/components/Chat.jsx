@@ -117,7 +117,7 @@ export default function Chat({ role }) {
 								<div className="flex flex-col">
 									{chats?.map((item, index) => (
 										<div
-											key={index}
+											key={item._id}
 											className={`flex gap-2 h-16 items-center hover:bg-default-50 p-2 px-3 cursor-pointer w-full ${
 												item?._id === chat?._id ? 'bg-default-100' : ''
 											}`}

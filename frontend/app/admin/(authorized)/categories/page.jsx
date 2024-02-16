@@ -277,7 +277,7 @@ export default function App() {
 		}
 	}, [])
 
-	const onClear = React.useCallback(() => {
+	const onClear = React.useCallback(() => {    
 		setFilterValue('')
 		setPage(1)
 	}, [])

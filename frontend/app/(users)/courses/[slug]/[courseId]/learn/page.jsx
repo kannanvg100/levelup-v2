@@ -6,32 +6,29 @@ import {
 	Accordion,
 	AccordionItem,
 	Avatar,
-	Badge,
 	BreadcrumbItem,
 	Breadcrumbs,
 	Button,
 	Card,
 	CardBody,
-	CircularProgress,
-	Image,
 	ScrollShadow,
 	Spacer,
 	Tab,
 	Tabs,
 	User,
 } from '@nextui-org/react'
-import { Check, CheckCircle, CheckCircle2, Home, Link, MessageSquareShare, Play, PlaySquare } from 'lucide-react'
+import { CheckCircle, CheckCircle2, MessageSquareShare, Play, PlaySquare } from 'lucide-react'
 import React, { useEffect, useRef, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import Comments from './Comments'
 import { useSelector } from 'react-redux'
 import Confetti from 'react-confetti'
-import NextLink from 'next/link'
-import { addSeconds, format, formatDistance, intervalToDuration } from 'date-fns'
+import { intervalToDuration } from 'date-fns'
 import { twMerge } from 'tailwind-merge'
 import { useChat } from '@/components/providers/ChatProvider'
 import { createChat } from '@/api/chats'
+import ErrorBoundary from '@/components/ErrorBoundary'
 
 export default function Page({ params: { courseId } }) {
 	const { user } = useSelector((state) => state.user)
@@ -160,17 +157,21 @@ export default function Page({ params: { courseId } }) {
 			<Spacer y={4} />
 			<div className="flex flex-col sm:flex-row gap-4 items-start">
 				<div className="flex-grow aspect-video">
-					<VideoPlayer
-						segment={currentSegment}
-						onEnded={handleMarkProgress}
-						userId={user?._id}
-						width="full"
-						height="full"
-					/>
+					<ErrorBoundary>
+						<VideoPlayer
+							segment={currentSegment}
+							onEnded={handleMarkProgress}
+							userId={user?._id}
+							width="full"
+							height="full"
+						/>
+					</ErrorBoundary>
 				</div>
 				<Card shadow="sm" className="sm:w-[300px] min-w-[300px] self-stretch">
 					<CardBody>
 						<ScrollShadow className="w-full">
+							<p className="font-bold">Course contents</p>
+							<Spacer y={2} />
 							<Accordion
 								isCompact
 								disallowEmptySelection
@@ -190,7 +191,7 @@ export default function Page({ params: { courseId } }) {
 								}}>
 								{course?.chapters?.map((chapter, index) => (
 									<AccordionItem
-										key={index}
+										key={chapter._id}
 										title={
 											<div className="flex items-baseline gap-1">
 												<p className="text-sm font-medium">
@@ -202,7 +203,7 @@ export default function Page({ params: { courseId } }) {
 										<div className="flex flex-col gap-2 ms-1">
 											{chapter?.segments?.map((seg, index) => (
 												<div
-													key={index}
+													key={seg._id}
 													className="flex items-center gap-2 cursor-pointer"
 													onClick={() => {
 														setCurrentChapter(chapter)

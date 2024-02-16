@@ -149,7 +149,7 @@ export default function App({ params: { courseId } }) {
 								<Accordion variant="light" className="bg-default-50" showDivider={false}>
 									{course?.chapters?.map((chapter, index) => (
 										<AccordionItem
-											key={index}
+											key={chapter._id}
 											title={
 												<div className="flex justify-between items-center gap-1 px-2">
 													<p className="text-sm font-medium">
@@ -163,7 +163,7 @@ export default function App({ params: { courseId } }) {
 											<div className="flex flex-col gap-2 ms-2">
 												{chapter?.segments?.map((seg, index) => (
 													<div
-														key={index}
+														key={seg._id}
 														className="flex items-center gap-2 cursor-pointer hover:underline">
 														<p className="text-sm">{index + 1}.</p>
 														<p className="text-sm">{seg.title}</p>

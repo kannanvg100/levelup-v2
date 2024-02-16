@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 
 export function middleware(request) {
-
 	const pathname = request.nextUrl.pathname
 
 	// Admin routes protection middleware
@@ -36,6 +35,10 @@ export function middleware(request) {
 	if (pathname.startsWith('/login') || pathname.startsWith('/signup') || pathname.startsWith('/reset')) {
 		if (verify) {
 			return NextResponse.redirect(new URL('/', request.url))
+		}
+	} else if (pathname.startsWith('/profile') || pathname.match(/^\/courses\/([^\/]+)\/([^\/]+)\/learn$/)) {
+		if (!verify) {
+			return NextResponse.redirect(new URL('/login', request.url))
 		}
 	}
 }

@@ -28,8 +28,8 @@ export default function Reviews({ courseId }) {
 				</div>
 			) : (
 				<>
-					{reviews.map((review, index) => (
-						<CourseReviewItem key={index} review={review} />
+					{reviews.map((review) => (
+						<CourseReviewItem key={review._id} review={review} />
 					))}
 					{reviews.length === 0 && <p className="text-center">No reviews yet</p>}
 				</>

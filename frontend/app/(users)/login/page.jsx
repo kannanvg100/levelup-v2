@@ -1,18 +1,22 @@
 'use client'
 import Login from '@/components/Login'
-import { useSearchParams, useRouter } from 'next/navigation'
-import React, { useEffect, useLayoutEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useRouter, useSearchParams } from 'next/navigation'
+import React from 'react'
 
 export default function Page() {
-	const searchParams = useSearchParams()
-	const ret = searchParams.get('ret')
-
 	const router = useRouter()
-	const { user } = useSelector((state) => state.user)
-	useLayoutEffect(() => {
-		if (user) router.push('/')
-	}, [user])
+	const searchParams = useSearchParams()
 
-	return <Login role="user" ret />
+	const handleClose = () => {
+		const ret = searchParams.get('ret') || '/'
+		router.replace(ret)
+	}
+
+	return (
+		<div className="min-h-screen flex flex-col">
+			<div className="flex-grow flex items-center justify-center">
+				<Login role="user" onClose={handleClose} />
+			</div>
+		</div>
+	)
 }

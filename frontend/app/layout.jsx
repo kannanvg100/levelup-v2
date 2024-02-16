@@ -3,14 +3,14 @@ import { Providers } from './providers'
 
 export const metadata = {
 	title: {
-        absolute: 'LevelUp - Home',
+		absolute: 'LevelUp - Home',
 		template: '%s - LevelUp',
 		default: 'LevelUp',
 	},
-	description: 'Learn Beyond Limits',
-    openGraph: {
-        images: ['/levelup_image.png'],
-      },
+	description: 'Learn Beyond Limits: Your Knowledge Journey Starts Here',
+	openGraph: {
+		images: 'https://raw.githubusercontent.com/kannanvg100/levelup-v2/8072199747dad6d095fe96c3d58975a285a7241d/frontend/levelup_image.png',
+	},
 }
 
 export default function RootLayout({ children }) {

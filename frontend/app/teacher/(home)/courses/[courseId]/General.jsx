@@ -111,7 +111,7 @@ export default function General({ errors, setErrors }) {
 								}}>
 								{categories &&
 									categories.map((category, index) => (
-										<DropdownItem key={index} description={category.description}>
+										<DropdownItem key={category._id} description={category.description}>
 											{category.title}
 										</DropdownItem>
 									))}

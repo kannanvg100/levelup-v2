@@ -16,10 +16,9 @@ import {
 	Input,
 	Skeleton,
 	Spinner,
-	useDisclosure,
 } from '@nextui-org/react'
 import { BookText, Clapperboard, FileAudio2, Image as ImageLucid, Paperclip, Send, Video, X } from 'lucide-react'
-import React, { use, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useSelector } from 'react-redux'
@@ -50,7 +49,6 @@ export default function ChatWindow({ role, chat, setChat, mutateMarkAsRead }) {
 
 	useEffect(() => {
 		inputRef.current.focus()
-		chatRef.current.scrollTop = chatRef.current.scrollHeight
 		return () => {
 			socket?.emit('LEAVE_CHAT', { chatId: chat?._id })
 		}
@@ -83,11 +81,17 @@ export default function ChatWindow({ role, chat, setChat, mutateMarkAsRead }) {
 		staleTime: Infinity,
 	})
 
+    useLayoutEffect(() => {
+		if (chatRef.current) {
+			chatRef.current.scrollTop = chatRef.current.scrollHeight
+		}
+	}, [messages, message])
+
 	const { isPending: isLoadingSendMessage, mutate: mutateSendMessage } = useMutation({
 		mutationFn: createChatMessage,
 		onSuccess: () => {
 			setMessage('')
-			chatRef.current.scrollTop = chatRef.current.scrollHeight
+			// chatRef.current.scrollIntoView({ behavior: 'smooth' });
 			setAttachmentType('text')
 			queryClient.invalidateQueries(['messages', { chatId: chat?._id }])
 		},
@@ -99,9 +103,11 @@ export default function ChatWindow({ role, chat, setChat, mutateMarkAsRead }) {
 	})
 
 	const handleSendMessage = () => {
+        debugger
 		mutateMarkAsRead({ role, chatId: chat?._id })
 		if (!message || !message.trim()) return
 		mutateSendMessage({ role, chatId: chat?._id, content: message })
+		chatRef.current.scrollIntoView({ behavior: 'smooth' });
 		// if (!socket) return toast.error('Socket not connected')
 		// socket.emit('SEND_MESSAGE', { chatId: chat?._id, content: message })
 	}
@@ -109,6 +115,7 @@ export default function ChatWindow({ role, chat, setChat, mutateMarkAsRead }) {
 	const handleFileChange = () => {
 		if (fileInputRef.current.files[0]) {
 			mutateSendMessage({
+                role,
 				chatId: chat?._id,
 				content: '',
 				attachmentType,
@@ -168,9 +175,9 @@ export default function ChatWindow({ role, chat, setChat, mutateMarkAsRead }) {
 				<CardBody className="relative py-0 ps-0">
 					{isPending && <Spinner className="absolute inset-0" />}
 					{isError && <p className="text-center">Error</p>}
-					<div className="flex gap-2 px-3 h-[288px] flex-col-reverse overflow-auto" ref={chatRef}>
+					<div className="flex gap-2 px-3 h-[288px] flex-col-reverse overflow-y-scroll" ref={chatRef}>
 						{isRefetching && !isLoadingSendMessage && (
-							<div>
+							<div className='self-end'>
 								<Skeleton className="w-[80px] h-10 bg-default-50" />
 							</div>
 						)}
@@ -182,7 +189,7 @@ export default function ChatWindow({ role, chat, setChat, mutateMarkAsRead }) {
 
 						{messages?.map((message, index) => (
 							<div
-								key={index}
+								key={message._id}
 								className={
 									message.sender === user._id
 										? 'self-end bg-default-100 max-w-[90%] min-w-[80px]'

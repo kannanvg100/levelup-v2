@@ -56,7 +56,7 @@ export default function Content() {
 				<Spacer y={2} />
 				{course &&
 					course?.chapters?.map((item, index) => (
-						<div key={index}>
+						<div key={item._id}>
 							<div className="flex justify-between items-center me-4">
 								<div
 									className="flex items-center gap-2 cursor-pointer"

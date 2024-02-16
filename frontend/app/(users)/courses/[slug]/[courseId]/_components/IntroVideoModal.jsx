@@ -8,7 +8,7 @@ export default function IntroVideoModal({ isOpen, onClose, segment }) {
 			<ModalContent>
 				{(onClose) => (
 					<>
-						<ModalBody className='p-0 flex justify-center overflow-hidden'>
+						<ModalBody className='p-0 flex justify-center items-center overflow-hidden'>
 							<VideoPlayer segment={segment} width='700px' height='600px'/>
 						</ModalBody>
 					</>

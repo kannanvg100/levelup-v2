@@ -50,7 +50,7 @@ export default function Page({ params: { courseId } }) {
 								onSelectionChange={(key) => setCurrentAccordian(key?.currentKey)}>
 								{course?.chapters?.map((chapter, index) => (
 									<AccordionItem
-										key={index}
+										key={chapter._id}
 										title={
 											<p className="text-sm font-medium">
 												Chapter {index + 1}: {chapter.title}
@@ -59,7 +59,7 @@ export default function Page({ params: { courseId } }) {
 										<div className="flex flex-col gap-2 ms-2">
 											{chapter?.segments?.map((seg, index) => (
 												<div
-													key={index}
+													key={seg._id}
 													className="flex items-center gap-2 cursor-pointer hover:underline"
 													onClick={() => {
 														setCurrentChapter(chapter)

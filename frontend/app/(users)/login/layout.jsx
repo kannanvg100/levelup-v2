@@ -1,12 +1,10 @@
 import React from 'react'
 
 export const metadata = {
-	title: {
-		template: '%s - LevelUp',
-		default: 'Courses',
-	},
+	title: 'Login',
+	description: 'User Login page',
 }
 
 export default function layout({ children }) {
-	return <div>{children}</div>
+	return <>{children}</>
 }

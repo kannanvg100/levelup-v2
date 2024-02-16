@@ -1,8 +1,8 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { Button, Checkbox, Input, Link, Card, CardBody, Divider, Spacer } from '@nextui-org/react'
+import { Button, Input, Link, Card, CardBody, Divider, Spacer } from '@nextui-org/react'
 import NextLink from 'next/link'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { QueryClient, useMutation } from '@tanstack/react-query'
 import { loginUser, socialLoginUser } from '@/api/users'
 import { useRouter } from 'next/navigation'
@@ -12,9 +12,8 @@ import { addUser } from '@/redux/slices/userSlice'
 import GoogleLogin from '@/components/GoogleLogin'
 import { toast } from 'react-hot-toast'
 import Image from 'next/image'
-import { useSearchParams } from 'next/navigation'
 
-export default function Login({ role }) {
+export default function Login({ role, onClose }) {
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
 	const [errors, setErrors] = useState({ email: '', password: '' })
@@ -24,7 +23,7 @@ export default function Login({ role }) {
 		onSuccess: (data) => {
 			dispatch(role === 'teacher' ? addTeacher(data.user) : addUser(data.user))
 			queryClient.setQueryData(['role', { email, password }], data)
-			router.replace(role === 'teacher' ? '/teacher/courses' : '/')
+			onClose()
 		},
 		onError: (error) => {
 			const errors = error?.response?.data?.errors
@@ -36,7 +35,7 @@ export default function Login({ role }) {
 		mutationFn: socialLoginUser,
 		onSuccess: (data) => {
 			dispatch(role === 'teacher' ? addTeacher(data.user) : addUser(data.user))
-			router.replace(role === 'teacher' ? '/teacher/courses' : '/')
+			onClose()
 		},
 		onError: (error) => {
 			const errorMessage = error?.response?.data?.errors
@@ -46,8 +45,6 @@ export default function Login({ role }) {
 
 	const router = useRouter()
 	const dispatch = useDispatch()
-    const searchParams = useSearchParams()
-	const ret = searchParams.get('ret')
 
 	useEffect(() => {
 		if (errors?.toast) {
@@ -79,7 +76,7 @@ export default function Login({ role }) {
 	}
 
 	return (
-		<div className="mt-6 flex h-full justify-center items-center">
+		<div className="flex h-full justify-center items-center">
 			<Card className="w-[400px] p-6" radius="none">
 				<CardBody>
 					<div className="flex justify-center pb-8">
@@ -96,7 +93,7 @@ export default function Login({ role }) {
 							OR LOGIN WITH EMAIL
 						</span>
 					</div>
-                    
+
 					<Spacer y={10} />
 					<div className="flex flex-col gap-4">
 						<Input
@@ -141,7 +138,7 @@ export default function Login({ role }) {
 								}}>
 								Remember me
 							</Checkbox> */}
-                            <div></div>
+							<div></div>
 							<Link
 								as={NextLink}
 								href={{
