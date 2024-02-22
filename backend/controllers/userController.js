@@ -3,6 +3,7 @@ const User = require('../models/User')
 const Enrollment = require('../models/Enrollment')
 const generateToken = require('../utils/generateToken')
 const nodemailer = require('nodemailer')
+const Mailgen = require('mailgen')
 const { uploadToS3 } = require('../helpers/awsHelpers')
 const Notification = require('../models/Notification')
 
@@ -212,40 +213,31 @@ module.exports = {
 				}
 			}
 
-			let transporter = nodemailer.createTransport({
+			let config = {
 				service: 'gmail',
 				auth: {
-					type: 'OAuth2',
-					user: 'kannanvg007@gmail.com',
-					pass: 'wsuwnaosmmitgfgq',
-					clientId,
-					clientSecret,
-					refreshToken,
+					user: process.env.GMAIL_USERNAME,
+					pass: process.env.GMAIL_PASSWORD,
 				},
-			})
+			}
+
+			let transporter = nodemailer.createTransport(config)
+
 			const otp = generateOTP()
-			console.log('OTP: ', otp)
-			let mailOptions = {
-				from: 'kannanvg007@gmail.com',
+			let message = {
+				from: process.env.GMAIL_USERNAME,
 				to: email,
 				subject: `LevelUp verification code: ${otp}`,
-				text: `Your OTP code is: ${otp}`,
+				text: `Your LevelUp verification code: ${otp}`,
 			}
 
 			const status = 'pending'
 			await User.create({ email, password, role, otp, status })
 
-			transporter.sendMail(mailOptions, function (err, data) {
-				if (err) {
-					res.status(400).json({
-						success: false,
-						errors: { toast: 'Something went wrong, please try again' },
-					})
-				} else {
-					res.status(201).json({
-						success: true,
-					})
-				}
+			await transporter.sendMail(message)
+			res.status(201).json({
+				success: true,
+				message: 'Email OTP sent.',
 			})
 		} catch (error) {
 			next(error)
