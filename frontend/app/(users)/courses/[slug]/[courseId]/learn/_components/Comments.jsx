@@ -19,6 +19,7 @@ export default function Comments({ segmentId }) {
 		queryKey: ['comments', { segmentId, page, count }],
 		queryFn: () => getComments({ segmentId, page, count }),
 		keepPreviousData: true,
+        enabled: !!segmentId,
 	})
 
 	useEffect(() => {

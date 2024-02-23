@@ -13,10 +13,8 @@ export default function Page() {
 	}
 
 	return (
-		<div className="min-h-screen flex flex-col">
-			<div className="flex-grow flex items-center justify-center">
-				<Login role="user" onClose={handleClose} />
-			</div>
+		<div className="mt-4">
+			<Login role="user" onClose={handleClose} />
 		</div>
 	)
 }

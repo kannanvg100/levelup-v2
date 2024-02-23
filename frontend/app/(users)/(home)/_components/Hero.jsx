@@ -30,7 +30,7 @@ export default function Hero() {
 						variant="solid"
 						color="primary"
 						className="text-white px-4 font-bold hover:underline self-start">
-						Explore Courses
+						Browse all Courses
 					</Button>
 				</div>
 			</div>

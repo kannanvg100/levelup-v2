@@ -1,6 +1,18 @@
-"use client"
+'use client'
 import React from 'react'
-import { Navbar, Link, Button, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar } from '@nextui-org/react'
+import {
+	Navbar,
+	Link,
+	Button,
+	DropdownItem,
+	DropdownTrigger,
+	Dropdown,
+	DropdownMenu,
+	Avatar,
+	Popover,
+	PopoverTrigger,
+	PopoverContent,
+} from '@nextui-org/react'
 
 import NextLink from 'next/link'
 import Image from 'next/image.js'
@@ -8,20 +20,30 @@ import { useDispatch, useSelector } from 'react-redux'
 import { usePathname, useRouter } from 'next/navigation'
 import { logoutUser } from '@/api/users.js'
 import { removeUser } from '@/redux/slices/userSlice.js'
-import { QueryClient, useQuery } from '@tanstack/react-query'
+import { QueryClient, useQuery, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 import { useTheme } from 'next-themes'
 import InstantSearch from './InstantSearch.jsx'
 import { getPublishedCategories } from '@/api/categories.js'
-import { Bookmark, ChevronRight, ChevronDown, ClipboardList, LogOut, MoonStar, Sun, User } from 'lucide-react'
+import {
+	Bookmark,
+	ChevronRight,
+	ChevronDown,
+	ClipboardList,
+	LogOut,
+	MoonStar,
+	Sun,
+	User,
+	SearchIcon,
+} from 'lucide-react'
 
 export default function Header() {
 	const { user } = useSelector((state) => state.user)
-    const router = useRouter()
+	const router = useRouter()
 	const dispatch = useDispatch()
 	const { theme, setTheme } = useTheme()
 	const handleThemeChange = () => (theme === 'light' ? setTheme('dark') : setTheme('light'))
-	const queryClient = new QueryClient()
+	const queryClient = useQueryClient()
 	const pathname = usePathname()
 
 	const handleLogout = async () => {
@@ -33,7 +55,8 @@ export default function Header() {
 			if (res?.success) {
 				dispatch(removeUser())
 				toast.success('Logged out successfully')
-                router.replace('/')
+				router.replace('/')
+                queryClient.resetQueries()
 			} else toast.error('Something went wrong, please try again later')
 		} catch (error) {
 			toast.error('Something went wrong, please try again later')
@@ -47,7 +70,7 @@ export default function Header() {
 	})
 
 	return (
-		<Navbar maxWidth="xl" className="h-[8rem] md:h-[4rem]">
+		<Navbar maxWidth="xl" className="h-[4rem]">
 			<div className="flex flex-col gap-3 w-full">
 				<div className="flex justify-between items-center w-full gap-3">
 					<div className="flex items-center gap-5">
@@ -57,7 +80,7 @@ export default function Header() {
 								alt="logo"
 								width={0}
 								height={0}
-								className="cursor-pointer min-w-[100px] h-auto"
+								className="cursor-pointer min-w-[100px] h-auto select-none"
 								priority={true}
 							/>
 						</NextLink>
@@ -102,9 +125,24 @@ export default function Header() {
 						</Dropdown>
 					</div>
 
-					<div className="hidden md:block flex-grow max-w-[500px]"><InstantSearch /></div>
+					<div className="hidden md:block flex-grow max-w-[500px]">
+						<InstantSearch />
+					</div>
 
 					<div className="flex justify-center items-center gap-3">
+						<div className="block md:hidden">
+							<Popover placement="bottom-start" backdrop="blur" shouldCloseOnInteractOutside={true} shouldBlockScroll={true}>
+								<PopoverTrigger>
+									<SearchIcon size={20} />
+								</PopoverTrigger>
+								<PopoverContent>
+									<div className="min-w-[400px]">
+										<InstantSearch />
+									</div>
+								</PopoverContent>
+							</Popover>
+						</div>
+
 						<div
 							onClick={handleThemeChange}
 							className="px-2 relative flex flex-row items-center h-10 cursor-pointer focus:outline-none">
@@ -129,7 +167,7 @@ export default function Header() {
 									href="/profile/favorites"
 									aria-current="favorites"
 									size="sm"
-									className="text-default-700 hover:text-primary">
+									className="hidden md:block text-default-700 hover:text-primary">
 									<Bookmark size={20} />
 								</Link>
 
@@ -137,7 +175,7 @@ export default function Header() {
 									<DropdownTrigger>
 										<Avatar
 											as="button"
-											className="transition-transform"
+											className="transition-transform select-none"
 											name={user.email.slice(0, 1).toUpperCase()}
 											size="sm"
 											src={user.profileImage}
@@ -164,6 +202,14 @@ export default function Header() {
 												<div className="flex items-center gap-2 py-1 font-medium">
 													<User size={16} />
 													<p>Account</p>
+												</div>
+											</NextLink>
+										</DropdownItem>
+										<DropdownItem key="favorites" className="md:hidden">
+											<NextLink href="/profile/favorites">
+												<div className="flex items-center gap-2 py-1 font-medium">
+													<Bookmark size={16} />
+													<p>Favorites</p>
 												</div>
 											</NextLink>
 										</DropdownItem>
@@ -208,7 +254,7 @@ export default function Header() {
 						)}
 					</div>
 				</div>
-				<div className="block md:hidden w-full"><InstantSearch /></div>
+				{/* <div className="block md:hidden w-full"><InstantSearch /></div> */}
 			</div>
 		</Navbar>
 	)

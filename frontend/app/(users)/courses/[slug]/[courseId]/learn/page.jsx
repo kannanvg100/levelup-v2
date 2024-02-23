@@ -3,34 +3,33 @@ import { getFullCourse, getEnrollment } from '@/api/courses'
 import { setProgress } from '@/api/segments'
 import VideoPlayer from '@/components/VideoPlayer'
 import {
-	Accordion,
-	AccordionItem,
-	Avatar,
 	BreadcrumbItem,
 	Breadcrumbs,
 	Button,
-	Card,
-	CardBody,
-	ScrollShadow,
+	Image,
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+	Skeleton,
 	Spacer,
 	Tab,
 	Tabs,
 	User,
 } from '@nextui-org/react'
-import { CheckCircle, CheckCircle2, MessageSquareShare, Play, PlaySquare } from 'lucide-react'
-import React, { useEffect, useRef, useState } from 'react'
+import { CheckCircle, CheckCircle2, MessageSquareShare, Play, PlaySquare, Share2 } from 'lucide-react'
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import Comments from './Comments'
+import Comments from './_components/Comments'
 import { useSelector } from 'react-redux'
 import Confetti from 'react-confetti'
 import { intervalToDuration } from 'date-fns'
 import { twMerge } from 'tailwind-merge'
 import { useChat } from '@/components/providers/ChatProvider'
 import { createChat } from '@/api/chats'
-import ErrorBoundary from '@/components/ErrorBoundary'
+import SharePanel from './_components/SharePanel'
 
-export default function Page({ params: { courseId } }) {
+export default function Page({ params: { slug, courseId } }) {
 	const { user } = useSelector((state) => state.user)
 	const [course, setCourse] = useState('')
 	const [currentChapter, setCurrentChapter] = useState(null)
@@ -38,14 +37,21 @@ export default function Page({ params: { courseId } }) {
 	const [currentAccordian, setCurrentAccordian] = useState(0)
 	const [enrollment, setEnrollment] = useState(null)
 	const queryClient = useQueryClient()
-	const windowSize = useRef([window.innerWidth, window.innerHeight])
+	const windowSize = useRef()
 	const [showConfetti, setShowConfetti] = useState(false)
 	const { expandChat, setChat } = useChat()
+	const contentRef = useRef()
+	const videoPlayerRef = useRef()
+
+	const pageUrl = useMemo(() => {
+		return `${process.env.NEXT_PUBLIC_URL}/courses/${slug}/${courseId}`
+	}, [slug, courseId])
 
 	const { data, isPending, isError } = useQuery({
 		queryKey: ['course', courseId],
 		queryFn: () => getFullCourse(courseId),
 		keepPreviousData: true,
+		enabled: !!courseId,
 	})
 
 	useEffect(() => {
@@ -81,6 +87,7 @@ export default function Page({ params: { courseId } }) {
 		queryKey: ['enrollment', courseId],
 		queryFn: () => getEnrollment(courseId),
 		keepPreviousData: true,
+		enabled: !!courseId,
 	})
 
 	useEffect(() => {
@@ -152,175 +159,238 @@ export default function Page({ params: { courseId } }) {
 		},
 	})
 
+	if (isPending) {
+		return (
+			<div className="w-full max-w-5xl mx-auto">
+				<Spacer y={4} />
+				<div className="flex gap-4 flex-wrap">
+					<div className="flex-1 min-w-[500px]">
+						<Skeleton className="flex flex-col gap-4">
+							<div className="w-full h-full"></div>
+							<div>
+								<Breadcrumbs size="sm" variant="solid">
+									<Skeleton>
+										<BreadcrumbItem>title</BreadcrumbItem>
+									</Skeleton>
+									<Skeleton>
+										<BreadcrumbItem>title2</BreadcrumbItem>
+									</Skeleton>
+								</Breadcrumbs>
+								<Spacer y={2} />
+								<div>
+									<Skeleton>
+										<p className="text-lg font-medium">seg_title</p>
+									</Skeleton>
+								</div>
+								<Spacer y={4} />
+								<div className="flex justify-between items-center gap-4 bg-default-100 p-4">
+									<div className="flex gap-4 items-center">
+										<User
+											name={course?.teacher?.name}
+											description="Instructor"
+											avatarProps={{
+												src: course?.teacher?.profileImage,
+											}}
+										/>
+										<Button
+											className="text-white"
+											isLoading={isLoadingCreateChat}
+											radius="none"
+											size="sm"
+											color="primary"
+											variant="solid"
+											startContent={<MessageSquareShare size={16} />}
+											onClick={() => {
+												mutateCreateChat({ receiver: course?.teacher?._id })
+											}}>
+											Message
+										</Button>
+									</div>
+									<div className="flex gap-3 items-center">
+										<Skeleton className="w-6 h-6"></Skeleton>
+										<Skeleton className="w-32 h-6"></Skeleton>
+									</div>
+								</div>
+								<Spacer y={4} />
+								<Tabs aria-label="Options" variant="underlined">
+									<Tab key="comments" title="Comments">
+										<Comments segmentId={currentSegment?._id} />
+									</Tab>
+									<Tab key="description" title="Description">
+										<p className="ms-2">{currentSegment?.description}</p>
+									</Tab>
+								</Tabs>
+							</div>
+						</Skeleton>
+					</div>
+					<Skeleton className="w-full md:w-[300px] h-[400px] self-start"></Skeleton>
+				</div>
+			</div>
+		)
+	}
+
 	return (
 		<div className="w-full max-w-5xl mx-auto">
 			<Spacer y={4} />
-			<div className="flex flex-col sm:flex-row gap-4 items-start">
-				<div className="flex-grow aspect-video">
-					<ErrorBoundary>
+			<div className="flex gap-4 flex-wrap">
+				<div className="flex-1 min-w-[500px]">
+					<div className="flex flex-col gap-4">
 						<VideoPlayer
 							segment={currentSegment}
 							onEnded={handleMarkProgress}
 							userId={user?._id}
 							width="full"
 							height="full"
+							ref={videoPlayerRef}
 						/>
-					</ErrorBoundary>
-				</div>
-				<Card shadow="sm" className="sm:w-[300px] min-w-[300px] self-stretch">
-					<CardBody>
-						<ScrollShadow className="w-full">
-							<p className="font-bold">Course contents</p>
+						<div>
+							<Breadcrumbs size="sm" variant="solid">
+								<BreadcrumbItem>{course?.title}</BreadcrumbItem>
+								<BreadcrumbItem>{currentChapter?.title}</BreadcrumbItem>
+							</Breadcrumbs>
 							<Spacer y={2} />
-							<Accordion
-								isCompact
-								disallowEmptySelection
-								showDivider={false}
-								defaultExpandedKeys={'all'}
-								// expandedKeys={[currentAccordian]}
-								onSelectionChange={(e) => {
-									console.log(JSON.stringify(e.currentKey))
-									setCurrentAccordian(e.currentKey)
-								}}
-								// selectionMode="single"
-								className="whitespace-nowrap"
-								itemClasses={{
-									title: 'text-default-900 text-small font-semibold',
-									trigger: 'w-fit',
-									content: 'text-default-700',
-								}}>
-								{course?.chapters?.map((chapter, index) => (
-									<AccordionItem
-										key={chapter._id}
-										title={
-											<div className="flex items-baseline gap-1">
-												<p className="text-sm font-medium">
-													{index + 1}. {chapter.title}
-												</p>
-												<p className="text-default-500 text-tiny font-normal">{`(${chapter?.segments?.length})`}</p>
-											</div>
-										}>
-										<div className="flex flex-col gap-2 ms-1">
-											{chapter?.segments?.map((seg, index) => (
-												<div
-													key={seg._id}
-													className="flex items-center gap-2 cursor-pointer"
-													onClick={() => {
-														setCurrentChapter(chapter)
-														setCurrentSegment(seg)
-													}}>
-													<div
-														className={twMerge(
-															'flex items-center gap-2 w-full p-2',
-															seg?._id === currentSegment?._id && 'bg-default-100'
-														)}>
-														<Play
-															size={12}
-															className={
-																seg?._id === currentSegment?._id
-																	? 'text-primary fill-primary'
-																	: 'text-transparent'
-															}
-														/>
-														<Avatar
-															showFallback
-															size="lg"
-															name="N/A"
-															radius="none"
-															src={`https://image.mux.com/${seg?.video[0].playbackId}/thumbnail.png?width=120`}
-														/>
-														<div className="self-start flex flex-col gap-1">
-															<p className="text-sm font-normal">{`${seg?.title}`}</p>
-															<div className="flex gap-1 items-center">
-																<PlaySquare size={14} />
-																<p className="text-tiny">
-																	{duration(seg?.video[0]?.duration)}
-																</p>
-																{checkProgressStatus(chapter?._id, seg?._id) && (
-																	<CheckCircle size={14} color="#0f0" />
-																)}
-															</div>
-														</div>
+							<div>
+								<p className="text-lg font-medium">{currentSegment?.title}</p>
+							</div>
+							<Spacer y={4} />
+							<div className="flex justify-between items-center gap-4 bg-default-100 p-4">
+								<div className="flex gap-4 items-center">
+									<User
+										name={course?.teacher?.name}
+										description="Instructor"
+										avatarProps={{
+											src: course?.teacher?.profileImage,
+										}}
+									/>
+									<Button
+										className="text-white"
+										isLoading={isLoadingCreateChat}
+										radius="none"
+										size="sm"
+										color="primary"
+										variant="solid"
+										startContent={<MessageSquareShare size={16} />}
+										onClick={() => {
+											mutateCreateChat({ receiver: course?.teacher?._id })
+										}}>
+										Message
+									</Button>
+								</div>
+								<div className="flex gap-3 items-center">
+									<Popover placement="bottom" showArrow={true} backdrop="opaque" shouldBlockScroll>
+										<PopoverTrigger>
+											<Button
+												isIconOnly
+												radius="none"
+												size="sm"
+												color="primary"
+												variant="flat"
+												startContent={<Share2 size={16} />}></Button>
+										</PopoverTrigger>
+										<PopoverContent className="w-[400px]">
+											<SharePanel pageUrl={pageUrl} title={course?.title} />
+										</PopoverContent>
+									</Popover>
+
+									<Button
+										isLoading={isLoadingMarkProgress}
+										radius="none"
+										size="sm"
+										color="primary"
+										variant="flat"
+										startContent={<CheckCircle2 size={16} />}
+										onClick={() => handleMarkProgress(currentSegment?._id)}>
+										Mark as completed
+									</Button>
+								</div>
+							</div>
+							<Spacer y={4} />
+							<Tabs aria-label="Options" variant="underlined">
+								<Tab key="comments" title="Comments">
+									<Comments segmentId={currentSegment?._id} />
+								</Tab>
+								<Tab key="description" title="Description">
+									<p className="ms-2">{currentSegment?.description}</p>
+								</Tab>
+								{/* <Tab key="attachments" title="Attachments">
+    						No attachments
+    					</Tab> */}
+							</Tabs>
+						</div>
+					</div>
+				</div>
+				<div shadow="none" className="w-full md:w-[300px] min-h-[400px] p-3 border-1 dark:border-default-50 self-start bg-default-50">
+					<p className="font-bold">Course contents</p>
+					<Spacer y={2} />
+					<div className="flex flex-col gap-2">
+						{course?.chapters?.map((chapter, index) => (
+							<div>
+								<div className="flex items-baseline gap-1">
+									<p className="text-sm font-medium">
+										{index + 1}. {chapter.title}
+									</p>
+									<p className="text-default-500 text-tiny font-normal">{`(${chapter?.segments?.length})`}</p>
+								</div>
+
+								<div className="flex flex-col gap-2 ms-3 mt-1">
+									{chapter?.segments?.map((seg, index) => (
+										<div
+											key={seg._id}
+											className="flex items-center gap-2 cursor-pointer"
+											onClick={() => {
+												setCurrentChapter(chapter)
+												setCurrentSegment(seg)
+											}}>
+											<div
+												className={twMerge(
+													'flex items-center gap-2 w-full',
+													seg?._id === currentSegment?._id && 'bg-default-100'
+												)}>
+												<div className="relative">
+													<Image
+														width={120}
+														height={67}
+														className="aspect-video bg-primary-100"
+														src={`https://image.mux.com/${seg?.video[0].playbackId}/thumbnail.png?width=120`}
+													/>
+													<Play
+														size={16}
+														className={
+															seg?._id === currentSegment?._id
+																? 'text-primary fill-primary absolute left-1 bottom-1 z-10'
+																: 'text-transparent absolute left-1 bottom-1 z-10'
+														}
+													/>
+												</div>
+												<div className="self-start flex flex-col gap-1">
+													<p className="text-sm font-medium">{`${seg?.title}`}</p>
+													<div className="flex gap-1 items-center">
+														<PlaySquare size={14} />
+														<p className="text-tiny">{duration(seg?.video[0]?.duration)}</p>
+														{checkProgressStatus(chapter?._id, seg?._id) && (
+															<CheckCircle size={14} color="#0f0" />
+														)}
 													</div>
 												</div>
-											))}
+											</div>
 										</div>
-									</AccordionItem>
-								))}
-							</Accordion>
-						</ScrollShadow>
-					</CardBody>
-				</Card>
-			</div>
-			<Spacer y={4} />
-			<div className="max-w-[708px]">
-				<Breadcrumbs size="sm">
-					<BreadcrumbItem>{course?.title}</BreadcrumbItem>
-					<BreadcrumbItem>{currentChapter?.title}</BreadcrumbItem>
-				</Breadcrumbs>
-				<Spacer y={2} />
-				<div>
-					<p className="text-lg font-medium">{currentSegment?.title}</p>
-				</div>
-				<Spacer y={4} />
-				<div className="flex justify-between items-center gap-4 bg-default-100 p-4">
-					<div className="flex gap-4 items-center">
-						<User
-							name={course?.teacher?.name}
-							description="Instructor"
-							avatarProps={{
-								src: course?.teacher?.profileImage,
-							}}
-						/>
-						<Button
-							className="text-white"
-							isLoading={isLoadingCreateChat}
-							radius="none"
-							size="sm"
-							color="primary"
-							variant="solid"
-							startContent={<MessageSquareShare size={16} />}
-							onClick={() => {
-								mutateCreateChat({ receiver: course?.teacher?._id })
-							}}>
-							Message
-						</Button>
-					</div>
-					<div className="flex gap-3 items-center">
-						<Button
-							isLoading={isLoadingMarkProgress}
-							radius="none"
-							size="sm"
-							color="primary"
-							variant="flat"
-							startContent={<CheckCircle2 size={16} />}
-							onClick={() => handleMarkProgress(currentSegment?._id)}>
-							Mark as completed
-						</Button>
+									))}
+								</div>
+							</div>
+						))}
 					</div>
 				</div>
-				<Spacer y={4} />
-				<Tabs aria-label="Options" variant="underlined">
-					<Tab key="comments" title="Comments">
-						<Comments segmentId={currentSegment?._id} />
-					</Tab>
-					<Tab key="description" title="Description">
-						<p className="ms-2">{currentSegment?.description}</p>
-					</Tab>
-					{/* <Tab key="attachments" title="Attachments">
-						No attachments
-					</Tab> */}
-				</Tabs>
 			</div>
+
 			{showConfetti && (
 				<Confetti
 					width={windowSize?.current[0] || 2000}
 					height={windowSize?.current[1] || 2000}
 					numberOfPieces={300}
+					run={true}
 					recycle={showConfetti || false}
 				/>
 			)}
-			<Spacer y={16} />
 		</div>
 	)
 }

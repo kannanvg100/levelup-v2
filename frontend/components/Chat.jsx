@@ -2,7 +2,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { Card, CardHeader, CardBody, Avatar, Spinner, Chip, Spacer } from '@nextui-org/react'
 import { useSelector } from 'react-redux'
-import { ChevronUp, MessageSquareOff } from 'lucide-react'
+import { ChevronUp, MessageCircleOff, MessageSquareOff } from 'lucide-react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { getChatsUser, getChatsTeacher, markChatRead } from '@/api/chats'
 import ChatWindow from './ChatWindow'
@@ -35,9 +35,25 @@ export default function Chat({ role }) {
 		})
 	}, [socket, user])
 
+	const {
+		data: chats,
+		isPending,
+		isError,
+		refetch,
+	} = useQuery({
+		queryKey: ['chats', { id: user?._id }],
+		queryFn:
+			role === 'user'
+				? () => getChatsUser({ page: 1, limit: 10 })
+				: () => getChatsTeacher({ page: 1, limit: 10 }),
+		keepPreviousData: true,
+        enabled: !!user
+	})
+
 	useEffect(() => {
 		if (user) {
 			if (isChatExpanded) {
+				refetch()
 				chatRef.current.style.bottom = '0px'
 				chevronRef.current.classList.add('rotate-180')
 			} else {
@@ -47,24 +63,10 @@ export default function Chat({ role }) {
 		}
 	}, [isChatExpanded, user])
 
-	const {
-		data: chats,
-		isPending,
-		isError,
-	} = useQuery({
-		queryKey: ['chats', user?._id],
-		queryFn:
-			role === 'user'
-				? () => getChatsUser({ page: 1, limit: 10 })
-				: () => getChatsTeacher({ page: 1, limit: 10 }),
-		keepPreviousData: true,
-		enabled: !!user,
-	})
-
 	const { mutate: mutateMarkAsRead } = useMutation({
 		mutationFn: markChatRead,
 		onSuccess: (data) => {
-			queryClient.invalidateQueries(['chats', user?._id])
+			queryClient.invalidateQueries(['chats', { id: user?._id }])
 		},
 		onError: (error) => {
 			toast.error(
@@ -110,6 +112,17 @@ export default function Chat({ role }) {
 											<Spacer y={3} />
 											<p className="text-default-500 text-sm px-2">
 												Something went wrong. Please try reloading the page.
+											</p>
+										</div>
+									</div>
+								)}
+								{chats && chats.length === 0 && (
+									<div className="absolute inset-0 text-center">
+										<div className="h-full flex flex-col justify-center items-center">
+											<MessageCircleOff size={36} className="text-default-700" />
+											<Spacer y={3} />
+											<p className="text-default-500 text-sm px-2">
+												No Chats yet. you can start a chat from learning page.
 											</p>
 										</div>
 									</div>

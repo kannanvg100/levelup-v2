@@ -11,18 +11,16 @@ import {
 	Card,
 	CardBody,
 	CardFooter,
-	Tab,
-	Tabs,
 	Tooltip,
 	useDisclosure,
 	Skeleton,
 } from '@nextui-org/react'
-import { useQuery, useMutation, QueryClient } from '@tanstack/react-query'
-import { getCourse, createStripeSession, getEnrollment } from '@/api/courses'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { getCourse, getEnrollment } from '@/api/courses'
 import toast from 'react-hot-toast'
 import IntroVideoModal from './IntroVideoModal'
 
-import { Calendar, Check, Globe, Home, MessageCircle, MessageSquare, PlayCircle, PlaySquare, Star } from 'lucide-react'
+import { Calendar, Globe, Home, MessageCircle, PlayCircle, PlaySquare, Star } from 'lucide-react'
 import Reviews from './Reviews'
 import { useRouter } from 'next/navigation'
 import { createChat } from '@/api/chats'
@@ -36,7 +34,7 @@ export default function CourseDetail({ slug, courseId }) {
 	const [course, setCourse] = useState('')
 	const [enrollment, setEnrollment] = useState('')
 	const router = useRouter()
-	const queryClient = new QueryClient()
+	const queryClient = useQueryClient()
 	const { expandChat, setChat } = useChat()
 	const { isOpen: isOpenIntroVideo, onOpen: onOpenIntroVideo, onClose: onCloseIntroVideo } = useDisclosure()
 	const { isOpen: isOpenCheckout, onOpen: onOpenCheckout, onClose: onCloseCheckout } = useDisclosure()
@@ -76,10 +74,10 @@ export default function CourseDetail({ slug, courseId }) {
 
 	const { isPending: isLoadingCreateChat, mutate: mutateCreateChat } = useMutation({
 		mutationFn: createChat,
-		onSuccess: (data) => {
+		onSuccess: async (data) => {
 			setChat(data?.chat)
 			expandChat()
-			queryClient.invalidateQueries({ queryKey: ['chats'] })
+			queryClient.invalidateQueries({ queryKey: ['chats', { id: user?._id }] })
 		},
 		onError: (error) => {
 			const err = error?.response?.data?.message
@@ -132,8 +130,8 @@ export default function CourseDetail({ slug, courseId }) {
 	return (
 		<>
 			<div className="max-w-5xl mx-auto mt-2">
-				<div className="flex justify-center sm:justify-start items-start gap-8 flex-wrap">
-					<div className="sm:sticky sm:top-16 self-start">
+				<div className="flex justify-center lg:justify-start items-start flex-wrap lg:flex-nowrap">
+					<div className="lg:sticky lg:top-16 self-start w-[600px] lg:w-[350px]">
 						<Breadcrumbs>
 							<BreadcrumbItem className="cursor-default">
 								<Home size={12} />
@@ -147,16 +145,14 @@ export default function CourseDetail({ slug, courseId }) {
 						<Spacer y={2} />
 						<Card shadow="none" className="min-w-[350px]" radius="none">
 							<CardBody className="overflow-visible p-0 opacity-90 hover:opacity-100">
-								<div className="relative">
+								<div className="relative w-full">
 									<Image
-										width={350}
-										height={200}
 										alt={course?.title}
-										className="w-full sm:w-[350px] h-[200px] object-cover rounded-none border"
+										className="w-[600px] max-h-[300px] object-cover rounded-none border dark:border-default-50"
 										src={course?.thumbnail}
 									/>
 
-									<div className="absolute inset-0 flex justify-center items-center z-10 border">
+									<div className="absolute inset-0 flex justify-center items-center z-10 border dark:border-default-50">
 										<div className="bg-default-50 rounded-full shadow-lg hover:text-primary opacity-95">
 											<PlayCircle
 												size={64}
@@ -221,7 +217,7 @@ export default function CourseDetail({ slug, courseId }) {
 							</CardFooter>
 						</Card>
 					</div>
-					<div className="flex-grow max-w-[600px] sm:mt-8">
+					<div className="flex-grow max-w-[600px] lg:max-w-max lg:pl-8 sm:mt-8">
 						<p className="text-3xl font-semibold -mt-2">{course?.title}</p>
 
 						<Spacer y={2} />
@@ -249,7 +245,7 @@ export default function CourseDetail({ slug, courseId }) {
 
 						{course?.rating?.count > 0 && (
 							<div className="flex justify-start items-center gap-2 mb-2">
-								<div className="inline-flex items-center border-1 px-1 cursor-pointer">
+								<div className="inline-flex items-center border-1 dark:border-default-100 px-1 cursor-pointer">
 									<p className="text-left text-small text-ellipsis-95">
 										{course?.rating?.avg.toFixed(1) || 'Not rated yet'}
 									</p>
