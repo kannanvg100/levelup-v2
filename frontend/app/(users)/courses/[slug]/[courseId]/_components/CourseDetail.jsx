@@ -20,7 +20,7 @@ import { getCourse, getEnrollment } from '@/api/courses'
 import toast from 'react-hot-toast'
 import IntroVideoModal from './IntroVideoModal'
 
-import { Calendar, Globe, Home, MessageCircle, PlayCircle, PlaySquare, Star } from 'lucide-react'
+import { Calendar, Frown, Globe, Home, MessageCircle, PlayCircle, PlaySquare, Star, XSquare } from 'lucide-react'
 import Reviews from './Reviews'
 import { useRouter } from 'next/navigation'
 import { createChat } from '@/api/chats'
@@ -31,7 +31,6 @@ import CheckoutModal from './CheckoutModal'
 
 export default function CourseDetail({ slug, courseId }) {
 	const { user } = useSelector((state) => state.user)
-	const [course, setCourse] = useState('')
 	const [enrollment, setEnrollment] = useState('')
 	const router = useRouter()
 	const queryClient = useQueryClient()
@@ -45,10 +44,6 @@ export default function CourseDetail({ slug, courseId }) {
 		queryFn: () => getCourse(courseId),
 		keepPreviousData: true,
 	})
-
-	useEffect(() => {
-		if (data?.course) setCourse(data?.course)
-	}, [data])
 
 	const {
 		data: enrollmentData,
@@ -85,7 +80,7 @@ export default function CourseDetail({ slug, courseId }) {
 		},
 	})
 
-	if (isPending || !course)
+	if (isPending)
 		return (
 			<div className="max-w-5xl mx-auto mt-2 h-screen">
 				<div className="flex justify-center sm:justify-start items-start gap-8 flex-wrap">
@@ -127,18 +122,30 @@ export default function CourseDetail({ slug, courseId }) {
 			</div>
 		)
 
+	if (isError) {
+		return (
+			<div className="grid-cols-subgrid col-span-4 flex flex-col items-center justify-center gap-4 text-default-500 sm:mt-24">
+				<Frown size={64} />
+				<p className="text-default-500">Course you have been requesting not found</p>
+				<Link href="/courses" variant="light" color="primary" className="font-semibold text-primary">
+					View all Courses
+				</Link>
+			</div>
+		)
+	}
+
 	return (
 		<>
 			<div className="max-w-5xl mx-auto mt-2">
-				<div className="flex justify-center lg:justify-start items-start flex-wrap lg:flex-nowrap">
+				<div className="px-2 flex justify-center lg:justify-start items-start flex-wrap lg:flex-nowrap">
 					<div className="lg:sticky lg:top-16 self-start w-[600px] lg:w-[350px]">
 						<Breadcrumbs>
 							<BreadcrumbItem className="cursor-default">
 								<Home size={12} />
 							</BreadcrumbItem>
 							<BreadcrumbItem>
-								<Link href={`/courses?filter=category%3D${course?.category?._id}`}>
-									{course?.category?.title}
+								<Link href={`/courses?filter=category%3D${data?.course?.category?._id}`}>
+									{data?.course?.category?.title}
 								</Link>
 							</BreadcrumbItem>
 						</Breadcrumbs>
@@ -147,9 +154,9 @@ export default function CourseDetail({ slug, courseId }) {
 							<CardBody className="overflow-visible p-0 opacity-90 hover:opacity-100">
 								<div className="relative w-full">
 									<Image
-										alt={course?.title}
+										alt={data?.course?.title}
 										className="w-[600px] max-h-[300px] object-cover rounded-none border dark:border-default-50"
-										src={course?.thumbnail}
+										src={data?.course?.thumbnail}
 									/>
 
 									<div className="absolute inset-0 flex justify-center items-center z-10 border dark:border-default-50">
@@ -158,7 +165,7 @@ export default function CourseDetail({ slug, courseId }) {
 												size={64}
 												className="cursor-pointer"
 												onClick={() => {
-													const introChapter = course?.chapters?.find(
+													const introChapter = data?.course?.chapters?.find(
 														(ch) => ch.title === 'Introduction'
 													)
 													const segment = introChapter?.segments[0]
@@ -185,10 +192,10 @@ export default function CourseDetail({ slug, courseId }) {
 										</p>
 									) : (
 										<div className="flex justify-start items-baseline gap-2">
-											<p className="text-2xl font-bold">₹{course?.price}</p>
-											<p className="text-default-500 line-through">₹{course?.mrp}</p>
+											<p className="text-2xl font-bold">₹{data?.course?.price}</p>
+											<p className="text-default-500 line-through">₹{data?.course?.mrp}</p>
 											<p className="text-default-500 text-sm">
-												{Math.ceil((course.price * 100) / course.mrp)}% off
+												{Math.ceil((data?.course?.price * 100) / data?.course?.mrp)}% off
 											</p>
 										</div>
 									)}
@@ -218,15 +225,15 @@ export default function CourseDetail({ slug, courseId }) {
 						</Card>
 					</div>
 					<div className="flex-grow max-w-[600px] lg:max-w-max lg:pl-8 sm:mt-8">
-						<p className="text-3xl font-semibold -mt-2">{course?.title}</p>
+						<p className="text-3xl font-semibold md:-mt-2">{data?.course?.title}</p>
 
 						<Spacer y={2} />
-						<p className="text-sm text-default-700">{course?.description}</p>
+						<p className="text-sm text-default-700">{data?.course?.description}</p>
 
 						<Spacer y={4} />
 						<div className="flex gap-2 items-center">
 							<p className="text-sm text-default-500">Created by</p>
-							<p className="text-sm font-medium text-default-700">{course?.teacher?.name}</p>
+							<p className="text-sm font-medium text-default-700">{data?.course?.teacher?.name}</p>
 
 							<Tooltip content="Message the Author" placement="right">
 								<MessageCircle
@@ -234,7 +241,7 @@ export default function CourseDetail({ slug, courseId }) {
 									strokeWidth={2.5}
 									className="text-primary cursor-pointer"
 									onClick={() => {
-										mutateCreateChat({ receiver: course?.teacher?._id })
+										mutateCreateChat({ receiver: data?.course?.teacher?._id })
 									}}
 								/>
 							</Tooltip>
@@ -243,16 +250,16 @@ export default function CourseDetail({ slug, courseId }) {
 						<Spacer y={2} />
 						<div></div>
 
-						{course?.rating?.count > 0 && (
+						{data?.course?.rating?.count > 0 && (
 							<div className="flex justify-start items-center gap-2 mb-2">
 								<div className="inline-flex items-center border-1 dark:border-default-100 px-1 cursor-pointer">
 									<p className="text-left text-small text-ellipsis-95">
-										{course?.rating?.avg.toFixed(1) || 'Not rated yet'}
+										{data?.course?.rating?.avg.toFixed(1) || 'Not rated yet'}
 									</p>
 									<Spacer x={0.5} />
 									<Star size={14} fill="#EAB308" color="#EAB308" />
 								</div>
-								<p className="text-sm font-normal">{course?.rating?.count} Reviews</p>
+								<p className="text-sm font-normal">{data?.course?.rating?.count} Reviews</p>
 							</div>
 						)}
 						<div className="flex gap-4">
@@ -274,7 +281,7 @@ export default function CourseDetail({ slug, courseId }) {
 
 						<div className="bg-default-500">
 							<Accordion variant="light" className="bg-default-50" showDivider={false}>
-								{course?.chapters?.map((chapter, index) => (
+								{data?.course?.chapters?.map((chapter, index) => (
 									<AccordionItem
 										key={chapter._id}
 										title={
@@ -307,7 +314,7 @@ export default function CourseDetail({ slug, courseId }) {
 						<p className="font-bold text-lg">Review & Ratings</p>
 
 						<Spacer y={1} />
-						<Reviews courseId={course._id} />
+						<Reviews courseId={data?.course?._id} />
 					</div>
 				</div>
 			</div>

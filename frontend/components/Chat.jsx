@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Card, CardHeader, CardBody, Avatar, Spinner, Chip, Spacer } from '@nextui-org/react'
 import { useSelector } from 'react-redux'
 import { ChevronUp, MessageCircleOff, MessageSquareOff } from 'lucide-react'
@@ -78,7 +78,7 @@ export default function Chat({ role }) {
 	return (
 		<>
 			{user && (
-				<div className="fixed -bottom-[352px] right-8 z-30 transition-all" ref={chatRef}>
+				<div className="fixed -bottom-[352px] right-2 md:right-8 z-30 transition-all" ref={chatRef}>
 					<div className="flex justify-end">
 						<VideoCallIncoming />
 					</div>
@@ -87,7 +87,7 @@ export default function Chat({ role }) {
 						{chat && (
 							<ChatWindow role={role} chat={chat} setChat={setChat} mutateMarkAsRead={mutateMarkAsRead} />
 						)}
-						<Card className="w-72 h-[400px]" radius="none" shadow="md">
+						<Card className={`w-72 h-[400px] ${chat ? 'hidden md:block' : ''}`} radius="none" shadow="md">
 							<CardHeader
 								className="h-12 flex justify-between items-center gap-3 cursor-pointer hover:bg-default-50"
 								onClick={toggleChat}>

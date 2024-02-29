@@ -8,10 +8,9 @@ export default function layout({ auth, children }) {
 		<Providers>
 			<div className="min-h-screen flex flex-col">
 				<Header />
-				<div className="flex-grow w-full max-w-screen-xl mx-auto px-[1.5rem] pb-[2rem]">{children}</div>
+				<div className="flex-grow w-full max-w-screen-xl mx-auto px-2">{children}</div>
 				<Footer />
 			</div>
-			{auth}
 		</Providers>
 	)
 }

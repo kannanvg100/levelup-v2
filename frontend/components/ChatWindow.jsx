@@ -17,7 +17,17 @@ import {
 	Skeleton,
 	Spinner,
 } from '@nextui-org/react'
-import { BookText, Clapperboard, FileAudio2, Image as ImageLucid, Paperclip, Send, Video, X } from 'lucide-react'
+import {
+	ArrowLeft,
+	BookText,
+	Clapperboard,
+	FileAudio2,
+	Image as ImageLucid,
+	Paperclip,
+	Send,
+	Video,
+	X,
+} from 'lucide-react'
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -81,7 +91,7 @@ export default function ChatWindow({ role, chat, setChat, mutateMarkAsRead }) {
 		staleTime: Infinity,
 	})
 
-    useLayoutEffect(() => {
+	useLayoutEffect(() => {
 		if (chatRef.current) {
 			chatRef.current.scrollTop = chatRef.current.scrollHeight
 		}
@@ -103,11 +113,11 @@ export default function ChatWindow({ role, chat, setChat, mutateMarkAsRead }) {
 	})
 
 	const handleSendMessage = () => {
-        debugger
+		debugger
 		mutateMarkAsRead({ role, chatId: chat?._id })
 		if (!message || !message.trim()) return
 		mutateSendMessage({ role, chatId: chat?._id, content: message })
-		chatRef.current.scrollIntoView({ behavior: 'smooth' });
+		chatRef.current.scrollIntoView({ behavior: 'smooth' })
 		// if (!socket) return toast.error('Socket not connected')
 		// socket.emit('SEND_MESSAGE', { chatId: chat?._id, content: message })
 	}
@@ -115,7 +125,7 @@ export default function ChatWindow({ role, chat, setChat, mutateMarkAsRead }) {
 	const handleFileChange = () => {
 		if (fileInputRef.current.files[0]) {
 			mutateSendMessage({
-                role,
+				role,
 				chatId: chat?._id,
 				content: '',
 				attachmentType,
@@ -149,7 +159,11 @@ export default function ChatWindow({ role, chat, setChat, mutateMarkAsRead }) {
 		<>
 			<Card className="w-96 h-[400px]" radius="none" shadow="md">
 				<CardHeader className="h-14 flex justify-between gap-3" onClick={expandChat}>
-					<div className="flex items-center gap-3 px-3 cursor-pointer">
+					<div className="flex items-center gap-3 md:px-3 cursor-pointer">
+						<ArrowLeft
+							className="md:hidden hover:text-default-800 text-default-500 cursor-pointer"
+							onClick={() => setChat(null)}
+						/>
 						<Avatar isBordered color="success" size="sm" src={chat.sender[0]?.user?.profileImage} />
 						<p className="text-md font-medium">{chat?.sender[0]?.user?.name}</p>
 					</div>
@@ -167,7 +181,7 @@ export default function ChatWindow({ role, chat, setChat, mutateMarkAsRead }) {
 							</>
 						)}
 						<X
-							className="hover:text-default-800 text-default-500 cursor-pointer"
+							className="invisible md:visible hover:text-default-800 text-default-500 cursor-pointer"
 							onClick={() => setChat(null)}
 						/>
 					</div>
@@ -177,7 +191,7 @@ export default function ChatWindow({ role, chat, setChat, mutateMarkAsRead }) {
 					{isError && <p className="text-center">Error</p>}
 					<div className="flex gap-2 px-3 h-[288px] flex-col-reverse overflow-y-scroll" ref={chatRef}>
 						{isRefetching && !isLoadingSendMessage && (
-							<div className='self-end'>
+							<div className="self-end">
 								<Skeleton className="w-[80px] h-10 bg-default-50" />
 							</div>
 						)}

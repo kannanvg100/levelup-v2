@@ -56,7 +56,7 @@ export default function Header() {
 				dispatch(removeUser())
 				toast.success('Logged out successfully')
 				router.replace('/')
-                queryClient.resetQueries()
+				queryClient.resetQueries()
 			} else toast.error('Something went wrong, please try again later')
 		} catch (error) {
 			toast.error('Something went wrong, please try again later')
@@ -84,59 +84,65 @@ export default function Header() {
 								priority={true}
 							/>
 						</NextLink>
-						<Dropdown radius="none">
-							<DropdownTrigger>
-								<Button
-									disableRipple
-									className="p-0 bg-transparent data-[hover=true]:bg-transparent font-medium text-default-700"
-									endContent={<ChevronDown size={16} />}
-									radius="none"
-									variant="light">
-									Categories
-								</Button>
-							</DropdownTrigger>
+						<div className="hidden md:block">
+							<Dropdown radius="none">
+								<DropdownTrigger>
+									<Button
+										disableRipple
+										className="p-0 bg-transparent data-[hover=true]:bg-transparent font-medium text-default-700"
+										endContent={<ChevronDown size={16} />}
+										radius="none"
+										variant="light">
+										Categories
+									</Button>
+								</DropdownTrigger>
 
-							<DropdownMenu
-								aria-label="ACME features"
-								className=" text-default-500"
-								itemClasses={{
-									base: 'gap-4',
-								}}>
-								{categories &&
-									categories?.map((category) => (
-										<DropdownItem key="autoscaling">
-											<Link
-												as={NextLink}
-												href={`/courses?filter=category%3D${category?._id}`}
-												key={category?._id}>
-												<div className="group min-w-[200px] flex justify-between items-center ps-2">
-													<span className="text-default-500 text-small group-hover:text-default-700">
-														{category?.title}
-													</span>
-													<ChevronRight
-														size={16}
-														className="text-default-300 group-hover:text-default-500"
-													/>
-												</div>
-											</Link>
-										</DropdownItem>
-									))}
-							</DropdownMenu>
-						</Dropdown>
+								<DropdownMenu
+									aria-label="ACME features"
+									className=" text-default-500"
+									itemClasses={{
+										base: 'gap-4',
+									}}>
+									{categories &&
+										categories?.map((category) => (
+											<DropdownItem key="autoscaling">
+												<Link
+													as={NextLink}
+													href={`/courses?filter=category%3D${category?._id}`}
+													key={category?._id}>
+													<div className="group min-w-[200px] flex justify-between items-center ps-2">
+														<span className="text-default-500 text-small group-hover:text-default-700">
+															{category?.title}
+														</span>
+														<ChevronRight
+															size={16}
+															className="text-default-300 group-hover:text-default-500"
+														/>
+													</div>
+												</Link>
+											</DropdownItem>
+										))}
+								</DropdownMenu>
+							</Dropdown>
+						</div>
 					</div>
 
 					<div className="hidden md:block flex-grow max-w-[500px]">
 						<InstantSearch />
 					</div>
 
-					<div className="flex justify-center items-center gap-3">
+					<div className="flex justify-center items-center gap-4">
 						<div className="block md:hidden">
-							<Popover placement="bottom-start" backdrop="blur" shouldCloseOnInteractOutside={true} shouldBlockScroll={true}>
+							<Popover
+								placement="bottom-start"
+								backdrop="blur"
+								shouldCloseOnInteractOutside={true}
+								shouldBlockScroll={true}>
 								<PopoverTrigger>
 									<SearchIcon size={20} />
 								</PopoverTrigger>
 								<PopoverContent>
-									<div className="min-w-[400px]">
+									<div className="w-[85vw] flex justify-center">
 										<InstantSearch />
 									</div>
 								</PopoverContent>
@@ -145,9 +151,9 @@ export default function Header() {
 
 						<div
 							onClick={handleThemeChange}
-							className="px-2 relative flex flex-row items-center h-10 cursor-pointer focus:outline-none">
+							className="hidden md:flex px-2 relative flex-row items-center h-10 cursor-pointer focus:outline-none">
 							<span className="inline-flex justify-center items-center">
-								{theme === 'dark' ? <MoonStar size={20} /> : <Sun size={20} />}
+								{theme === 'dark' ? <Sun size={20} /> : <MoonStar size={20} />}
 							</span>
 						</div>
 
@@ -213,6 +219,27 @@ export default function Header() {
 												</div>
 											</NextLink>
 										</DropdownItem>
+										<DropdownItem key="favorites" className="md:hidden">
+											<div
+												onClick={handleThemeChange}
+												className="cursor-pointer focus:outline-none">
+												{theme === 'dark' ? (
+													<div className="flex items-center gap-2 py-1 font-medium">
+														<Sun size={16} />
+														<p>Light mode</p>
+													</div>
+												) : (
+													<div className="flex items-center gap-2 py-1 font-medium">
+														<MoonStar size={16} />
+														<p>Dark mode</p>
+													</div>
+												)}
+
+												{/* <span className="inline-flex justify-center items-center">
+													{theme === 'dark' ? <MoonStar size={20} /> : <Sun size={20} />}
+												</span> */}
+											</div>
+										</DropdownItem>
 										<DropdownItem key="logout" color="danger" onClick={handleLogout}>
 											<div className="flex items-center gap-2 py-1 font-medium whitespace-nowrap">
 												<LogOut size={16} />
@@ -240,16 +267,18 @@ export default function Header() {
 									Login
 								</Link>
 
-								<Button
-									as={NextLink}
-									href="/signup"
-									color="primary"
-									variant="flat"
-									className="font-bold whitespace-nowrap"
-									radius="none"
-									size="sm">
-									Sign Up
-								</Button>
+								<div className="hidden md:block">
+									<Button
+										as={NextLink}
+										href="/signup"
+										color="primary"
+										variant="flat"
+										className="font-bold whitespace-nowrap"
+										radius="none"
+										size="sm">
+										Sign Up
+									</Button>
+								</div>
 							</div>
 						)}
 					</div>

@@ -12,7 +12,7 @@ export default function CourseReviewItem({ index, review }) {
 				alt={review?.user?.name}
 				className="rounded-full"
 			/>
-			<div className="w-[400px]">
+			<div className="flex-grow">
 				<Spacer y={1} />
 				<div className="flex justify-between items-center">
 					<p className="text-sm font-semibold">{review?.user?.name}</p>

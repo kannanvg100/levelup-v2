@@ -1,7 +1,6 @@
-import { Button, Input } from '@nextui-org/react'
+import { Button, Input, Snippet } from '@nextui-org/react'
 import { Copy, Link, Mail, Twitter } from 'lucide-react'
 import React from 'react'
-import NextLink from 'next/navigation'
 import QRCode from 'react-qr-code'
 import toast from 'react-hot-toast'
 
@@ -30,17 +29,7 @@ export default function SharePanel({ pageUrl, title }) {
 			<div className="w-[160px] h-[160px] self-center flex justify-center items-center dark:bg-white">
 				<QRCode size={150} value={pageUrl} />
 			</div>
-			<div className="flex justify-between items-center">
-				<Input disabled size="sm" value={pageUrl} className="flex-grow" />
-				<Button
-					isIconOnly
-					radius="none"
-					size="lg"
-					color="primary"
-					variant="flat"
-					onClick={copyToClipboard}
-					startContent={<Copy size={16} />}></Button>
-			</div>
+            <Snippet hideSymbol={true} size="sm w-full" codeString={pageUrl}>{`${pageUrl.slice(0,35)}...`}</Snippet>
 			<p className="font-medium">Reach to your friends via</p>
 			<div className="flex justify-start items-center gap-3 *:text-default-500 *:cursor-pointer hover:*:text-foreground-700">
 				<Twitter size={20} onClick={handleOpenTwitter} />

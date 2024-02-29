@@ -2,14 +2,13 @@ import React from 'react'
 import { cookies } from 'next/headers'
 import { Button } from '@nextui-org/react'
 import NextLink from 'next/link'
-import Image from 'next/image'
 
 export default function Hero() {
 	const cookieStore = cookies()
 	const theme = cookieStore.get('theme')
 	return (
 		<>
-			<div className="relative hidden md:flex max-h-[350px] items-start justify-end -me-[1.5rem]">
+			<div className="relative hidden md:flex max-h-[350px] items-start justify-end -me-[0rem]">
 				<div className="relative">
 					<img src="/hero_2.jpg" className="h-[350px]" />
                     <div className='dark:hidden absolute inset-0 bg-gradient-to-r from-white to-transparent'></div>
