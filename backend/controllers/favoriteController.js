@@ -9,7 +9,7 @@ module.exports = {
 			const limit = Number(req.query.limit) || 2
 			let favorites = await Favorite.find({ user: req.user._id })
 				.populate('course')
-				.sort('-createdAt')
+				.sort({createdAt: -1})
 				.skip((page - 1) * limit)
 				.limit(limit)
 			const total = await Favorite.countDocuments({user: req.user._id })

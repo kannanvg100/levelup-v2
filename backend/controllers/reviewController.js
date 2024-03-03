@@ -6,6 +6,7 @@ module.exports = {
 	getReviews: async (req, res, next) => {
 		try {
 			const { id: courseId } = req.params
+            if (!courseId) return res.status(400).json({ message: 'Course not found' })
 			const { page, limit } = req.query
 			const course = await Course.countDocuments({ _id: courseId })
 			if (!course) return res.status(404).json({ message: 'Course not found' })
@@ -23,6 +24,7 @@ module.exports = {
 	createReview: async (req, res, next) => {
 		try {
 			const { id: courseId } = req.params
+            if (!courseId) return res.status(400).json({ message: 'Course not found' })
 			const { subject, rating, comment } = req.body
 			const course = await Course.findById(courseId)
 			if (!course) return res.status(404).json({ message: 'Course not found' })
