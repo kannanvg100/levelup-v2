@@ -5,7 +5,7 @@ import React from 'react'
 
 async function getData() {
 	try {
-		const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/courses/latest`)
+		const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/courses/latest?count=7`)
 		return res.data
 	} catch (error) {
 		console.error(error)
@@ -19,9 +19,12 @@ export default async function PopularCourses() {
 		<>
 			<p className="text-[1.5rem] font-semibold text-default-700">Popular courses</p>
 			<Spacer y={2} />
-			<ScrollShadow hideScrollBar orientation="horizontal" className="flex items-start gap-4">
+			<ScrollShadow
+				orientation="horizontal"
+                style={{scrollbarGutter: 'stable'}}
+				className="flex items-start gap-4 mb-4">
 				{data?.courses.map((course) => (
-					<CourseItem key={course._id} course={course} />
+					<CourseItem key={course._id} course={course} /> 
 				))}
 			</ScrollShadow>
 		</>

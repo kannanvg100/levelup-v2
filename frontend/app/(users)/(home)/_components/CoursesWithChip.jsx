@@ -57,7 +57,7 @@ export default function CoursesWithChip() {
 					))}
 			</ScrollShadow>
 			<Spacer y={2} />
-			<ScrollShadow hideScrollBar orientation="horizontal" className="flex items-center gap-4" ref={scrollRef}>
+			<ScrollShadow orientation="horizontal" className="flex items-center gap-4" ref={scrollRef}>
 				{data && data?.courses.map((course) => <CourseItem key={course._id} course={course} />)}
 				{isPending ? (
 					[...Array(4)].map((_, i) => (

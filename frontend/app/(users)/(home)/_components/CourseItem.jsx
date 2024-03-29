@@ -6,7 +6,7 @@ import NextImage from 'next/image'
 export default function CourseItem({ course }) {
 	return (
 		<Link as={NextLink} href={`/courses/${course?.slug}/${course?._id}`}>
-			<Card radius="none" shadow="none" className="bg-default-100 w-[270px]">
+			<Card radius="none" shadow="none" className="bg-default-100 w-[270px] mb-1">
 				<CardBody className="p-0">
 					<NextImage
 						as={NextImage}
