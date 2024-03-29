@@ -57,7 +57,7 @@ module.exports = {
                     errors: { toast: 'Your account is not verified. Please verify your account' },
                 })
 
-            const token = generateToken(res, user._id, role)
+            const token = generateToken(user._id, role)
 
             res.cookie(`jwt_${role}`, token, {
                 maxAge: 30 * 24 * 60 * 60 * 1000,
@@ -550,6 +550,7 @@ module.exports = {
                     refreshToken,
                 },
             })
+            
             const otp = generateOTP()
             console.log('OTP: ', otp)
             let mailOptions = {

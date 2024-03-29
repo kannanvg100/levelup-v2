@@ -10,3 +10,4 @@ frontend/out
 frontend/node_modules
 frontend/npm-debug.log*
 frontend/.vercel
+frontend/app/test
