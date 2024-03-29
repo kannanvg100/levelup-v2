@@ -106,7 +106,7 @@ export default function General({ errors, setErrors }) {
 									base: 'rounded-none',
 								}}
 								onSelectionChange={(key) => {
-									dispatch(add({ ...course, category: categories[key.currentKey]._id }))
+									dispatch(add({ ...course, category: key.currentKey }))
 									setErrors({ ...errors, category: '' })
 								}}>
 								{categories &&

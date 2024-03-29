@@ -391,7 +391,7 @@ export default function Page({ params: { slug, courseId } }) {
 						{course?.chapters?.map((chapter, index) => (
 							<div>
 								<div className="flex items-baseline gap-1">
-									<p className="text-sm font-medium">
+									<p className="text-sm font-medium truncate">
 										{index + 1}. {chapter.title}
 									</p>
 									<p className="text-default-500 text-tiny font-normal">{`(${chapter?.segments?.length})`}</p>
@@ -428,7 +428,7 @@ export default function Page({ params: { slug, courseId } }) {
 													/>
 												</div>
 												<div className="self-start flex flex-col gap-1 pt-1">
-													<p className="text-sm font-normal ellipsis-container">{`${seg?.title}`}</p>
+													<p className="text-sm font-normal line-clamp-2">{`${seg?.title}`}</p>
 													<div className="flex gap-2 items-center">
 														{checkSegmentStatus(seg?._id) ? (
 															<CheckSquare size={12} className="text-primary" />

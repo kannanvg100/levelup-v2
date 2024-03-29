@@ -1,5 +1,6 @@
 import { createStripeSession } from '@/api/courses'
 import { getCourseCoupons } from '@/api/promotions'
+import CreditCard from '@/components/CreditCard'
 import {
 	Accordion,
 	AccordionItem,
@@ -40,8 +41,18 @@ export default function CheckoutModal({ isOpen, onClose, course }) {
 	const { isPending: isLoadingStripeSession, mutate: mutateStripeSession } = useMutation({
 		mutationFn: createStripeSession,
 		onSuccess: (data) => {
-			toast.loading('Redirecting to payment gateway...')
-			window.location.href = data.sessionUrl
+			// toast.loading('Redirecting to payment gateway...')
+			toast((t) => (
+				<div className="flex flex-col gap-4">
+					<CreditCard />
+					<p className="font-medium">Use this card for checkout</p>
+					<div className="flex gap-2 items-center">
+						<Spinner size="sm" />
+						<p>Redirecting...</p>
+					</div>
+				</div>
+			))
+			setTimeout(() => (window.location.href = data.sessionUrl), 5000)
 		},
 		onError: (error) => {
 			const err = error?.response?.data?.errors

@@ -16,7 +16,7 @@ export default function CourseItem({ course }) {
 						className="w-full aspect-video rounded-none object-cover object-center border border-default-100 select-none"
 						src={course?.thumbnail}
 						width={0}
-						height={0}
+						height={135}
 						alt={course?.title}
 					/>
 				</Link>

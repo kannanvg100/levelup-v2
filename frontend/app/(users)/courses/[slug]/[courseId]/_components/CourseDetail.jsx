@@ -319,7 +319,7 @@ export default function CourseDetail({ slug, courseId }) {
 				</div>
 			</div>
 			<IntroVideoModal isOpen={isOpenIntroVideo} onClose={onCloseIntroVideo} segment={introSegment} />
-			{isOpenCheckout && <CheckoutModal isOpen={isOpenCheckout} onClose={onCloseCheckout} course={course} />}
+			{isOpenCheckout && <CheckoutModal isOpen={isOpenCheckout} onClose={onCloseCheckout} course={data.course} />}
 		</>
 	)
 }
