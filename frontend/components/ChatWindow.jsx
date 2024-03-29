@@ -113,7 +113,6 @@ export default function ChatWindow({ role, chat, setChat, mutateMarkAsRead }) {
 	})
 
 	const handleSendMessage = () => {
-		debugger
 		mutateMarkAsRead({ role, chatId: chat?._id })
 		if (!message || !message.trim()) return
 		mutateSendMessage({ role, chatId: chat?._id, content: message })

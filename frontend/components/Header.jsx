@@ -67,6 +67,7 @@ export default function Header() {
 		queryKey: ['categories'],
 		queryFn: () => getPublishedCategories(),
 		keepPreviousData: true,
+        staleTime: Infinity
 	})
 
 	return (

@@ -6,12 +6,12 @@ import NextImage from 'next/image'
 export default function CourseItem({ course }) {
 	return (
 		<Link as={NextLink} href={`/courses/${course?.slug}/${course?._id}`}>
-			<Card radius="none" shadow="none" className="bg-default-50 w-[240px]">
+			<Card radius="none" shadow="none" className="bg-default-50 w-[240px] mb-1">
 				<CardBody className="p-2">
 					<NextImage
 						as={NextImage}
 						radius="none"
-						className="h-[125px] rounded-none object-cover object-center border border-default-100"
+						className="h-[125px] rounded-none object-cover object-center border border-default-100 select-none"
 						src={course?.thumbnail}
 						width={250}
 						height={125}
