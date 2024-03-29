@@ -1,39 +1,40 @@
 import { deleteFavorite, getFavorites } from '@/api/favorites'
-import { Button, Card, CardBody, Divider, Image, Spacer, Spinner } from '@nextui-org/react'
-import { QueryClient, useInfiniteQuery, useMutation } from '@tanstack/react-query'
+import { Button, Card, CardBody, Divider, Spacer, Spinner } from '@nextui-org/react'
+import { QueryClient, useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { X } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import FavItemDummy from './FavItemSkeleton'
 import useInfiniteScroll from '@/hooks/useInfiniteScroll'
+import Image from 'next/image'
 
 export default function Favorites() {
 	const limit = 4
 	const [currutCourse, setCurrutCourse] = useState(null)
-	const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isPending, refetch } = useInfiniteQuery({
+	const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isPending } = useInfiniteQuery({
 		queryKey: ['favorites'],
 		queryFn: ({ pageParam = 1 }) => getFavorites({ pageParam, limit }),
 		initialPageParam: 1,
-		getNextPageParam: (lastPage) => {
+		getNextPageParam: (lastPage, allPages, lastPageParam, allPageParams) => {
 			const totalPages = Math.ceil(lastPage?.total / limit)
-			const nextPage = lastPage?.page + 1
+			const nextPage = lastPageParam + 1
 			return nextPage <= totalPages ? nextPage : undefined
 		},
+        staleTime: Infinity
 	})
 
-	const queryClient = new QueryClient()
+	const queryClient = useQueryClient()
 	const removeFromFavorite = useMutation({
 		mutationFn: deleteFavorite,
 		onSuccess: (data) => {
 			queryClient.invalidateQueries({ queryKey: ['favorites'] })
-			refetch()
 		},
 		onError: (error) => {
 			toast.error(error?.response?.data?.message || 'Something went wrong!')
 		},
 	})
 
-	const [loaderRef, scrollerRef] = useInfiniteScroll({ hasNextPage, fetchNextPage })
+	const loaderRef = useInfiniteScroll({ hasNextPage, fetchNextPage, isFetchingNextPage })
 
 	return (
 		<>
@@ -77,7 +78,7 @@ export default function Favorites() {
 										{removeFromFavorite.isPending && currutCourse === favorite?.course?._id ? (
 											<Spinner size="sm" />
 										) : (
-											<X size={20} />
+											<X size={20} className='drop-shadow-lg'/>
 										)}
 									</div>
 								</div>
@@ -90,19 +91,15 @@ export default function Favorites() {
 					<div key={i} className="w-[280px]"></div>
 				))}
 			</div>
-			<div className="w-1 h-1 border" ref={loaderRef}></div>
+			<div className="w-1 h-1" ref={loaderRef}></div>
 			<Spacer y={4} />
-			{data?.pages[0]?.total > 0 && !hasNextPage ? (
+			{data?.pages[0]?.total > 0 && !hasNextPage && (
 				<div className="relative flex justify-center">
 					<Divider className="h-[1px] bg-default-200 max-w-[500px]" />
 					<span className="bg-background px-4 text-center italic text-sm whitespace-nowrap text-default-200 absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
 						You've reached the end!
 					</span>
 				</div>
-			) : (
-				<p className="underline cursor-pointer" onClick={() => fetchNextPage()}>
-					Load more
-				</p>
 			)}
 
 			{data?.pages[0]?.total === 0 && !isPending && (

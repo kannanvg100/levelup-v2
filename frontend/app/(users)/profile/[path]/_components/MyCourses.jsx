@@ -1,5 +1,20 @@
 import { getEnrolledCourses, getCertificate } from '@/api/courses'
-import { Button, Card, CardBody, CardFooter, Divider, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Image, Link, Progress, Spacer, Tooltip, useDisclosure } from '@nextui-org/react'
+import {
+	Button,
+	Card,
+	CardBody,
+	CardFooter,
+	Divider,
+	Dropdown,
+	DropdownItem,
+	DropdownMenu,
+	DropdownTrigger,
+	Link,
+	Progress,
+	Spacer,
+	Tooltip,
+	useDisclosure,
+} from '@nextui-org/react'
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { MoreVertical, Star } from 'lucide-react'
 import React, { useState } from 'react'
@@ -8,22 +23,23 @@ import useInfiniteScroll from '@/hooks/useInfiniteScroll'
 import WriteReviewModal from './WriteReviewModal'
 import NextLink from 'next/link'
 import CourseItemDummy from './CourseItemSkeleton'
+import Image from 'next/image'
 
 export default function Favorites() {
-
 	const limit = 4
-    const [currentCourse, setCurrentCourse] = useState({})
-    const queryClient = useQueryClient()
+	const [currentCourse, setCurrentCourse] = useState({})
+	const queryClient = useQueryClient()
 
 	const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isPending, refetch } = useInfiniteQuery({
 		queryKey: ['courses'],
 		queryFn: ({ pageParam = 1 }) => getEnrolledCourses({ page: pageParam, count: limit }),
 		initialPageParam: 1,
-		getNextPageParam: (lastPage) => {
+		getNextPageParam: (lastPage, allPages, lastPageParam, allPageParams) => {
 			const totalPages = Math.ceil(lastPage?.total / limit)
-			const nextPage = lastPage?.page + 1
+			const nextPage = lastPageParam + 1
 			return nextPage <= totalPages ? nextPage : undefined
 		},
+        staleTime: Infinity
 	})
 
 	const handleGetCertificate = async (courseId) => {
@@ -43,7 +59,7 @@ export default function Favorites() {
 		}
 	}
 
-    const CourseItem = ({ index, item }) => {
+	const CourseItem = ({ index, item }) => {
 		const course = item
 		let allSegments = course?.course?.chapters?.reduce((acc, chapter) => [...acc, ...chapter.segments], [])
 		allSegments = allSegments?.map((item) => item._id)
@@ -61,7 +77,6 @@ export default function Favorites() {
 				<CardBody className="overflow-visible p-0">
 					<Link as={NextLink} href={`/courses/${item?.course?.slug}/${item?.course?._id}`}>
 						<Image
-							// as={NextImage}
 							shadow="sm"
 							radius="none"
 							width={300}
@@ -177,14 +192,14 @@ export default function Favorites() {
 		)
 	}
 
-	const [loaderRef, scrollerRef] = useInfiniteScroll({ hasNextPage, fetchNextPage })
-    const { isOpen: isOpenReviewModal, onOpen: onOpenReviewModal, onClose: onCloseReviewModal } = useDisclosure()
+	const loaderRef = useInfiniteScroll({ hasNextPage, fetchNextPage, isFetchingNextPage })
+	const { isOpen: isOpenReviewModal, onOpen: onOpenReviewModal, onClose: onCloseReviewModal } = useDisclosure()
 
 	return (
 		<>
 			<div className="mt-4 ms-2 flex flex-wrap md:justify-between gap-y-4 gap-x-2 justify-center">
 				{data?.pages?.map((page) =>
-					page?.courses?.map((item, index) => <CourseItem index={index} item={item} />)
+					page?.courses?.map((item, index) => <CourseItem key={item?.course?._id} item={item} />)
 				)}
 				{(isFetchingNextPage || isPending) && [...Array(limit)].map((_, i) => <CourseItemDummy key={i} />)}
 				{[...Array(limit)].map((_, i) => (
@@ -201,8 +216,15 @@ export default function Favorites() {
 					</span>
 				</div>
 			)}
-			{data?.pages[0]?.total === 0 && !isPending && <p className="mt-10 text-center text-default-500">No Courses</p>}
-            <WriteReviewModal isOpen={isOpenReviewModal} onClose={onCloseReviewModal} course={currentCourse} refetch={refetch}/>
+			{data?.pages[0]?.total === 0 && !isPending && (
+				<p className="mt-10 text-center text-default-500">No Courses</p>
+			)}
+			<WriteReviewModal
+				isOpen={isOpenReviewModal}
+				onClose={onCloseReviewModal}
+				course={currentCourse}
+				refetch={refetch}
+			/>
 		</>
 	)
 }

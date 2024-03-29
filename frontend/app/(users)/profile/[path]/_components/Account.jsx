@@ -1,11 +1,10 @@
 'use client'
 import React, { useRef, useState } from 'react'
-import { Button, Input, Card, CardBody, Spacer } from '@nextui-org/react'
+import { Button, Input, Card, CardBody, Spacer, Image } from '@nextui-org/react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { addUser } from '@/redux/slices/userSlice'
-import Image from 'next/image'
 import { ImagePlus } from 'lucide-react'
 import { updateProfile } from '@/api/users'
 import toast from 'react-hot-toast'
@@ -30,7 +29,7 @@ export default function Account() {
 		onSuccess: (data) => {
 			dispatch(addUser(data.user))
 			// queryClient.setQueryData(['user', { email, password }], data)
-            toast.success('Profile updated successfully.')
+			toast.success('Profile updated successfully.')
 			router.push('/')
 		},
 		onError: (error) => {
@@ -48,6 +47,8 @@ export default function Account() {
 		mutate({ name, password, confirmPassword, profileImage })
 	}
 
+	if (!user) return null
+
 	return (
 		<div className="flex h-full">
 			<div className="w-[400px]">
@@ -58,7 +59,8 @@ export default function Account() {
 							width={100}
 							height={100}
 							ref={displayImage}
-							src={user?.profileImage ? user?.profileImage : '/default-avatar.png'}
+							src={user?.profileImage}
+							fallbackSrc="/default_avatar.png"
 							alt="logo"
 							className="rounded-full w-[100px] h-[100px] cursor-pointer object-cover"
 						/>
