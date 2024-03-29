@@ -14,8 +14,8 @@ import { toast } from 'react-hot-toast'
 import Image from 'next/image'
 
 export default function Login({ role, onClose }) {
-	const [email, setEmail] = useState('')
-	const [password, setPassword] = useState('')
+	const [email, setEmail] = useState('test@levelup-live.online')
+	const [password, setPassword] = useState('1111')
 	const [errors, setErrors] = useState({ email: '', password: '' })
 	const queryClient = new QueryClient()
 	const { isPending: isLoadingLogin, mutate: mutateLoginUser } = useMutation({
@@ -101,6 +101,7 @@ export default function Login({ role, onClose }) {
 							type="email"
 							variant="flat"
 							radius="none"
+                            value={email}
 							classNames={{
 								inputWrapper: 'text-default-500',
 								input: 'bg-red-100',
@@ -118,6 +119,7 @@ export default function Login({ role, onClose }) {
 							type="password"
 							variant="flat"
 							radius="none"
+                            value={password}
 							classNames={{
 								inputWrapper: 'text-default-500',
 							}}
