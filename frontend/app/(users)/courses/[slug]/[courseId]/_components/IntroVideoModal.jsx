@@ -4,7 +4,7 @@ import VideoPlayer from '@/components/VideoPlayer'
 
 export default function IntroVideoModal({ isOpen, onClose, segment }) {
 	return (
-		<Modal isOpen={isOpen} onClose={onClose} size='3xl' shadow='lg' backdrop='blur' className='bg-black'>
+		<Modal isOpen={isOpen} onClose={onClose} size='3xl' shadow='lg' backdrop='blur' placement='center' className='bg-black'>
 			<ModalContent>
 				{(onClose) => (
 					<>
