@@ -17,15 +17,16 @@ import {
 } from '@nextui-org/react'
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { MoreVertical, Star } from 'lucide-react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import useInfiniteScroll from '@/hooks/useInfiniteScroll'
 import WriteReviewModal from './WriteReviewModal'
 import NextLink from 'next/link'
 import CourseItemDummy from './CourseItemSkeleton'
 import Image from 'next/image'
+import CertificateModal from './CertificateModal'
 
-export default function Favorites() {
+export default function Courses() {
 	const limit = 4
 	const [currentCourse, setCurrentCourse] = useState({})
 	const queryClient = useQueryClient()
@@ -39,25 +40,21 @@ export default function Favorites() {
 			const nextPage = lastPageParam + 1
 			return nextPage <= totalPages ? nextPage : undefined
 		},
-        staleTime: Infinity
+		staleTime: Infinity,
 	})
 
-	const handleGetCertificate = async (courseId) => {
-		try {
-			const certificate = await queryClient.fetchQuery({
-				queryFn: () => getCertificate({ courseId }),
-				queryKey: ['certificate', courseId],
-			})
-			const buffer = Buffer.from(certificate?.image, 'base64')
-			const blob = new Blob([buffer], { type: 'image/png' })
-			const link = document.createElement('a')
-			link.href = window.URL.createObjectURL(blob)
-			link.download = 'certificate.png'
-			link.click()
-		} catch (error) {
-			toast.error(error?.response?.data?.message || 'Something went wrong!')
-		}
+	const handleGetCertificate = (item) => {
+		setCurrentCourse(item)
+		onOpenCertificateModal()
 	}
+
+	const loaderRef = useInfiniteScroll({ hasNextPage, fetchNextPage, isFetchingNextPage })
+	const { isOpen: isOpenReviewModal, onOpen: onOpenReviewModal, onClose: onCloseReviewModal } = useDisclosure()
+	const {
+		isOpen: isOpenCertificateModal,
+		onOpen: onOpenCertificateModal,
+		onClose: onCloseCertificateModal,
+	} = useDisclosure()
 
 	const CourseItem = ({ index, item }) => {
 		const course = item
@@ -175,7 +172,7 @@ export default function Favorites() {
 										<DropdownMenu aria-label="Static Actions">
 											{percentage === 100 && (
 												<DropdownItem
-													onClick={() => handleGetCertificate(item?.course?._id)}
+													onClick={() => handleGetCertificate(item?.course)}
 													key="download">
 													Download Certificate
 												</DropdownItem>
@@ -191,9 +188,6 @@ export default function Favorites() {
 			</Card>
 		)
 	}
-
-	const loaderRef = useInfiniteScroll({ hasNextPage, fetchNextPage, isFetchingNextPage })
-	const { isOpen: isOpenReviewModal, onOpen: onOpenReviewModal, onClose: onCloseReviewModal } = useDisclosure()
 
 	return (
 		<>
@@ -225,6 +219,13 @@ export default function Favorites() {
 				course={currentCourse}
 				refetch={refetch}
 			/>
+			{isOpenCertificateModal && (
+				<CertificateModal
+					isOpen={isOpenCertificateModal}
+					onClose={onCloseCertificateModal}
+					courseId={currentCourse._id}
+				/>
+			)}
 		</>
 	)
 }
