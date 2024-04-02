@@ -1,12 +1,14 @@
 const puppeteer = require('puppeteer')
+const { Readable } = require('stream');
 
 const generateCertificate = async ({ name, date, course }) => {
-	const browser = await puppeteer.launch({
-		executablePath: '/usr/bin/chromium-browser',
-	})
-	const page = await browser.newPage()
-
-	await page.setContent(`
+    const config = process.env.NODE_ENV === 'development' ? {} : {
+        executablePath: '/usr/bin/chromium-browser',
+    }
+    const browser = await puppeteer.launch(config)
+    const page = await browser.newPage()
+    await page.setViewport({ width: 1760, height: 1200 })
+    await page.setContent(`
     <html lang="en">
     <head>
         <style>
@@ -95,11 +97,8 @@ const generateCertificate = async ({ name, date, course }) => {
     
     </html>
           `)
-
-	await page.setViewport({ width: 1760, height: 1200 })
-	const screenshotBuffer = await page.screenshot()
-	await browser.close()
-
-	return screenshotBuffer
+    const screenshotBuffer = await page.screenshot({ encoding: 'base64' })
+    await browser.close()
+    return screenshotBuffer
 }
 module.exports = { generateCertificate }
