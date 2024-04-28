@@ -8,7 +8,7 @@ import { Download } from 'lucide-react'
 const CertificateModal = ({ isOpen, onClose, courseId }) => {
 	const [loading, setLoading] = useState(true)
 	const [certificateUrl, setCertificateUrl] = useState('')
-	const [progress, setProgress] = useState(0)
+	const [progress, setProgress] = useState(undefined)
 	let [certUrl, setCertUrl] = useState(null)
 
 	const fetchCertificate = async () => {
@@ -69,22 +69,13 @@ const CertificateModal = ({ isOpen, onClose, courseId }) => {
 								<>
 									<Skeleton className="absolute inset-0" />
 									<div className="absolute inset-0 flex flex-col gap-2 justify-center items-center">
-										{progress > 0 ? (
-											<CircularProgress
-												classNames={{
-													svg: 'w-36 h-36 drop-shadow-2xl stroke-1',
-												}}
-												size="lg"
-												value={progress}
-											/>
-										) : (
-											<CircularProgress
-												classNames={{
-													svg: 'w-36 h-36 drop-shadow-2xl stroke-1',
-												}}
-												size="lg"
-											/>
-										)}
+										<CircularProgress
+											classNames={{
+												svg: 'w-36 h-36 drop-shadow-2xl stroke-1',
+											}}
+											size="lg"
+											value={progress}
+										/>
 										<p className="font-semibold italic">
 											Please wait. It may take sometime to generate the certificate.
 										</p>

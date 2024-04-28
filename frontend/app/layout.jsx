@@ -1,5 +1,8 @@
 import './globals.css'
 import { Providers } from './providers'
+import { Inter } from 'next/font/google'
+
+const inter = Inter({subsets: ['latin']})
 
 export const metadata = {
 	metadataBase: new URL(process.env.METADATA_BASE_URL),
@@ -18,11 +21,11 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
 	return (
-		<html lang="en" suppressHydrationWarning>
+		<html lang="en">
 			<head>
 				<link rel="icon" href="/favicon.png" sizes="any" />
 			</head>
-			<body className="min-h-screen bg-background text-default-700">
+			<body className={`${inter.className} min-h-screen bg-background text-default-700`} suppressHydrationWarning>
 				<Providers themeProps={{ attribute: 'class', defaultTheme: 'light' }}>
 					<main>{children}</main>
 				</Providers>

@@ -154,6 +154,108 @@ export default function ChatWindow({ role, chat, setChat, mutateMarkAsRead }) {
 		})
 	}
 
+	function renderChatBody() {
+		if (isPending) return <Spinner className="absolute inset-0" />
+		if (isError) return <p className="text-center">Error</p>
+		return (
+			<div className="flex gap-2 px-3 h-[288px] flex-col-reverse overflow-y-scroll" ref={chatRef}>
+				{isRefetching && !isLoadingSendMessage && (
+					<div className="self-end">
+						<Skeleton className="w-[80px] h-10 bg-default-50" />
+					</div>
+				)}
+				{isLoadingSendMessage && attachmentType !== 'text' && (
+					<div className="self-end text-tiny w-[220px] object-cover p-1">
+						<Skeleton className="w-[220px] h-32 bg-default-50" />1
+					</div>
+				)}
+
+				{messages?.map((message, index) => (
+					<div
+						key={message._id}
+						className={
+							message.sender === user._id
+								? 'self-end bg-default-100 max-w-[90%] min-w-[80px]'
+								: 'self-start bg-default-100 max-w-[90%] min-w-[80px]'
+						}>
+						{message?.attachmentType === 'text' && (
+							<span className="block text-sm text-left px-2 py-1">{message.content}</span>
+						)}
+
+						{message?.attachmentType === 'image' && (
+							<div className="self-end bg-default-100 w-[220px] object-cover p-1">
+								<Image
+									className="rounded-none"
+									width={220}
+									height={220}
+									src={message.attachment}
+									alt="attachment"
+								/>
+							</div>
+						)}
+
+						{message?.attachmentType === 'video' && (
+							<div className="self-end bg-default-100 w-[220px] object-cover p-1">
+								<video width={220} height={220} controls>
+									<source src={message.attachment} type="video/mp4" />
+								</video>
+							</div>
+						)}
+
+						{message?.attachmentType === 'audio' && (
+							<div className="self-end bg-default-100 object-cover">
+								<audio controls className="w-[220px]">
+									<source src={message.attachment} type="audio/mpeg" />
+									Your browser does not support the audio element.
+								</audio>
+							</div>
+						)}
+
+						{message?.attachmentType === 'document' && (
+							<div className="self-end bg-default-100 object-cover p-2">
+								<div className="flex gap-1 items-center">
+									<BookText size={16} />
+									<div>
+										<span className="block text-sm text-left px-2 py-1">{message.content}</span>
+										<a
+											href={message.attachment}
+											target="_blank"
+											className="text-tiny text-left px-2 py-1 text-blue-500 underline">
+											Download
+										</a>
+									</div>
+								</div>
+							</div>
+						)}
+
+						<span className="block text-[10px] text-default-500 text-right pe-2 py-1">
+							{new Date(message.createdAt).toLocaleTimeString('en-IN', {
+								hour: 'numeric',
+								minute: 'numeric',
+							})}
+						</span>
+						{/* <div
+    								className="h-5 w-5 bg-default-100 translate-x-[-50%] translate-y-[-50%]"
+    								style={{ clipPath: 'polygon(0% 0%, 100% 0%, 0% 100%)' }}>
+                                </div> */}
+					</div>
+				))}
+				{!isPending && (
+					<div className="flex items-center gap-2 justify-center w-full border mt-1">
+						{isRefetching && <Spinner size="sm" />}
+						<span
+							className="text-center cursor-pointer hover:text-default-800 text-default-500 py-4 select-none"
+							onClick={() => {
+								setCount((prev) => prev + 10)
+							}}>
+							Load more
+						</span>
+					</div>
+				)}
+			</div>
+		)
+	}
+
 	return (
 		<>
 			<Card className="w-96 h-[400px]" radius="none" shadow="md">
@@ -163,7 +265,12 @@ export default function ChatWindow({ role, chat, setChat, mutateMarkAsRead }) {
 							className="md:hidden hover:text-default-800 text-default-500 cursor-pointer"
 							onClick={() => setChat(null)}
 						/>
-						<Avatar isBordered color="success" size="sm" src={chat.sender[0]?.user?.profileImage} />
+						<Avatar
+							isBordered={chat.sender[0]?.user?.isOnline}
+							color="success"
+							size="sm"
+							src={chat.sender[0]?.user?.profileImage}
+						/>
 						<p className="text-md font-medium">{chat?.sender[0]?.user?.name}</p>
 					</div>
 					<div className="flex gap-6">
@@ -185,107 +292,7 @@ export default function ChatWindow({ role, chat, setChat, mutateMarkAsRead }) {
 						/>
 					</div>
 				</CardHeader>
-				<CardBody className="relative py-0 ps-0">
-					{isPending && <Spinner className="absolute inset-0" />}
-					{isError && <p className="text-center">Error</p>}
-					<div className="flex gap-2 px-3 h-[288px] flex-col-reverse overflow-y-scroll" ref={chatRef}>
-						{isRefetching && !isLoadingSendMessage && (
-							<div className="self-end">
-								<Skeleton className="w-[80px] h-10 bg-default-50" />
-							</div>
-						)}
-						{isLoadingSendMessage && attachmentType !== 'text' && (
-							<div className="self-end text-tiny w-[220px] object-cover p-1">
-								<Skeleton className="w-[220px] h-32 bg-default-50" />1
-							</div>
-						)}
-
-						{messages?.map((message, index) => (
-							<div
-								key={message._id}
-								className={
-									message.sender === user._id
-										? 'self-end bg-default-100 max-w-[90%] min-w-[80px]'
-										: 'self-start bg-default-100 max-w-[90%] min-w-[80px]'
-								}>
-								{message?.attachmentType === 'text' && (
-									<span className="block text-sm text-left px-2 py-1">{message.content}</span>
-								)}
-
-								{message?.attachmentType === 'image' && (
-									<div className="self-end bg-default-100 w-[220px] object-cover p-1">
-										<Image
-											className="rounded-none"
-											width={220}
-											height={220}
-											src={message.attachment}
-											alt="attachment"
-										/>
-									</div>
-								)}
-
-								{message?.attachmentType === 'video' && (
-									<div className="self-end bg-default-100 w-[220px] object-cover p-1">
-										<video width={220} height={220} controls>
-											<source src={message.attachment} type="video/mp4" />
-										</video>
-									</div>
-								)}
-
-								{message?.attachmentType === 'audio' && (
-									<div className="self-end bg-default-100 object-cover">
-										<audio controls className="w-[220px]">
-											<source src={message.attachment} type="audio/mpeg" />
-											Your browser does not support the audio element.
-										</audio>
-									</div>
-								)}
-
-								{message?.attachmentType === 'document' && (
-									<div className="self-end bg-default-100 object-cover p-2">
-										<div className="flex gap-1 items-center">
-											<BookText size={16} />
-											<div>
-												<span className="block text-sm text-left px-2 py-1">
-													{message.content}
-												</span>
-												<a
-													href={message.attachment}
-													target="_blank"
-													className="text-tiny text-left px-2 py-1 text-blue-500 underline">
-													Download
-												</a>
-											</div>
-										</div>
-									</div>
-								)}
-
-								<span className="block text-[10px] text-default-500 text-right pe-2 py-1">
-									{new Date(message.createdAt).toLocaleTimeString('en-IN', {
-										hour: 'numeric',
-										minute: 'numeric',
-									})}
-								</span>
-								{/* <div
-    								className="h-5 w-5 bg-default-100 translate-x-[-50%] translate-y-[-50%]"
-    								style={{ clipPath: 'polygon(0% 0%, 100% 0%, 0% 100%)' }}>
-                                </div> */}
-							</div>
-						))}
-						{!isPending && (
-							<div className="flex items-center gap-2 justify-center w-full border mt-1">
-								{isRefetching && <Spinner size="sm" />}
-								<span
-									className="text-center cursor-pointer hover:text-default-800 text-default-500 py-4 select-none"
-									onClick={() => {
-										setCount((prev) => prev + 10)
-									}}>
-									Load more
-								</span>
-							</div>
-						)}
-					</div>
-				</CardBody>
+				<CardBody className="relative py-0 ps-0">{renderChatBody()}</CardBody>
 				<CardFooter>
 					<div className="flex justify-between gap-3 h-10 w-full py-0">
 						<Dropdown radius="none" className="min-w-[160px]">

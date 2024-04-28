@@ -92,18 +92,36 @@ select {
     background-repeat: no-repeat;
 }
 
-/* width */
 ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    height: 1rem;
+    width: .5rem
 }
 
-/* Track */
-/* ::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0);
-} */
+::-webkit-scrollbar:horizontal {
+    height: .5rem;
+    width: 1rem
+}
 
-/* Handle */
+::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
 ::-webkit-scrollbar-thumb {
-    background: rgb(127, 127, 127);
+    --tw-border-opacity: 1;
+    background-color: hsla(0, 0%, 89%, .8);
+    border-color: rgba(255, 255, 255, var(--tw-border-opacity));
+    border-width: 1px
+}
+
+::-webkit-scrollbar-thumb:hover {
+    --tw-bg-opacity: 1;
+    background-color: rgba(227, 227, 227, var(--tw-bg-opacity))
+}
+
+.dark ::-webkit-scrollbar-thumb {
+    background-color: hsla(0, 0%, 100%, .1)
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+    background-color: hsla(0, 0%, 100%, .3)
 }

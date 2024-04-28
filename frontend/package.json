@@ -1,5 +1,5 @@
 {
-	"name": "levelup-v2",
+	"name": "levelup-frontend",
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
@@ -27,10 +27,8 @@
 		"@tanstack/react-query": "^5.12.2",
 		"@tanstack/react-query-devtools": "^5.13.5",
 		"axios": "^1.6.1",
-		"client-only": "^0.0.1",
 		"date-fns": "^3.0.3",
 		"framer-motion": "^10.16.5",
-		"is-online": "^10.0.0",
 		"livekit-client": "^1.15.0",
 		"lucide-react": "^0.306.0",
 		"next": "14.0.3",
