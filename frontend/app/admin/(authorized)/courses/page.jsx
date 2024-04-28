@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect } from 'react'
 
-import { getCoursesByAdmin } from '@/api/courses'
+import { getCoursesByAdmin } from '@/apis/courses'
 
 import {
 	Table,

@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useMemo, useRef } from 'react'
 
-import { getCoursesByTeacher, updateCourseStatus } from '@/api/courses'
+import { getCoursesByTeacher, updateCourseStatus } from '@/apis/courses'
 
 import {
 	Table,

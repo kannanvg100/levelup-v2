@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect } from 'react'
 
-import { getAllUsers } from '@/api/users'
+import { getAllUsers } from '@/apis/users'
 
 import {
 	Table,

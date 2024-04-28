@@ -4,7 +4,7 @@ import { Badge, Card, CardHeader, CardBody, Avatar, Spinner, Chip, Spacer } from
 import { useSelector } from 'react-redux'
 import { ChevronUp, MessageCircleOff, MessageSquareOff } from 'lucide-react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { getChatsUser, getChatsTeacher, markChatRead } from '@/api/chats'
+import { getChatsUser, getChatsTeacher, markChatRead } from '@/apis/chats'
 import ChatWindow from './ChatWindow'
 import { useSocket } from '@/providers/SocketProvider'
 import toast from 'react-hot-toast'

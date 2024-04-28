@@ -19,7 +19,7 @@ import { add } from '@/redux/slices/courseSlice'
 import toast from 'react-hot-toast'
 import ErrorBoundary from '@/components/ErrorBoundary'
 import CreateSegment from './CreateSegment'
-import { deleteChapter } from '@/api/chapters'
+import { deleteChapter } from '@/apis/chapters'
 
 export default function Content() {
 	const { course } = useSelector((state) => state.course)

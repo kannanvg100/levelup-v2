@@ -11,7 +11,7 @@ import {
 	Spacer,
 } from '@nextui-org/react'
 import { useState } from 'react'
-import { deleteCoupon } from '@/api/promotions'
+import { deleteCoupon } from '@/apis/promotions'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 

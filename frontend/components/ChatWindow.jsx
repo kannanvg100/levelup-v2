@@ -1,6 +1,6 @@
 'use client'
 
-import { createChatMessage, getMessages } from '@/api/chats'
+import { createChatMessage, getMessages } from '@/apis/chats'
 import {
 	Avatar,
 	Button,
@@ -34,7 +34,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useSelector } from 'react-redux'
 import { useSocket } from '@/providers/SocketProvider'
 import VideoCallModal from './VideoCallModal'
-import { getAccessToken } from '@/api/videos'
+import { getAccessToken } from '@/apis/videos'
 
 export default function ChatWindow({ role, chat, setChat, mutateMarkAsRead }) {
 	const user = useSelector((state) => state[role][role])

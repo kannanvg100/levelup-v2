@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Modal, ModalContent, ModalBody, ModalFooter, Button } from '@nextui-org/react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
-import { deleteSegment } from '@/api/segments'
+import { deleteSegment } from '@/apis/segments'
 import { useDispatch, useSelector } from 'react-redux'
 import { add } from '@/redux/slices/courseSlice'
 

@@ -1,6 +1,6 @@
 'use client'
-import { getFullCourse, getEnrollment } from '@/api/courses'
-import { setProgress } from '@/api/segments'
+import { getFullCourse, getEnrollment } from '@/apis/courses'
+import { setProgress } from '@/apis/segments'
 import VideoPlayer from '@/components/VideoPlayer'
 import {
 	BreadcrumbItem,
@@ -29,7 +29,7 @@ import { useSelector } from 'react-redux'
 import Confetti from 'react-confetti'
 import { twMerge } from 'tailwind-merge'
 import { useChat } from '@/components/providers/ChatProvider'
-import { createChat } from '@/api/chats'
+import { createChat } from '@/apis/chats'
 import SharePanel from './_components/SharePanel'
 
 export default function Page({ params: { slug, courseId } }) {

@@ -11,7 +11,7 @@ import {
 	Spacer,
 } from '@nextui-org/react'
 import { useState } from 'react'
-import { deleteCourseAdmin } from '@/api/courses'
+import { deleteCourseAdmin } from '@/apis/courses'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 

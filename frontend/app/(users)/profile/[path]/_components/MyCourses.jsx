@@ -1,4 +1,4 @@
-import { getEnrolledCourses, getCertificate } from '@/api/courses'
+import { getEnrolledCourses, getCertificate } from '@/apis/courses'
 import {
 	Button,
 	Card,

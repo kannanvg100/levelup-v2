@@ -1,5 +1,5 @@
 'use client'
-import { getCourseTeacher } from '@/api/courses'
+import { getCourseTeacher } from '@/apis/courses'
 import VideoPlayer from '@/components/VideoPlayer'
 import { Accordion, AccordionItem, BreadcrumbItem, Breadcrumbs, Spacer, Tab, Tabs } from '@nextui-org/react'
 import { PlaySquare } from 'lucide-react'

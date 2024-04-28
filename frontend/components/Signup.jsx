@@ -11,7 +11,7 @@ import { addUser } from '@/redux/slices/userSlice'
 import { addTeacher } from '@/redux/slices/teacherSlice'
 import Image from 'next/image'
 import { useMutation } from '@tanstack/react-query'
-import { socialLoginUser, sendOtp, signupUser } from '@/api/users'
+import { socialLoginUser, sendOtp, signupUser } from '@/apis/users'
 import RecaptchaVerify from '@/components/RecaptchaVerify'
 import { useTheme } from 'next-themes'
 

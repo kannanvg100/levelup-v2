@@ -6,7 +6,7 @@ import {
 	ModalFooter,
 	Button
 } from '@nextui-org/react'
-import { changeCategoryStatus } from '@/api/categories'
+import { changeCategoryStatus } from '@/apis/categories'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 export default function ChangeCategoryStatusModal({ isOpen, onClose, category }) {

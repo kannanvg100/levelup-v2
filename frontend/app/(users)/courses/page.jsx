@@ -1,6 +1,6 @@
 'use client'
 
-import { getCourses, getFilters } from '@/api/courses'
+import { getCourses, getFilters } from '@/apis/courses'
 import {
 	Accordion,
 	AccordionItem,

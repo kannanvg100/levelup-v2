@@ -16,7 +16,7 @@ import { addTeacher } from '@/redux/slices/teacherSlice'
 import { toast } from 'react-hot-toast'
 import Image from 'next/image'
 import { ImagePlus } from 'lucide-react'
-import { updateProfileTeacher, updateProfileDoc } from '@/api/users'
+import { updateProfileTeacher, updateProfileDoc } from '@/apis/users'
 
 export default function Login() {
 	const { teacher: user } = useSelector((state) => state.teacher)

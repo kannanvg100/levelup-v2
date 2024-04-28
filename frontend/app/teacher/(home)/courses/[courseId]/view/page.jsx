@@ -12,7 +12,7 @@ import {
 	useDisclosure,
 } from '@nextui-org/react'
 import { useQuery, QueryClient } from '@tanstack/react-query'
-import { getCourseTeacher } from '@/api/courses'
+import { getCourseTeacher } from '@/apis/courses'
 import IntroVideoModal from './IntroVideoModal'
 
 import { Calendar, Globe, PlayCircle, PlaySquare, Star } from 'lucide-react'

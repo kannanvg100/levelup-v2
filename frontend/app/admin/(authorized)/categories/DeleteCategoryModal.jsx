@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Modal, ModalContent, ModalBody, ModalFooter, Button } from '@nextui-org/react'
-import { deleteCategory } from '@/api/categories'
+import { deleteCategory } from '@/apis/categories'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 

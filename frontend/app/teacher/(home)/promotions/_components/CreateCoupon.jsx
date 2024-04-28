@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input, code } from '@nextui-org/react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { createCoupon } from '@/api/promotions'
+import { createCoupon } from '@/apis/promotions'
 import toast from 'react-hot-toast'
 
 export default function CreateCoupon({ isOpen, onClose }) {

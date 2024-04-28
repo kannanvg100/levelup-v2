@@ -1,4 +1,4 @@
-import { deleteFavorite, getFavorites } from '@/api/favorites'
+import { deleteFavorite, getFavorites } from '@/apis/favorites'
 import { Button, Card, CardBody, Divider, Spacer, Spinner } from '@nextui-org/react'
 import { QueryClient, useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { X } from 'lucide-react'

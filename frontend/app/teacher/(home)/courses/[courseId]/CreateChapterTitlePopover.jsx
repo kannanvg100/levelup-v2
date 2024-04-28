@@ -1,7 +1,7 @@
 import React, { use, useEffect, useRef, useState } from 'react'
 import { Popover, PopoverTrigger, PopoverContent, Button, Input, Spacer, popover } from '@nextui-org/react'
 import { FolderPlus } from 'lucide-react'
-import { createChapter } from '@/api/chapters'
+import { createChapter } from '@/apis/chapters'
 import { useDispatch, useSelector } from 'react-redux'
 import { add } from '@/redux/slices/courseSlice'
 import { useMutation } from '@tanstack/react-query'

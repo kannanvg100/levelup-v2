@@ -42,7 +42,7 @@ const statusOptions = [
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { AlertTriangle, MoreVertical, Plus, Search, Ticket, Trash } from 'lucide-react'
 import CreateCoupon from './_components/CreateCoupon'
-import { getCoupons } from '@/api/promotions'
+import { getCoupons } from '@/apis/promotions'
 import DeleteCouponModal from './_components/DeleteCouponModal'
 
 const INITIAL_VISIBLE_COLUMNS = [

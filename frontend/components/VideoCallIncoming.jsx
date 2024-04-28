@@ -5,7 +5,7 @@ import VideoCallModal from './VideoCallModal'
 import toast from 'react-hot-toast'
 import { Button, Card, CardBody, Image } from '@nextui-org/react'
 import { useMutation } from '@tanstack/react-query'
-import { getAccessTokenJoin } from '@/api/videos'
+import { getAccessTokenJoin } from '@/apis/videos'
 
 export default function VideoCallIncoming() {
 	const socket = useSocket()

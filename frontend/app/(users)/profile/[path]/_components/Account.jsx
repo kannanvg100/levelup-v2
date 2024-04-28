@@ -6,7 +6,7 @@ import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { addUser } from '@/redux/slices/userSlice'
 import { ImagePlus } from 'lucide-react'
-import { updateProfile } from '@/api/users'
+import { updateProfile } from '@/apis/users'
 import toast from 'react-hot-toast'
 
 export default function Account() {

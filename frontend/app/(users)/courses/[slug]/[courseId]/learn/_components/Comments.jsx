@@ -1,4 +1,4 @@
-import { createComment, getComments } from '@/api/comments'
+import { createComment, getComments } from '@/apis/comments'
 import { Button, Image, Spacer, Textarea } from '@nextui-org/react'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'

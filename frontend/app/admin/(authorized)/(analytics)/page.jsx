@@ -1,5 +1,5 @@
 'use client'
-import { getAllAnalytics } from '@/api/analytics'
+import { getAllAnalytics } from '@/apis/analytics'
 import { Spacer, Spinner } from '@nextui-org/react'
 import { ResponsiveLine } from '@nivo/line'
 import { ResponsivePie } from '@nivo/pie'

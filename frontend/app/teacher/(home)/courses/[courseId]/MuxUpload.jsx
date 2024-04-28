@@ -2,7 +2,7 @@ import React from 'react'
 import MuxUploader, { MuxUploaderDrop, MuxUploaderFileSelect } from '@mux/mux-uploader-react'
 import { Ban, Check, UploadCloud } from 'lucide-react'
 import { useQueryClient } from '@tanstack/react-query'
-import { getMuxUploadUrl } from '@/api/courses'
+import { getMuxUploadUrl } from '@/apis/courses'
 import { Progress, Spacer, Spinner } from '@nextui-org/react'
 import Image from 'next/image'
 

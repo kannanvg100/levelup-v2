@@ -1,6 +1,6 @@
 'use client'
 
-import { logoutUser } from '@/api/admin'
+import { logoutUser } from '@/apis/admin'
 import { logout } from '@/redux/slices/adminSlice'
 import { Accordion, AccordionItem, useDisclosure } from '@nextui-org/react'
 import {

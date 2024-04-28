@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import CourseReviewItem from './CourseReviewItem'
-import { getReviews } from '@/api/reviews'
+import { getReviews } from '@/apis/reviews'
 import { useQuery } from '@tanstack/react-query'
 import { Spinner } from '@nextui-org/react'
 

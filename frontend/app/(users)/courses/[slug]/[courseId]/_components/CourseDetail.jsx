@@ -16,14 +16,14 @@ import {
 	Skeleton,
 } from '@nextui-org/react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { getCourse, getEnrollment } from '@/api/courses'
+import { getCourse, getEnrollment } from '@/apis/courses'
 import toast from 'react-hot-toast'
 import IntroVideoModal from './IntroVideoModal'
 
 import { Calendar, Frown, Globe, Home, MessageCircle, PlayCircle, PlaySquare, Star, XSquare } from 'lucide-react'
 import Reviews from './Reviews'
 import { useRouter } from 'next/navigation'
-import { createChat } from '@/api/chats'
+import { createChat } from '@/apis/chats'
 import Link from 'next/link'
 import { useSelector } from 'react-redux'
 import { useChat } from '@/components/providers/ChatProvider'

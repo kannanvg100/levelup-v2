@@ -14,7 +14,7 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import toast from 'react-hot-toast'
 import { useMutation } from '@tanstack/react-query'
-import { createCourse } from '@/api/courses'
+import { createCourse } from '@/apis/courses'
 
 export default function CreateCourseTitle({ isOpen, onClose }) {
 	const [title, setTitle] = useState('')

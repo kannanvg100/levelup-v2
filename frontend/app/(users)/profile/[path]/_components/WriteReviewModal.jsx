@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Modal, ModalContent, ModalBody, ModalFooter, Button, Switch, Input, Spacer, Textarea } from '@nextui-org/react'
-import { addReview } from '@/api/reviews'
+import { addReview } from '@/apis/reviews'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 import { Star } from 'lucide-react'

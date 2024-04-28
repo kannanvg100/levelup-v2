@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Modal, ModalContent, ModalBody, ModalFooter, Button, Image, Spacer } from '@nextui-org/react'
-import { changeUserStatus } from '@/api/users'
+import { changeUserStatus } from '@/apis/users'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { ExternalLink } from 'lucide-react'
 

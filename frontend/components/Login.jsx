@@ -4,7 +4,7 @@ import { Button, Input, Link, Card, CardBody, Divider, Spacer } from '@nextui-or
 import NextLink from 'next/link'
 import { useDispatch } from 'react-redux'
 import { QueryClient, useMutation } from '@tanstack/react-query'
-import { loginUser, socialLoginUser } from '@/api/users'
+import { loginUser, socialLoginUser } from '@/apis/users'
 import { useRouter } from 'next/navigation'
 import { useGoogleLogin } from '@react-oauth/google'
 import { addTeacher } from '@/redux/slices/teacherSlice'

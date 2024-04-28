@@ -2,7 +2,7 @@
 import { useQuery } from '@tanstack/react-query'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getUserInfo } from '../api/users'
+import { getUserInfo } from '../apis/users'
 import Link from 'next/link'
 import { addTeacher } from '@/redux/slices/teacherSlice'
 

@@ -32,7 +32,7 @@ import { useQuery, keepPreviousData, useQueryClient } from '@tanstack/react-quer
 import { useRouter } from 'next/navigation'
 import { AlertTriangle, ChevronRight, Download } from 'lucide-react'
 import toast from 'react-hot-toast'
-import { getAllEnrolledCourses, getEnrollmentReport } from '@/api/enrollments'
+import { getAllEnrolledCourses, getEnrollmentReport } from '@/apis/enrollments'
 
 const INITIAL_VISIBLE_COLUMNS = ['course', 'student', 'price', 'offerPrice', 'code', 'method', 'purchasedAt']
 

@@ -1,5 +1,5 @@
-import { uploadThumbnail } from '@/api/courses'
-import { getPublishedCategories } from '@/api/categories'
+import { uploadThumbnail } from '@/apis/courses'
+import { getPublishedCategories } from '@/apis/categories'
 import {
 	Button,
 	Dropdown,

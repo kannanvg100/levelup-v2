@@ -1,6 +1,6 @@
 'use client'
 
-import { logoutUser } from '@/api/users'
+import { logoutUser } from '@/apis/users'
 import { removeTeacher } from '@/redux/slices/teacherSlice'
 import { Accordion, AccordionItem } from '@nextui-org/react'
 import {

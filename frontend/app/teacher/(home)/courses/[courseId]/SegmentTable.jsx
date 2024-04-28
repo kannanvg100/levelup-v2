@@ -12,7 +12,7 @@ import {
 	Avatar,
 } from '@nextui-org/react'
 import { EditIcon, FilePlus, Trash } from 'lucide-react'
-import { deleteSegment } from '@/api/segments'
+import { deleteSegment } from '@/apis/segments'
 import { useMutation } from '@tanstack/react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { add } from '@/redux/slices/courseSlice'

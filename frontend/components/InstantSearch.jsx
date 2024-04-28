@@ -1,5 +1,5 @@
 'use client'
-import { getSearchResults } from '@/api/courses'
+import { getSearchResults } from '@/apis/courses'
 import { Button, Input, Spinner } from '@nextui-org/react'
 import { SearchIcon } from 'lucide-react'
 import Link from 'next/link'

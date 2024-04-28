@@ -18,13 +18,13 @@ import NextLink from 'next/link'
 import Image from 'next/image.js'
 import { useDispatch, useSelector } from 'react-redux'
 import { usePathname, useRouter } from 'next/navigation'
-import { logoutUser } from '@/api/users.js'
+import { logoutUser } from '@/apis/users.js'
 import { removeUser } from '@/redux/slices/userSlice.js'
 import { QueryClient, useQuery, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 import { useTheme } from 'next-themes'
 import InstantSearch from './InstantSearch.jsx'
-import { getPublishedCategories } from '@/api/categories.js'
+import { getPublishedCategories } from '@/apis/categories.js'
 import {
 	Bookmark,
 	ChevronRight,

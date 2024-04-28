@@ -14,7 +14,7 @@ import {
 } from '@nextui-org/react'
 import { useDispatch, useSelector } from 'react-redux'
 import { logout } from '@/redux/slices/adminSlice'
-import { logoutUser } from '@/api/users.js'
+import { logoutUser } from '@/apis/users.js'
 import toast from 'react-hot-toast'
 import { QueryClient } from '@tanstack/react-query'
 import LoginModal from './LoginModal'

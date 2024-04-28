@@ -1,6 +1,6 @@
 'use client'
 
-import { createCourse, getCourseTeacher, saveDraft } from '@/api/courses'
+import { createCourse, getCourseTeacher, saveDraft } from '@/apis/courses'
 import {
 	Button,
 	Chip,

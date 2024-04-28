@@ -1,5 +1,5 @@
-import { createStripeSession } from '@/api/courses'
-import { getCourseCoupons } from '@/api/promotions'
+import { createStripeSession } from '@/apis/courses'
+import { getCourseCoupons } from '@/apis/promotions'
 import CreditCard from '@/components/CreditCard'
 import {
 	Accordion,

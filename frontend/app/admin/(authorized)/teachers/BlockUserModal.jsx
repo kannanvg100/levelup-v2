@@ -6,7 +6,7 @@ import {
 	ModalFooter,
 	Button
 } from '@nextui-org/react'
-import { changeUserStatus } from '@/api/users'
+import { changeUserStatus } from '@/apis/users'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 export default function BlockUserModal({ isOpen, onClose, user }) {

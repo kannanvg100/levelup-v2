@@ -1,5 +1,5 @@
 'use client'
-import { getCourses, getFilters } from '@/api/courses'
+import { getCourses, getFilters } from '@/apis/courses'
 import CourseItem from './CourseItem'
 import { Chip, ScrollShadow, Skeleton, Spacer } from '@nextui-org/react'
 import { useQuery } from '@tanstack/react-query'

@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect } from 'react'
 
-import { getUsersOfTeacher } from '@/api/users'
+import { getUsersOfTeacher } from '@/apis/users'
 
 import {
 	Table,

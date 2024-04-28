@@ -1,4 +1,4 @@
-import { createFavorite, deleteFavorite } from '@/api/favorites'
+import { createFavorite, deleteFavorite } from '@/apis/favorites'
 import { Spinner } from '@nextui-org/react'
 import { useMutation } from '@tanstack/react-query'
 import { Bookmark, BookmarkCheck } from 'lucide-react'

@@ -11,7 +11,7 @@ import {
 } from '@nextui-org/react'
 import { LockIcon, MailIcon } from 'lucide-react'
 import { useMutation } from '@tanstack/react-query'
-import { loginUser } from '@/api/admin'
+import { loginUser } from '@/apis/admin'
 import { useDispatch } from 'react-redux'
 import { login } from '@/redux/slices/adminSlice'
 import toast from 'react-hot-toast'

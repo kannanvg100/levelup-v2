@@ -1,7 +1,7 @@
 'use client'
 import React, { useMemo } from 'react'
 
-import { getAllCategories } from '@/api/categories'
+import { getAllCategories } from '@/apis/categories'
 
 import {
 	Table,
