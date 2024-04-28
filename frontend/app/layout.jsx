@@ -1,6 +1,7 @@
 import './globals.css'
 import { Providers } from './providers'
 import { Inter } from 'next/font/google'
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 const inter = Inter({subsets: ['latin']})
 
@@ -28,6 +29,7 @@ export default function RootLayout({ children }) {
 			<body className={`${inter.className} min-h-screen bg-background text-default-700`} suppressHydrationWarning>
 				<Providers themeProps={{ attribute: 'class', defaultTheme: 'light' }}>
 					<main>{children}</main>
+                    <SpeedInsights />
 				</Providers>
 			</body>
 		</html>
